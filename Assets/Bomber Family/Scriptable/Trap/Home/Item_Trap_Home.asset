@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1abd654804b47d4468e2c0f44b7e3701, type: 3}
+  m_Name: Item_Trap_Home
+  m_EditorClassIdentifier: 
+  myIcon: {fileID: 21300000, guid: d0f63be8b6e064849b4c12ecc56fe17b, type: 3}
+  myPrice: 250
+  myOrder: 0
+  boardType: 3
+  myObject: {fileID: 11400000, guid: 413d9898475a9284b87164d890ac5f94, type: 2}

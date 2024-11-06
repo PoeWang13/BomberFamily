@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 1b955651a44b55744a26b8afcbc63f52
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - havuzum: {instanceID: 0}
+  - loot_Controller: {instanceID: 0}
+  - all_Item_Holder: {fileID: 11400000, guid: d49edd28b1ef24d4fbb235c4e18bcad5, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

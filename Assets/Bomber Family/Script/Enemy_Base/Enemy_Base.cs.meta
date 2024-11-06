@@ -1,0 +1,20 @@
+fileFormatVersion: 2
+guid: 65fb713bf2ece8945850c9a6c86db967
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - havuzum: {instanceID: 0}
+  - objFreeze: {instanceID: 0}
+  - bomb_Simple: {fileID: 11400000, guid: 799287bb672f95a47a4697866c0ae97d, type: 2}
+  - bomb_Clock: {fileID: 11400000, guid: a2d80b48fd742d64ca12e89a0763b964, type: 2}
+  - bomb_Nucleer: {fileID: 11400000, guid: c8b369ae12b1e3a42b109847994bcf61, type: 2}
+  - bomb_Area: {fileID: 11400000, guid: bdfd78e60a51a654892327e5fbb192c9, type: 2}
+  - bomb_Anti_Wall: {fileID: 11400000, guid: aca1c291cd7dfe7499e2e3b5fc3ad091, type: 2}
+  - bomb_Searcher: {fileID: 11400000, guid: 865d2fa53761f344ab62ccf523bc2c2f, type: 2}
+  - loot_Controller: {fileID: 11400000, guid: fc82f6ab3b1578a42b3a7fd851889cd5, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
