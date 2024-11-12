@@ -6,7 +6,7 @@ public enum CurseType
 {
     DecLife,
     DecPower,
-    DecSimple,
+    DecBomb,
     IncSpeed,
     DecSpeed,
     IncLimit,
@@ -15,87 +15,49 @@ public enum CurseType
 [System.Serializable]
 public class CurseClass
 {
-    public int orjValue;
     public float curseTime;
     public CurseType curseType;
 
-    public CurseClass(int orjValue, float curseTime, int curseType)
+    public CurseClass(float curseTime, int curseType)
     {
-        this.orjValue = orjValue;
         this.curseTime = curseTime;
         this.curseType = (CurseType)curseType;
     }
 }
 public class Character_Base : PoolObje, IDamegable
 {
-    [Header("Character Base")]
-    [SerializeField] private GameObject objFreeze;
+    [SerializeField] private CharacterStat characterStat;
 
-    private int orjLife;
-    private int orjSpeed;
     private int myLife;
     private int mySpeed;
+    private int myBombAmount = 1;
+    private int myBombFirePower = 1;
+    private int myBombFireLimit = 1;
     private float shieldTime;
     private bool canMove;
     private bool canHurt;
     private bool canCurse;
     private bool isDead;
     private bool isFreeze;
-    private int bombFirePower = 1;
-    private int bombFireLimit = 1;
-    private int simpleBombAmount = 1;
     private Vector2Int myCoor;
     private Vector3 direction;
+    private GameObject objFreeze;
     private Collider myCollider;
     private Animator myAnimator;
     private Rigidbody myRigidbody;
     private Transform characterView;
     private List<CurseClass> allCurses = new List<CurseClass>();
 
-    public void SetDirection(Vector3Int direc)
-    {
-        if (direc.x > 0)
-        {
-            direc.x = 1;
-        }
-        else if (direc.x < 0)
-        {
-            direc.x = -1;
-        }
-        else if (direc.z > 0)
-        {
-            direc.z = 1;
-        }
-        else if (direc.z < 0)
-        {
-            direc.z = -1;
-        }
-        TurnPlayerView(direc);
-        direction = direc;
-    }
-    public Vector3Int LearnIntDirection(Vector3 vector)
-    {
-        return new Vector3Int(Mathf.RoundToInt(vector.x), Mathf.RoundToInt(vector.y), Mathf.RoundToInt(vector.z));
-    }
-    private void TurnPlayerView(Vector3 direction)
-    {
-        if (direction == Vector3.zero)
-        {
-            return;
-        }
-        Quaternion direc = Quaternion.LookRotation(direction);
-        Vector3 rot = direc.eulerAngles;
-        CharacterView.rotation = Quaternion.Euler(0, rot.y, 0);
-    }
     public int MyLife { get { return myLife; } }
     public int MySpeed { get { return mySpeed; } }
+    public int MyBombAmount { get { return myBombAmount; } }
+    public int MyBombFirePower { get { return myBombFirePower; } }
+    public int MyBombFireLimit { get { return myBombFireLimit; } }
     public bool CanMove { get { return canMove; } }
     public bool IsDead { get { return isDead; } }
     public bool IsFreeze { get { return isFreeze; } }
     public Vector3 Direction { get { return direction; } }
-    public int BombFirePower { get { return bombFirePower; } }
-    public int BombFireLimit { get { return bombFireLimit; } }
-    public int SimpleBombAmount { get { return simpleBombAmount; } }
+    public CharacterStat CharacterStat { get { return characterStat; } }
     public Rigidbody MyRigidbody { get { return myRigidbody; } }
     public Vector2Int MyCoor { get { return myCoor; } }
     public Animator MyAnimator { get { return myAnimator; } }
@@ -108,6 +70,7 @@ public class Character_Base : PoolObje, IDamegable
         myRigidbody = GetComponent<Rigidbody>();
         myAnimator = GetComponentInChildren<Animator>();
         characterView = transform.Find("CharacterView");
+        objFreeze = characterView.Find("Freeze").gameObject;
         OnAwake();
     }
     public virtual void OnAwake()
@@ -123,6 +86,10 @@ public class Character_Base : PoolObje, IDamegable
     public virtual void OnStart()
     {
 
+    }
+    public void SetCharacterStat(CharacterStat stat)
+    {
+        characterStat = stat;
     }
     public void SetCharacterView(bool isActive)
     {
@@ -156,7 +123,7 @@ public class Character_Base : PoolObje, IDamegable
             Move();
         }
         UseShield();
-        UseCurse();
+        UseCurseTime();
         SetMyCoor(new Vector2Int(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.z)));
         MyAnimator.SetFloat("Speed", direction.sqrMagnitude * MySpeed);
     }
@@ -165,32 +132,144 @@ public class Character_Base : PoolObje, IDamegable
 
     }
 
+    public void SetDirection(Vector3 direc)
+    {
+        direction = direc;
+    }
+    public void SetDirectionPlayer(Vector3 direc)
+    {
+        Vector3 dir = Vector3.zero;
+        if (direc.x > 0)
+        {
+            if (direc.z > 0)
+            {
+                if (direc.x > direc.z)
+                {
+                    dir.x = 1;
+                }
+                else
+                {
+                    dir.z = 1;
+                }
+            }
+            else if (direc.z < 0)
+            {
+                if (direc.x > Mathf.Abs(direc.z))
+                {
+                    dir.x = 1;
+                }
+                else
+                {
+                    dir.z = -1;
+                }
+            }
+            else
+            {
+                dir.x = 1;
+            }
+        }
+        else if (direc.x < 0)
+        {
+            if (direc.z > 0)
+            {
+                if (Mathf.Abs(direc.x) > direc.z)
+                {
+                    dir.x = -1;
+                }
+                else
+                {
+                    dir.z = 1;
+                }
+            }
+            else if (direc.z < 0)
+            {
+                if (Mathf.Abs(direc.x) > Mathf.Abs(direc.z))
+                {
+                    dir.x = -1;
+                }
+                else
+                {
+                    dir.z = -1;
+                }
+            }
+            else
+            {
+                dir.x = -1;
+            }
+        }
+        else
+        {
+            if (direc.z > 0)
+            {
+                dir.z = 1;
+            }
+            else if (direc.z < 0)
+            {
+                dir.z = -1;
+            }
+        }
+        TurnPlayerView(dir);
+        direction = dir;
+    }
+    public Vector3 LearnDirection(Vector3 vector)
+    {
+        return new Vector3Int(Mathf.RoundToInt(vector.x), 0, Mathf.RoundToInt(vector.z));
+    }
+    public Vector3Int LearnIntDirection(Vector3 vector)
+    {
+        return new Vector3Int(Mathf.RoundToInt(vector.x), 0, Mathf.RoundToInt(vector.z));
+    }
+    public Vector3Int SetPos()
+    {
+        return new Vector3Int(Mathf.RoundToInt(transform.position.x), 0, Mathf.RoundToInt(transform.position.z));
+    }
+    public void TurnPlayerView(Vector3 dir)
+    {
+        if (dir == Vector3.zero)
+        {
+            return;
+        }
+        Quaternion direc = Quaternion.LookRotation(dir);
+        Vector3 rot = direc.eulerAngles;
+        CharacterView.rotation = Quaternion.Euler(0, rot.y, 0);
+    }
+
     #region Set Variable
-    public void SetLife(int newLife)
+    public void SetMyLife(int newLife)
     {
-        orjLife = newLife;
-        ResetLife();
+        myLife = newLife;
     }
-    public void SetSpeed(int newSpeed)
+    public void SetMySpeed(int newSpeed)
     {
-        orjSpeed = newSpeed;
-        ResetSpeed();
+        mySpeed = newSpeed;
     }
-    public void SetLife(float newLife)
+    public void DebuffMyLife(float newLife)
     {
-        myLife = (int)(orjLife * newLife);
+        myLife = (int)(characterStat.myLife * newLife);
     }
-    public void SetSpeed(float newSpeed)
+    public void DebuffMySpeed(float newSpeed)
     {
-        mySpeed = (int)(orjSpeed * newSpeed);
+        mySpeed = (int)(characterStat.mySpeed * newSpeed);
     }
     public void ResetLife()
     {
-        myLife = orjLife;
+        myLife = characterStat.myLife;
     }
     public void ResetSpeed()
     {
-        mySpeed = orjSpeed;
+        mySpeed = characterStat.mySpeed;
+    }
+    public void ResetPower()
+    {
+        myBombFirePower = characterStat.myBombPower;
+    }
+    public void ResetLimit()
+    {
+        myBombFireLimit = characterStat.myBombFireLimit;
+    }
+    public void ResetAmount()
+    {
+        myBombAmount = characterStat.myBombAmount;
     }
     public void SetScale(bool isBig)
     {
@@ -214,10 +293,20 @@ public class Character_Base : PoolObje, IDamegable
         canCurse = false;
         canMove = true;
         isDead = false;
-        myLife = orjLife;
-        mySpeed = orjSpeed;
+        ResetLife();
+        ResetSpeed();
         allCurses.Clear();
     }
+    public bool CanCreateBomb()
+    {
+        // Bir obje var mı veya active değil mi
+        if (Map_Holder.Instance.GameBoard[MyCoor.x, MyCoor.y].board_Object is null || !Map_Holder.Instance.GameBoard[MyCoor.x, MyCoor.y].board_Object.activeSelf)
+        {
+            return true;
+        }
+        return false;
+    }
+
     #endregion
 
     #region TakeDamage
@@ -265,7 +354,7 @@ public class Character_Base : PoolObje, IDamegable
         }
         else
         {
-            mySpeed = orjSpeed;
+            mySpeed = characterStat.mySpeed;
         }
         objFreeze.SetActive(isFreeze);
     }
@@ -293,102 +382,35 @@ public class Character_Base : PoolObje, IDamegable
     }
     public void UseSimpleBomb()
     {
-        simpleBombAmount--;
+        myBombAmount--;
     }
     public virtual void Increaselife()
     {
         myLife++;
-        bool finded = false;
-        for (int e = 0; e < allCurses.Count && !finded; e++)
-        {
-            if (allCurses[e].curseType == CurseType.DecLife)
-            {
-                allCurses[e].orjValue++;
-                finded = true;
-            }
-        }
     }
     public virtual void IncreaseSpeed()
     {
         mySpeed += 10;
-        bool finded = false;
-        for (int e = 0; e < allCurses.Count && !finded; e++)
-        {
-            if (allCurses[e].curseType == CurseType.IncSpeed || allCurses[e].curseType == CurseType.DecSpeed)
-            {
-                allCurses[e].orjValue++;
-                finded = true;
-            }
-        }
     }
     public virtual void IncreaseBombFirePower()
     {
-        bombFirePower++;
-        bool finded = false;
-        for (int e = 0; e < allCurses.Count && !finded; e++)
-        {
-            if (allCurses[e].curseType == CurseType.DecPower)
-            {
-                allCurses[e].orjValue++;
-                finded = true;
-            }
-        }
+        myBombFirePower++;
     }
     public virtual void IncreaseBombFireLimit()
     {
-        bombFireLimit++;
-        bool finded = false;
-        for (int e = 0; e < allCurses.Count && !finded; e++)
-        {
-            if (allCurses[e].curseType == CurseType.IncLimit || allCurses[e].curseType == CurseType.DecLimit)
-            {
-                allCurses[e].orjValue++;
-                finded = true;
-            }
-        }
+        myBombFireLimit++;
     }
-    public virtual void IncreaseSimpleBombAmount()
-    {
-        simpleBombAmount++;
-        bool finded = false;
-        for (int e = 0; e < allCurses.Count && !finded; e++)
-        {
-            if (allCurses[e].curseType == CurseType.DecSimple)
-            {
-                allCurses[e].orjValue++;
-                finded = true;
-            }
-        }
-    }
-    public virtual void IncreaseClockBombAmount()
+    public virtual void IncreaseBombAmount(BombType bombType)
     {
     }
-    public virtual void IncreaseNukleerBombAmount()
+    public void IncreaseBomb()
     {
-    }
-    public virtual void IncreaseAreaBombAmount()
-    {
-    }
-    public virtual void IncreaseAntiWallBombAmount()
-    {
-    }
-    public virtual void IncreaseSearcherBombAmount()
-    {
+        myBombAmount++;
     }
     #endregion
 
-    public bool CanCreateBomb()
-    {
-        // Bir obje var mı veya active değil mi
-        if (Map_Holder.Instance.GameBoard[MyCoor.x, MyCoor.y].board_Object is null || !Map_Holder.Instance.GameBoard[MyCoor.x, MyCoor.y].board_Object.activeSelf)
-        {
-            return true;
-        }
-        return false;
-    }
-
     #region Curse
-    public void UseCurse()
+    private void UseCurseTime()
     {
         if (canCurse)
         {
@@ -399,27 +421,29 @@ public class Character_Base : PoolObje, IDamegable
                 {
                     if (allCurses[e].curseType == CurseType.DecLife)
                     {
-                        myLife = allCurses[e].orjValue;
+                        ResetLife();
                         Canvas_Manager.Instance.SetPlayerLifeText();
                     }
                     else if (allCurses[e].curseType == CurseType.DecPower)
                     {
-                        bombFirePower = allCurses[e].orjValue;
+                        ResetPower();
                         Canvas_Manager.Instance.SetPlayerPowerText();
                     }
-                    else if (allCurses[e].curseType == CurseType.DecSimple)
+                    else if (allCurses[e].curseType == CurseType.DecBomb)
                     {
-                        simpleBombAmount = allCurses[e].orjValue;
-                        Canvas_Manager.Instance.SetPlayerSimpleBombAmountText();
+                        int amount = 1 - myBombAmount;
+                        ResetAmount();
+                        myBombAmount -= amount;
+                        Canvas_Manager.Instance.SetPlayerBombAmountText();
                     }
                     else if (allCurses[e].curseType == CurseType.IncSpeed || allCurses[e].curseType == CurseType.DecSpeed)
                     {
-                        mySpeed = allCurses[e].orjValue;
+                        ResetSpeed();
                         Canvas_Manager.Instance.SetPlayerSpeedText();
                     }
                     else if (allCurses[e].curseType == CurseType.IncLimit || allCurses[e].curseType == CurseType.DecLimit)
                     {
-                        bombFireLimit = allCurses[e].orjValue;
+                        ResetLimit();
                         Canvas_Manager.Instance.SetPlayerBombFireLimitText();
                     }
                     allCurses.RemoveAt(e);
@@ -448,44 +472,44 @@ public class Character_Base : PoolObje, IDamegable
         {
             if ((CurseType)rndCurse == CurseType.DecLife)
             {
-                allCurses.Add(new CurseClass(myLife, 5, rndCurse));
+                allCurses.Add(new CurseClass(5, rndCurse));
                 myLife = 1;
                 Canvas_Manager.Instance.SetPlayerLifeText();
             }
             else if ((CurseType)rndCurse == CurseType.DecPower)
             {
-                allCurses.Add(new CurseClass(bombFirePower, 5, rndCurse));
-                bombFirePower = 1;
+                allCurses.Add(new CurseClass(5, rndCurse));
+                myBombFirePower = 1;
                 Canvas_Manager.Instance.SetPlayerPowerText();
             }
-            else if ((CurseType)rndCurse == CurseType.DecSimple)
+            else if ((CurseType)rndCurse == CurseType.DecBomb)
             {
-                allCurses.Add(new CurseClass(simpleBombAmount, 5, rndCurse));
-                simpleBombAmount = 1;
-                Canvas_Manager.Instance.SetPlayerSimpleBombAmountText();
+                allCurses.Add(new CurseClass(5, rndCurse));
+                myBombAmount = 1;
+                Canvas_Manager.Instance.SetPlayerBombAmountText();
             }
             else if ((CurseType)rndCurse == CurseType.IncSpeed)
             {
-                allCurses.Add(new CurseClass(mySpeed, 5, rndCurse));
+                allCurses.Add(new CurseClass(5, rndCurse));
                 mySpeed = 1500;
                 Canvas_Manager.Instance.SetPlayerSpeedText();
             }
             else if ((CurseType)rndCurse == CurseType.DecSpeed)
             {
-                allCurses.Add(new CurseClass(mySpeed, 5, rndCurse));
+                allCurses.Add(new CurseClass(5, rndCurse));
                 mySpeed = 50;
                 Canvas_Manager.Instance.SetPlayerSpeedText();
             }
             else if ((CurseType)rndCurse == CurseType.IncLimit)
             {
-                allCurses.Add(new CurseClass(bombFireLimit, 5, rndCurse));
-                bombFireLimit = 1000;
+                allCurses.Add(new CurseClass(5, rndCurse));
+                myBombFireLimit = 1000;
                 Canvas_Manager.Instance.SetPlayerBombFireLimitText();
             }
             else if ((CurseType)rndCurse == CurseType.DecLimit)
             {
-                allCurses.Add(new CurseClass(bombFireLimit, 5, rndCurse));
-                bombFireLimit = 1;
+                allCurses.Add(new CurseClass(5, rndCurse));
+                myBombFireLimit = 1;
                 Canvas_Manager.Instance.SetPlayerBombFireLimitText();
             }
         }

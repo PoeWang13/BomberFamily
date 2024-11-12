@@ -12,7 +12,7 @@ public class All_Item_Holder : ScriptableObject
     [SerializeField] private List<Item> bossEnemyList = new List<Item>();
     [SerializeField] private List<Item> gateList = new List<Item>();
 
-    [SerializeField] private List<Sprite> playerIcon = new List<Sprite>();
+    [SerializeField] private List<Player_Source> playerSourceList = new List<Player_Source>();
     public List<Item> GenelList { get { return genelList; } }
     public List<Item> WallList { get { return wallList; } }
     public List<Item> BoxList { get { return boxList; } }
@@ -20,65 +20,65 @@ public class All_Item_Holder : ScriptableObject
     public List<Item> EnemyList { get { return enemyList; } }
     public List<Item> BossEnemyList { get { return bossEnemyList; } }
     public List<Item> GateList { get { return gateList; } }
-    public List<Sprite> PlayerIcon { get { return playerIcon; } }
+    public List<Player_Source> PlayerSourceList { get { return playerSourceList; } }
 
-    public int LearnOrder(Item trap)
+    public int LearnOrder(Item item)
     {
-        if (trap.MyBoardType == BoardType.Wall)
+        if (item.MyBoardType == BoardType.Wall)
         {
             for (int e = 0; e < wallList.Count; e++)
             {
-                if (trap == wallList[e])
+                if (item == wallList[e])
                 {
                     return e;
                 }
             }
         }
-        else if (trap.MyBoardType == BoardType.Box)
+        else if (item.MyBoardType == BoardType.Box)
         {
             for (int e = 0; e < boxList.Count; e++)
             {
-                if (trap == boxList[e])
+                if (item == boxList[e])
                 {
                     return e;
                 }
             }
         }
-        else if (trap.MyBoardType == BoardType.Trap)
+        else if (item.MyBoardType == BoardType.Trap)
         {
             for (int e = 0; e < trapList.Count; e++)
             {
-                if (trap == trapList[e])
+                if (item == trapList[e])
                 {
                     return e;
                 }
             }
         }
-        else if (trap.MyBoardType == BoardType.Enemy)
-        {
-            for (int e = 0; e < enemyList.Count; e++)
-            {
-                if (trap == enemyList[e])
-                {
-                    return e;
-                }
-            }
-        }
-        else if (trap.MyBoardType == BoardType.BossEnemy)
-        {
-            for (int e = 0; e < bossEnemyList.Count; e++)
-            {
-                if (trap == bossEnemyList[e])
-                {
-                    return e;
-                }
-            }
-        }
-        else if (trap.MyBoardType == BoardType.Gate)
+        else if (item.MyBoardType == BoardType.Gate)
         {
             for (int e = 0; e < gateList.Count; e++)
             {
-                if (trap == gateList[e])
+                if (item == gateList[e])
+                {
+                    return e;
+                }
+            }
+        }
+        else if(item.MyBoardType == BoardType.Enemy)
+        {
+            for (int e = 0; e < enemyList.Count; e++)
+            {
+                if (item == enemyList[e])
+                {
+                    return e;
+                }
+            }
+        }
+        else if (item.MyBoardType == BoardType.BossEnemy)
+        {
+            for (int e = 0; e < bossEnemyList.Count; e++)
+            {
+                if (item == bossEnemyList[e])
                 {
                     return e;
                 }

@@ -3,13 +3,19 @@ using System.Collections.Generic;
 
 public class Player_Base : Character_Base
 {
+    [ContextMenu("Center")]
+    private void Center()
+    {
+        transform.position = new Vector3(5, 0, 5);
+        gameObject.SetActive(false);
+    }
     private static Player_Base instance;
     public static Player_Base Instance { get { return instance; } }
 
     [Header("Player Base")]
-    [SerializeField] private Joystick joystickMove;
-    [SerializeField] private Item_Character myItem;
+    [SerializeField] private Player_Source player_Source;
 
+    private Joystick joystickMove;
     private Transform boardBombParent;
     private List<Bomb_Base> clocks = new List<Bomb_Base>();
 
@@ -26,19 +32,24 @@ public class Player_Base : Character_Base
     }
     public override void OnStart()
     {
-        SetLife(Save_Load_Manager.Instance.gameData.life);
-        SetSpeed(Save_Load_Manager.Instance.gameData.speed);
         // Görünmez ve etkisiz yap
         SetEffectivePlayer(false);
         boardBombParent = Utils.MakeChieldForGameElement("Board_Bomb");
     }
+    public void SetPlayerStat(Joystick joystick)
+    {
+        joystickMove = joystick;
+        SetCharacterStat(Save_Load_Manager.Instance.gameData.allPlayers[Save_Load_Manager.Instance.gameData.playerOrder].playerStat);
+        SetMyLife(CharacterStat.myLife);
+        SetMySpeed(CharacterStat.mySpeed);
+    }
     public override void Move()
     {
-        SetDirection(LearnIntDirection(joystickMove.Direction()));
+        SetDirectionPlayer(joystickMove.Direction());
         if (Input.GetKey(KeyCode.Space))
         {
             // Bomb bırak
-            Bomb_Base bomb = myItem.MyBombSimple.HavuzdanObjeIste(transform.position).GetComponent<Bomb_Base>();
+            Bomb_Base bomb = player_Source.MyBombPooler.HavuzdanObjeIste(transform.position).GetComponent<Bomb_Base>();
             bomb.SetBomb(this);
         }
     }
@@ -96,96 +107,19 @@ public class Player_Base : Character_Base
     #endregion
 
     #region Use Bomb
-    public void UseBombSimple()
+    public void UseBomb()
     {
-        if (SimpleBombAmount > 0)
+        if (MyBombAmount > 0)
         {
             if (!CanCreateBomb())
             {
                 return;
             }
-            Debug.Log("Use Bomb Simple");
             UseSimpleBomb();
             // Bomb bırak
-            Bomb_Base bomb = myItem.MyBombSimple.HavuzdanObjeIste(new Vector3Int(MyCoor.x, 0, MyCoor.y)).GetComponent<Bomb_Simple>();
+            Bomb_Base bomb = player_Source.MyBombPooler.HavuzdanObjeIste(transform.position).GetComponent<Bomb_Base>();
             SetBomb(bomb);
-            Canvas_Manager.Instance.SetPlayerSimpleBombAmountText();
-        }
-    }
-    public void UseBombClock()
-    {
-        if (Save_Load_Manager.Instance.gameData.clockBombAmount > 0)
-        {
-            if (!CanCreateBomb())
-            {
-                return;
-            }
-            // Bomb bırak
-            Bomb_Base bomb = myItem.MyBombClock.HavuzdanObjeIste(new Vector3Int(MyCoor.x, 0, MyCoor.y)).GetComponent<Bomb_Simple>();
-            SetBomb(bomb, true);
-            clocks.Add(bomb);
-            Save_Load_Manager.Instance.gameData.clockBombAmount--;
-            Canvas_Manager.Instance.SetPlayerClockBombAmountText();
-        }
-    }
-    public void UseBombNucleer()
-    {
-        if (Save_Load_Manager.Instance.gameData.nukleerBombAmount > 0)
-        {
-            if (!CanCreateBomb())
-            {
-                return;
-            }
-            // Bomb bırak
-            Bomb_Base bomb = myItem.MyBombNucleer.HavuzdanObjeIste(new Vector3Int(MyCoor.x, 0, MyCoor.y)).GetComponent<Bomb_Nukleer>();
-            SetBomb(bomb);
-            Save_Load_Manager.Instance.gameData.nukleerBombAmount--;
-            Canvas_Manager.Instance.SetPlayerNucleerBombAmountText();
-        }
-    }
-    public void UseBombArea()
-    {
-        if (Save_Load_Manager.Instance.gameData.areaBombAmount > 0)
-        {
-            if (!CanCreateBomb())
-            {
-                return;
-            }
-            // Bomb bırak
-            Bomb_Base bomb = myItem.MyBombArea.HavuzdanObjeIste(new Vector3Int(MyCoor.x, 0, MyCoor.y)).GetComponent<Bomb_Area>();
-            SetBomb(bomb);
-            Save_Load_Manager.Instance.gameData.areaBombAmount--;
-            Canvas_Manager.Instance.SetPlayerAreaBombAmountText();
-        }
-    }
-    public void UseBombAntiWall()
-    {
-        if (Save_Load_Manager.Instance.gameData.antiWallBombAmount > 0)
-        {
-            if (!CanCreateBomb())
-            {
-                return;
-            }
-            // Bomb bırak
-            Bomb_Base bomb = myItem.MyBombAnti_Wall.HavuzdanObjeIste(new Vector3Int(MyCoor.x, 0, MyCoor.y)).GetComponent<Bomb_Anti_Wall>();
-            SetBomb(bomb);
-            Save_Load_Manager.Instance.gameData.antiWallBombAmount--;
-            Canvas_Manager.Instance.SetPlayerAntiWallBombAmountText();
-        }
-    }
-    public void UseBombSearcher()
-    {
-        if (Save_Load_Manager.Instance.gameData.searcherBombAmount > 0)
-        {
-            if (!CanCreateBomb())
-            {
-                return;
-            }
-            // Bomb bırak
-            Bomb_Base bomb = myItem.MyBombSearcher.HavuzdanObjeIste(new Vector3Int(MyCoor.x, 0, MyCoor.y)).GetComponent<Bomb_Searcher>();
-            SetBomb(bomb, true);
-            Save_Load_Manager.Instance.gameData.searcherBombAmount--;
-            Canvas_Manager.Instance.SetPlayerSearcherBombAmountText();
+            Canvas_Manager.Instance.SetPlayerBombAmountText();
         }
     }
     private void SetBomb(Bomb_Base bomb, bool isSearcher = false)
@@ -225,55 +159,13 @@ public class Player_Base : Character_Base
         base.IncreaseBombFireLimit();
         Canvas_Manager.Instance.SetPlayerBombFireLimitText();
     }
-    public override void IncreaseSimpleBombAmount()
+    public override void IncreaseBombAmount(BombType bombType)
     {
-        base.IncreaseSimpleBombAmount();
-        Canvas_Manager.Instance.SetPlayerSimpleBombAmountText();
-    }
-    public override void IncreaseClockBombAmount()
-    {
-        if (Save_Load_Manager.Instance.gameData.clockBombAmount == 0)
+        if (player_Source.MyBombType == bombType)
         {
-            Canvas_Manager.Instance.AddBombRect(BombType.Clock);
+            IncreaseBomb();
         }
-        Save_Load_Manager.Instance.gameData.clockBombAmount++;
-        Canvas_Manager.Instance.SetPlayerClockBombAmountText();
-    }
-    public override void IncreaseNukleerBombAmount()
-    {
-        if (Save_Load_Manager.Instance.gameData.nukleerBombAmount == 0)
-        {
-            Canvas_Manager.Instance.AddBombRect(BombType.Nucleer);
-        }
-        Save_Load_Manager.Instance.gameData.nukleerBombAmount++;
-        Canvas_Manager.Instance.SetPlayerNucleerBombAmountText();
-    }
-    public override void IncreaseAreaBombAmount()
-    {
-        if (Save_Load_Manager.Instance.gameData.areaBombAmount == 0)
-        {
-            Canvas_Manager.Instance.AddBombRect(BombType.Area);
-        }
-        Save_Load_Manager.Instance.gameData.areaBombAmount++;
-        Canvas_Manager.Instance.SetPlayerAreaBombAmountText();
-    }
-    public override void IncreaseAntiWallBombAmount()
-    {
-        if (Save_Load_Manager.Instance.gameData.antiWallBombAmount == 0)
-        {
-            Canvas_Manager.Instance.AddBombRect(BombType.Anti);
-        }
-        Save_Load_Manager.Instance.gameData.antiWallBombAmount++;
-        Canvas_Manager.Instance.SetPlayerAntiWallBombAmountText();
-    }
-    public override void IncreaseSearcherBombAmount()
-    {
-        if (Save_Load_Manager.Instance.gameData.searcherBombAmount == 0)
-        {
-            Canvas_Manager.Instance.AddBombRect(BombType.Searcher);
-        }
-        Save_Load_Manager.Instance.gameData.searcherBombAmount++;
-        Canvas_Manager.Instance.SetPlayerSearcherBombAmountText();
+        Canvas_Manager.Instance.SetPlayerBombAmountText();
     }
     #endregion
 }

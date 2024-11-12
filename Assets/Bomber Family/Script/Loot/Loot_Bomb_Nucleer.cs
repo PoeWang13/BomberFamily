@@ -1,13 +1,45 @@
-﻿using UnityEngine;
+﻿using DG.Tweening;
+using UnityEngine;
 
 public class Loot_Bomb_Nucleer : PoolObje
 {
+    [SerializeField] private BombType myBombType;
+
+    private bool isTaked;
+    private GameObject lootEffect;
+    private ParticleSystem bombTrail;
+
+    private void Awake()
+    {
+        bombTrail = transform.Find("Bomb_Nucleer_Trail").GetComponent<ParticleSystem>();
+        lootEffect = transform.Find("Loot_Effect").gameObject;
+    }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent(out Player_Base player_Base))
+        if (!isTaked)
         {
-            player_Base.IncreaseNukleerBombAmount();
-            EnterHavuz();
+            if (other.TryGetComponent(out Player_Base player_Base))
+            {
+                isTaked = true;
+                bombTrail.Play();
+                lootEffect.SetActive(false);
+                player_Base.IncreaseBombAmount(myBombType);
+                DOVirtual.DelayedCall(0.25f, () =>
+                {
+                    transform.DOLocalMoveY(10, 1).OnComplete(() =>
+                    {
+                        bombTrail.Stop();
+                        EnterHavuz();
+                    });
+                });
+            }
         }
+    }
+    public override void ObjeHavuzExit()
+    {
+        isTaked = false;
+        lootEffect.SetActive(true);
+        transform.localPosition = Vector3.zero;
+        base.ObjeHavuzExit();
     }
 }

@@ -12,8 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1abd654804b47d4468e2c0f44b7e3701, type: 3}
   m_Name: Item_Gate
   m_EditorClassIdentifier: 
-  myIcon: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+  myIcon: {fileID: 21300000, guid: eec83c3538baae04eb284436f872430c, type: 3}
   myPrice: 100
-  myOrder: 0
   boardType: 6
-  myObject: {fileID: 11400000, guid: da0f30f59d2236a43a897d1859d8d764, type: 2}
+  myPool: {fileID: 11400000, guid: da0f30f59d2236a43a897d1859d8d764, type: 2}

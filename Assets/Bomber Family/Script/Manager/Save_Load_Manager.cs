@@ -1,7 +1,11 @@
 ﻿using System;
 using System.IO;
 using UnityEngine;
+using System.Collections;
+using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 using System.Collections.Generic;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 
 [Serializable]
 public class LevelBoard
@@ -17,8 +21,63 @@ public class MyBoard
 }
 public enum BoardSaveType
 {
-    GameLevelBoard,
+    RecordLevelBoard,
     MyLevelBoard
+}
+[Serializable]
+public class CharacterStat
+{
+    public int myLife = 1;
+    public int mySpeed = 1;
+    public int myBombAmount = 1;
+    public int myBombPower = 1;
+    public int myBombFireLimit = 1;
+    public int myBombBoxPassing = 1;
+    public int myBombPushingTime = 1;
+}
+[Serializable]
+public class PlayerData
+{
+    /* 
+     * Player_Simple        : Normal başlangıç karakteri
+     * Player_Natural       : Daha çok can toplayabilen
+     * Player_Stronger      : Daha çok vuran
+     * Player_Bomber        : Daha çok bomba atan
+     * Player_Flash         : Daha çok hızlanabilen
+     * Player_Arsonist      : Daha çok ateş bırabilen
+     * Player_Defender      : Daha çok shield kullanabilen
+     * 
+     * Player_Ghost         : 1 Kutunun içinden geçebilen
+     * Player_Broker        : 1 Kutunun ötesinede ateş bırakabilen
+     * Player_Thrower       : Fırlatılan bomba atabilen
+     * Player_Timer         : Sadece clock bombası bırakan
+     * Player_Radioactiv    : Sadece nucleer bombası bırakan
+     * Player_Area          : Sadece area bombası bırakan
+     * Player_Anti_Wall     : Sadece anti wall bombası bırakan
+     * Player_Searcher      : Sadece searcher bombası bırakan
+     * 
+     */
+
+    [Header("Player")]
+    public bool playerBuyed;
+
+    public int playerLevel;
+    public int playerExp;
+    public int playerExpMax = 100;
+
+    [Header("Player Stat")]
+    public CharacterStat playerStat = new CharacterStat();
+    public PlayerData()
+    {
+        playerExpMax = 100;
+        playerStat.myLife = 1;
+        playerStat.mySpeed = 100;
+        playerStat.myBombAmount = 1;
+        playerStat.myBombPower = 1;
+        playerStat.myBombFireLimit = 1;
+        playerStat.myBombBoxPassing = 0;
+        playerStat.myBombPushingTime = 3;
+    }
 }
 [Serializable]
 public class GameData
@@ -29,51 +88,136 @@ public class GameData
     public int maxMyLevel;
     public int maxGameLevel;
 
-    [Header("Player")]
-    public string playerName;
-    public int playerIcon;
-    public int playerLevel;
-    public int playerExp;
-    public int playerExpMax;
-
-    [Header("Player Stat")]
-    public int life = 1;
-    public int speed = 100;
-    public int bombFirePower = 1;
-    public int bombFireLimit = 1;
-
-    [Header("Bomb Amount")]
-    public int simpleBombAmount;
-    public int clockBombAmount;
-    public int nukleerBombAmount;
-    public int areaBombAmount;
-    public int antiWallBombAmount;
-    public int searcherBombAmount;
+    [Header("Player Account")]
+    public int playerOrder;
+    public string accountName;
+    public List<PlayerData> allPlayers = new List<PlayerData>();
     public GameData()
     {
     }
 }
+[Serializable]
+public class LevelDatas
+{
+    public List<string> LevelLinks = new List<string>();
+}
+[Serializable]
+public class LevelDataContainer
+{
+    public LevelDatas GameDatas;
+}
 public class Save_Load_Manager : Singletion<Save_Load_Manager>
 {
+    public int saveGameOrder;
+    public bool saveGameToMasa;
+    [SerializeField] private All_Item_Holder all_Item_Holder;
     [Header("Save-Load")]
     [SerializeField] private string fileName;
     [SerializeField] private bool useSifre;
     public GameData gameData;
+
     private Save_Load_File_Data_Handler save_Load_File_Data_Handler;
+    private LevelDataContainer allLevelDatas = new LevelDataContainer();
+    private string driveJsonLink = "1eDluhDH_KcaMFIQgg1xkoVTePs9R_JxQ";// Jsonun download linki
+    private string driveStartLink = "https://drive.google.com/uc?export=download&id=";
     public override void OnAwake()
     {
         DontDestroyOnLoad(gameObject);
         if (string.IsNullOrEmpty(fileName))
         {
-            #if UNITY_2022_1_OR_NEWER
+            #if UNITY_EDITOR_64
             Debug.LogError("Save_Load scriptinde fileName boş olamaz.");
-            UnityEditor.EditorApplication.isPaused = true;
+            //UnityEditor.EditorApplication.isPaused = true;
+            #elif UNITY_EDITOR
+            Debug.LogError("Save_Load scriptinde fileName boş olamaz.");
+            //UnityEditor.EditorApplication.isPaused = true;
             #endif
             return;
         }
         save_Load_File_Data_Handler =
                     new Save_Load_File_Data_Handler(Application.persistentDataPath, fileName, useSifre);
         LoadGame();
+    }
+    private void Start()
+    {
+        if (Game_Manager.Instance.AreWeOnline)
+        {
+            StartCoroutine(GetGamesData(driveStartLink + driveJsonLink));
+        }
+    }
+    #region Download Board Fonksiyon
+    IEnumerator GetGamesData(string url)
+    {
+        Warning_Manager.Instance.ShowMessage("We are checking your levels. Wait a second please...", 3);
+        UnityWebRequest unityWebRequest = UnityWebRequest.Get(url);
+
+        yield return unityWebRequest.SendWebRequest();
+        UnityWebRequest.Result result = unityWebRequest.result;
+        if (result == UnityWebRequest.Result.ConnectionError)
+        {
+            Debug.LogWarning("Bilgi gelmedi. Hata : " + unityWebRequest.error);
+        }
+        else
+        {
+            try
+            {
+                allLevelDatas = JsonUtility.FromJson<LevelDataContainer>(unityWebRequest.downloadHandler.text);
+                gameData.maxGameLevel = allLevelDatas.GameDatas.LevelLinks.Count;
+                StartCoroutine(GetLevelsData());
+            }
+            catch
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            }
+        }
+        unityWebRequest.Dispose();
+    }
+    IEnumerator GetLevelsData()
+    {
+        int order = 0;
+        while (allLevelDatas.GameDatas.LevelLinks.Count > 0)
+        {
+            if (File.Exists(Application.persistentDataPath + "/Game-Level/Game-Level-" + order + ".kimex"))
+            {
+                allLevelDatas.GameDatas.LevelLinks.RemoveAt(0);
+                order++;
+            }
+            else
+            {
+                UnityWebRequest unityWebRequest = UnityWebRequest.Get(driveStartLink + allLevelDatas.GameDatas.LevelLinks[0]);
+                yield return unityWebRequest.SendWebRequest();
+                UnityWebRequest.Result result = unityWebRequest.result;
+                if (result == UnityWebRequest.Result.ConnectionError)
+                {
+                    Debug.LogWarning("Bilgi gelmedi. Hata : " + unityWebRequest.error);
+                }
+                else
+                {
+                    try
+                    {
+                        // Dosya var yani resim indirilmiş.
+                        LevelBoard levelBoard = JsonUtility.FromJson<LevelBoard>(unityWebRequest.downloadHandler.text);
+                        string levelJson = JsonUtility.ToJson(levelBoard);
+                        File.WriteAllText(Application.persistentDataPath + "/Game-Level/Game-Level-" + order + ".kimex", levelJson);
+                        allLevelDatas.GameDatas.LevelLinks.RemoveAt(0);
+                        order++;
+                    }
+                    catch
+                    {
+                        Debug.LogError("Bilgi gelmedi. Hata : " + unityWebRequest.error);
+                    }
+                }
+                unityWebRequest.Dispose();
+            }
+        }
+    }
+    #endregion
+
+    #region Save-Load Board Fonksiyon
+    [ContextMenu("Deneme")]
+    private void Deneme()
+    {
+        File.WriteAllText("C:/Users/90545/Desktop/My-Level-1.kimex", "asd");
     }
     public void SaveBoard(BoardSaveType saveType, LevelBoard levelBoard)
     {
@@ -91,13 +235,26 @@ public class Save_Load_Manager : Singletion<Save_Load_Manager>
         }
         else
         {
-            if (File.Exists(Application.persistentDataPath + "/Game-Level/Game-Level-" + gameData.maxGameLevel + ".kimex"))
+            if (saveGameToMasa)
             {
-                Warning_Manager.Instance.ShowMessage("Your level order is wrong check save data files.", 2);
-                return;
+                if (File.Exists("C:/Users/90545/Desktop/Game-Level-" + saveGameOrder + ".kimex"))
+                {
+                    Warning_Manager.Instance.ShowMessage("Your level order is wrong check save data files.", 2);
+                    return;
+                }
+                File.WriteAllText("C:/Users/90545/Desktop/Game-Level-" + saveGameOrder + ".kimex", levelJson);
+                saveGameOrder++;
             }
-            File.WriteAllText(Application.persistentDataPath + "/Game-Level/Game-Level-" + gameData.maxGameLevel + ".kimex", levelJson);
-            gameData.maxGameLevel++;
+            else
+            {
+                if (File.Exists(Application.persistentDataPath + "/Game-Level/Game-Level-" + gameData.maxGameLevel + ".kimex"))
+                {
+                    Warning_Manager.Instance.ShowMessage("Your level order is wrong check save data files.", 2);
+                    return;
+                }
+                File.WriteAllText(Application.persistentDataPath + "/Game-Level/Game-Level-" + gameData.maxGameLevel + ".kimex", levelJson);
+                gameData.maxGameLevel++;
+            }
         }
         SaveGame();
     }
@@ -138,6 +295,7 @@ public class Save_Load_Manager : Singletion<Save_Load_Manager>
             }
         }
     }
+    #endregion
 
     #region Save-Load Game Fonksiyon
     private void LoadGame()
@@ -148,6 +306,11 @@ public class Save_Load_Manager : Singletion<Save_Load_Manager>
             gameData = new GameData();
             Directory.CreateDirectory(Application.persistentDataPath + "/Game-Level");
             Directory.CreateDirectory(Application.persistentDataPath + "/My-Level");
+            for (int e = 0; e < all_Item_Holder.PlayerSourceList.Count; e++)
+            {
+                gameData.allPlayers.Add(new PlayerData());
+            }
+            gameData.allPlayers[0].playerBuyed = true;
         }
     }
     [ContextMenu("Save Game")]

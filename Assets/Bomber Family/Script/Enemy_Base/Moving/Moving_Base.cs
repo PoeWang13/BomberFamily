@@ -12,7 +12,7 @@ public class Moving_Base : MonoBehaviour
 
     private Enemy_Base myBase;
     private Transform player_Base;
-    private List<Vector3Int> myDirections = new List<Vector3Int>();
+    private List<Vector3> myDirections = new List<Vector3>();
 
     public float ChangeDirectionTime { get { return changeDirectionTime; } }
     public Transform Player { get { return player_Base; } }
@@ -21,7 +21,7 @@ public class Moving_Base : MonoBehaviour
     public int RndDirec { get { return rndDirec; } }
     public int BoardMaskIndex { get { return boardMaskIndex; } }
     public Enemy_Base MyBase { get { return myBase; } }
-    public List<Vector3Int> MyDirections { get { return myDirections; } }
+    public List<Vector3> MyDirections { get { return myDirections; } }
 
     private void Awake()
     {
@@ -39,69 +39,53 @@ public class Moving_Base : MonoBehaviour
     public virtual void OnStart()
     {
     }
-    private void TurnPlayerView(Vector3 direction)
+    public virtual void OnSet()
     {
-        Quaternion direc = Quaternion.LookRotation(direction);
-        Vector3 rot = direc.eulerAngles;
-        myBase.CharacterView.rotation = Quaternion.Euler(0, rot.y, 0);
     }
-    public Vector3Int FindRandomDirection()
+    public Vector3 FindRandomDirection()
     {
         myDirections.Clear();
         // Sağ bak
         RaycastHit hitInfo;
         Ray ray = new Ray(transform.position + Vector3.up * 0.5f, Vector3.right);
-        if (Physics.Raycast(ray, out hitInfo, boardHeight, boardMaskIndex))
+        if (Physics.Raycast(ray, out hitInfo, boardWeight, boardMaskIndex))
         {
-            if (transform.position.x < boardWeight - 1)
+            if (Vector3.Distance(hitInfo.transform.position, transform.position) > 1.25f)
             {
-                if (Vector3.Distance(hitInfo.transform.position, transform.position) > 1.5f)
-                {
-                    myDirections.Add(myBase.LearnIntDirection(hitInfo.transform.position + Vector3.left));
-                }
+                myDirections.Add(Vector3.right);
             }
         }
         // Sol bak
         ray = new Ray(transform.position + Vector3.up * 0.5f, Vector3.left);
-        if (Physics.Raycast(ray, out hitInfo, boardHeight, boardMaskIndex))
+        if (Physics.Raycast(ray, out hitInfo, boardWeight, boardMaskIndex))
         {
-            if (transform.position.x > 0)
+            if (Vector3.Distance(hitInfo.transform.position, transform.position) > 1.25f)
             {
-                if (Vector3.Distance(hitInfo.transform.position, transform.position) > 1.5f)
-                {
-                    myDirections.Add(myBase.LearnIntDirection(hitInfo.transform.position + Vector3.right));
-                }
+                myDirections.Add(Vector3.left);
             }
         }
         // İleri bak
         ray = new Ray(transform.position + Vector3.up * 0.5f, Vector3.forward);
         if (Physics.Raycast(ray, out hitInfo, boardHeight, boardMaskIndex))
         {
-            if (transform.position.z < boardWeight - 1)
+            if (Vector3.Distance(hitInfo.transform.position, transform.position) > 1.25f)
             {
-                if (Vector3.Distance(hitInfo.transform.position, transform.position) > 1.5f)
-                {
-                    myDirections.Add(myBase.LearnIntDirection(hitInfo.transform.position + Vector3.back));
-                }
+                myDirections.Add(Vector3.forward);
             }
         }
         // Geri bak
         ray = new Ray(transform.position + Vector3.up * 0.5f, Vector3.back);
         if (Physics.Raycast(ray, out hitInfo, boardHeight, boardMaskIndex))
         {
-            if (transform.position.z > 0)
+            if (Vector3.Distance(hitInfo.transform.position, transform.position) > 1.25f)
             {
-                if (Vector3.Distance(hitInfo.transform.position, transform.position) > 1.5f)
-                {
-                    myDirections.Add(myBase.LearnIntDirection(hitInfo.transform.position + Vector3.forward));
-                }
+                myDirections.Add(Vector3.back);
             }
         }
         if (myDirections.Count > 0)
         {
             rndDirec = Random.Range(0, myDirections.Count);
-            Vector3Int vector = myBase.LearnIntDirection(myDirections[rndDirec]);
-            return vector;
+            return myDirections[rndDirec];
         }
         return Vector3Int.zero;
     }

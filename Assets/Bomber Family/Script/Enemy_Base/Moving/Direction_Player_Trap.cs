@@ -19,25 +19,25 @@ public class Direction_Player_Trap : Moving_Base
         if (Vector3.Distance(transform.position, Player.position) > 0.05f)
         {
             findPlayer = false;
-            Node startNode = new Node(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.z));
-            Deneme(startNode);
+            FindNode();
             if (findPath.Count == 0)
             {
                 UnityEditor.EditorApplication.isPaused = true;
-                MyBase.SetDirection(FindRandomDirection() - MyBase.LearnIntDirection(transform.position));
+                MyBase.SetDirection(FindRandomDirection() - MyBase.LearnDirection(transform.position));
             }
             else
             {
-                MyBase.SetSpeed(1);
+                MyBase.ResetSpeed();
                 findPlayer = true;
                 nextPoint = new Vector3(findPath[0].X, 0, findPath[0].Z);
-                MyBase.SetDirection(MyBase.LearnIntDirection(nextPoint) - MyBase.LearnIntDirection(transform.position));
+                MyBase.SetDirection(MyBase.LearnDirection(nextPoint) - MyBase.LearnDirection(transform.position));
             }
         }
     }
-    private void Deneme(Node startNode)
+    private void FindNode()
     {
         bool finded = false;
+        Node startNode = new Node(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.z));
         List<Node> trapNodes = new List<Node>();
         for (int x = -2; x < 3; x++)
         {
@@ -79,6 +79,10 @@ public class Direction_Player_Trap : Moving_Base
         {
             return;
         }
+        if (!MyBase.CanMove)
+        {
+            return;
+        }
         tryingToFindPlayerTimeNext += Time.deltaTime;
         if (tryingToFindPlayerTimeNext > ChangeDirectionTime)
         {
@@ -89,7 +93,7 @@ public class Direction_Player_Trap : Moving_Base
         {
             if (Vector3.Distance(transform.position, Player.position) < 0.05f)
             {
-                MyBase.SetSpeed(0);
+                MyBase.SetMySpeed(0);
             }
             else if (Vector3.Distance(transform.position, nextPoint) < 0.05f)
             {

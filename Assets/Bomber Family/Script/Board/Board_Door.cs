@@ -49,24 +49,30 @@ public class Board_Door : Board_Box
             if (Map_Holder.Instance.GameBoard[boardCoors[rndDirec].x, boardCoors[rndDirec].y].board_Object is null)
             {
                 int rndOrder = Random.Range(0, all_Item_Holder.BossEnemyList.Count);
-                Enemy_Base enemy_Base = all_Item_Holder.BossEnemyList[rndOrder].MyObject.HavuzdanObjeIste(new Vector3(MyCoor.x, -5, MyCoor.y)).GetComponent<Enemy_Base>();
-                enemy_Base.SetMyCoor(new Vector2Int(boardCoors[rndDirec].x, boardCoors[rndDirec].y));
-                enemy_Base.GetComponent<Character_Base>().SetSpeed(0.0f);
-                SendBossOutSide(enemy_Base.transform, rndDirec);
+                Enemy_Base enemy_Base = all_Item_Holder.BossEnemyList[rndOrder].MyPool.HavuzdanObjeIste(new Vector3(MyCoor.x, -5, MyCoor.y)).GetComponent<Enemy_Base>();
+                enemy_Base.SetMove(false);
+                enemy_Base.MyCollider.enabled = false;
+                SendBossOutSide(enemy_Base, rndDirec);
                 enemy_Base.transform.SetParent(boardBossEnemyParent);
+                enemy_Base.SetMyCoor(new Vector2Int(boardCoors[rndDirec].x, boardCoors[rndDirec].y));
             }
         }
     }
-    private void SendBossOutSide(Transform enemy_Base, int rndDirec)
+    private void SendBossOutSide(Enemy_Base enemy_Base, int rndDirec)
     {
         // Bossu dışarı çıkar
-        enemy_Base.DOMoveY(0, 1.0f).OnComplete(() =>
+        enemy_Base.transform.DOMoveY(0, 1.0f).OnComplete(() =>
         {
             // Bossu aşağı yürüt
-            enemy_Base.DOMove(new Vector3(boardCoors[rndDirec].x, 0, boardCoors[rndDirec].y), 1.0f).OnComplete(() =>
+            enemy_Base.transform.DOMove(new Vector3(boardCoors[rndDirec].x, 0, boardCoors[rndDirec].y), 1.0f).OnComplete(() =>
             {
                 // Bossu serbest bırak
-                enemy_Base.GetComponent<Character_Base>().ResetSpeed();
+                enemy_Base.ResetSpeed();
+                enemy_Base.MyCollider.enabled = true;
+                enemy_Base.GetComponent<Moving_Base>().OnSet();
+                enemy_Base.SetMove(true);
+                UnityEditor.EditorApplication.isPaused = true;
+                this.enabled = false;
             });
         });
     }

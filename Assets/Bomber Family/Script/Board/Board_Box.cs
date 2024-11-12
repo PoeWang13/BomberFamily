@@ -20,6 +20,7 @@ public class Board_Box : Board_Object, IDamegable
         {
             if (hasMagicStone)
             {
+                Audio_Manager.Instance.PlayGameDrop();
                 // Anahtar düşülecek.
                 Game_Manager.Instance.CreateMagicStone(transform.position);
             }
@@ -31,6 +32,7 @@ public class Board_Box : Board_Object, IDamegable
                     Pooler loot = loot_Controller.GetLootItem();
                     if (loot != null)
                     {
+                        Audio_Manager.Instance.PlayGameDrop();
                         PoolObje poolObje = loot.HavuzdanObjeIste(transform.position);
                         Map_Holder.Instance.LootObjects.Add(poolObje);
                         Game_Manager.Instance.AddLootObhjectList(poolObje);

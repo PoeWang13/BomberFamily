@@ -1,17 +1,20 @@
-﻿using UnityEngine;
+﻿using DG.Tweening;
+using UnityEngine;
 
 public class Direction_Player_End_Way : Moving_Base
 {
     // Playerı görürse playera kadar gider, player yoksa yolun sonuna kadar gider. Bulamazsa rastgele dolaşır.
-    private bool seePlayer;
-    private int playerMaskIndex;
-    private Vector3Int playerDirection;
-    private float randomDirectionTimeNext;
+    private int boardIndex;
+    private bool findedPlayer;
+    private Vector3 playerDirection;
 
     public override void OnStart()
     {
-        playerMaskIndex = 1 << LayerMask.NameToLayer("Player");
-        MyBase.SetDirection(MyBase.LearnIntDirection(FindRandomDirection() - MyBase.LearnIntDirection(transform.position)));
+        boardIndex = 1 << LayerMask.NameToLayer("Board") | 1 << LayerMask.NameToLayer("Player");
+    }
+    public override void OnSet()
+    {
+        FindPlayer();
     }
     private void Update()
     {
@@ -19,123 +22,123 @@ public class Direction_Player_End_Way : Moving_Base
         {
             return;
         }
-        if (seePlayer)
+        if (!MyBase.CanMove)
         {
-            if (Physics.Raycast(transform.position + Vector3.up * 0.5f, playerDirection, 1111111, playerMaskIndex))
-            {
-                // Playerı görüyoruz. Mesafe kontrolü yap
-                if (Vector3.Distance(transform.position, Player.position) < 0.05f)
-                {
-                    MyBase.SetSpeed(0);
-                }
-            }
-            else if (Physics.Raycast(new Ray(transform.position + Vector3.up * 0.5f, playerDirection), out RaycastHit hitInfo, 1111111, BoardMaskIndex))
-            {
-                // Playerı göremiyoruz. Son noktaya mesafe kontrolü yap
-                if (playerDirection.x == 1)
-                {
-                    if (Vector3.Distance(transform.position, hitInfo.transform.position + Vector3.left) < 0.05f)
-                    {
-                        FindDirection2();
-                    }
-                }
-                else if (playerDirection.x == -1)
-                {
-                    if (Vector3.Distance(transform.position, hitInfo.transform.position + Vector3.right) < 0.05f)
-                    {
-                        FindDirection2();
-                    }
-                }
-                else if (playerDirection.z == 1)
-                {
-                    if (Vector3.Distance(transform.position, hitInfo.transform.position + Vector3.back) < 0.05f)
-                    {
-                        FindDirection2();
-                    }
-                }
-                else if (playerDirection.z == -1)
-                {
-                    if (Vector3.Distance(transform.position, hitInfo.transform.position + Vector3.forward) < 0.05f)
-                    {
-                        FindDirection2();
-                    }
-                }
-            }
+            return;
         }
-        else
+        if (!findedPlayer)
         {
-            randomDirectionTimeNext += Time.deltaTime;
-            if (randomDirectionTimeNext > ChangeDirectionTime)
+            RaycastHit raycast;
+            Ray rayRight = new(transform.position + Vector3.up * 0.5f, MyBase.Direction);
+            // Sağa bak
+            if (Physics.Raycast(rayRight, out raycast, 1, boardIndex))
             {
-                randomDirectionTimeNext = 0;
-                FindDirection1();
+                if (raycast.transform.CompareTag("Player"))
+                {
+                    if (CheckDistance(raycast.transform.position, transform.position, 1))
+                    {
+                        raycast.transform.GetComponent<Player_Base>().TakeDamage(MyBase.MyItem.MyDamage);
+                        StopAttackToPlayer();
+                    }
+                }
+                else if (raycast.transform.CompareTag("Board"))
+                {
+                    CheckDistance(raycast.transform.position, transform.position + MyBase.Direction, 0.05f);
+                }
             }
-            if (Vector3.Distance(transform.position, MyDirections[RndDirec]) < 0.05f)
-            {
-                MyBase.SetDirection(FindRandomDirection() - MyBase.LearnIntDirection(transform.position));
-            }
+            MyBase.TurnPlayerView(MyBase.Direction);
+            transform.Translate(MyBase.Direction * Time.deltaTime * MyBase.MySpeed);
         }
-        transform.Translate(MyBase.Direction * Time.deltaTime * MyBase.MySpeed);
     }
-    private void FindDirection1()
+    private bool CheckDistance(Vector3 pointStart, Vector3 pointEnd, float distance)
     {
-        playerDirection = FindPlayerDirection();
-        if (playerDirection != Vector3Int.zero)
+        if (Vector3.Distance(pointStart, pointEnd) < distance)
         {
-            seePlayer = true;
+            StopEnemy();
+            return true;
+        }
+        return false;
+    }
+    private void StopEnemy()
+    {
+        MyBase.SetMySpeed(0);
+        DOVirtual.DelayedCall(1.0f, () =>
+        {
+            FindPlayer();
+            MyBase.ResetSpeed();
+        });
+    }
+    private void StopAttackToPlayer()
+    {
+        findedPlayer = true;
+        DOVirtual.DelayedCall(5.0f, () =>
+        {
+            FindPlayer();
+            findedPlayer = false;
+        });
+    }
+    // Playerı görmeye çalışıyoruz
+    private void FindPlayer()
+    {
+        transform.position = MyBase.SetPos();
+        playerDirection = FindPlayerDirection();
+        if (playerDirection != Vector3.zero)
+        {
+            MyBase.DebuffMySpeed(5);
             MyBase.SetDirection(playerDirection);
         }
         else
         {
-            MyBase.SetDirection(FindRandomDirection() - MyBase.LearnIntDirection(transform.position));
-        }
-    }
-    private void FindDirection2()
-    {
-        playerDirection = FindPlayerDirection();
-        if (playerDirection != Vector3Int.zero)
-        {
-            MyBase.SetDirection(playerDirection);
-        }
-        else
-        {
-            seePlayer = false;
-            MyBase.SetDirection(FindRandomDirection() - MyBase.LearnIntDirection(transform.position));
-        }
-    }
-    private Vector3Int FindPlayerDirection()
-    {
-        if (Physics.Raycast(transform.position + Vector3.up * 0.5f, Vector3.right, BoardWeight, playerMaskIndex))
-        {
-            if (transform.position.x < BoardWeight - 1)
+            // bir yön seç
+            Vector3 direc = FindRandomDirection();
+            if (direc == Vector3Int.zero)
             {
-                return Vector3Int.right;
+                return;
+            }
+            MyBase.SetDirection(direc);
+            UnityEditor.EditorApplication.isPaused = true;
+        }
+    }
+    private Vector3 FindPlayerDirection()
+    {
+        RaycastHit raycast;
+        Ray rayBack = new (transform.position + Vector3.up * 0.5f, Vector3.back);
+        Ray rayLeft = new (transform.position + Vector3.up * 0.5f, Vector3.left);
+        Ray rayRight = new (transform.position + Vector3.up * 0.5f, Vector3.right);
+        Ray rayForward = new (transform.position + Vector3.up * 0.5f, Vector3.forward);
+
+        // Sağa bak
+        if (Physics.Raycast(rayRight, out raycast, BoardWeight, boardIndex))
+        {
+            if (raycast.transform.CompareTag("Player"))
+            {
+                return Vector3.right;
             }
         }
         // Sol bak
-        if (Physics.Raycast(transform.position + Vector3.up * 0.5f, Vector3.left, BoardWeight, playerMaskIndex))
+        if (Physics.Raycast(rayLeft, out raycast, BoardWeight, boardIndex))
         {
-            if (transform.position.x > 0)
+            if (raycast.transform.CompareTag("Player"))
             {
-                return Vector3Int.left;
+                return Vector3.left;
             }
         }
         // İleri bak
-        if (Physics.Raycast(transform.position + Vector3.up * 0.5f, Vector3.forward, BoardHeight, playerMaskIndex))
+        if (Physics.Raycast(rayForward, out raycast, BoardHeight, boardIndex))
         {
-            if (transform.position.z < BoardHeight - 1)
+            if (raycast.transform.CompareTag("Player"))
             {
-                return Vector3Int.forward;
+                return Vector3.forward;
             }
         }
         // Geri bak
-        if (Physics.Raycast(transform.position + Vector3.up * 0.5f, Vector3.back, BoardHeight, playerMaskIndex))
+        if (Physics.Raycast(rayBack, out raycast, BoardHeight, boardIndex))
         {
-            if (transform.position.z > 0)
+            if (raycast.transform.CompareTag("Player"))
             {
-                return Vector3Int.back;
+                return Vector3.back;
             }
         }
-        return Vector3Int.zero;
+        return Vector3.zero;
     }
 }

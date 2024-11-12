@@ -2,7 +2,7 @@
 
 public class Bomb_Area : Bomb_Base
 {
-    private int bombAreaLimit = 3;
+    private int bombAreaLimit = 1;
     private int bombAmount = 0;
     private int bombDirection = -1;
     public override void Bombed()
@@ -12,7 +12,8 @@ public class Bomb_Area : Bomb_Base
             return;
         }
         SetExploded();
-        BombFirePool.HavuzdanObjeIste(new Vector3Int(MyCoor.x, 0, MyCoor.y)).GetComponent<Bomb_Fire>().SetFire(MyOwner.BombFirePower);
+        MyOwner.IncreaseBombAmount(BombType.Area);
+        BombFirePool.HavuzdanObjeIste(new Vector3Int(MyCoor.x, 0, MyCoor.y)).GetComponent<Bomb_Fire>().SetFire(MyOwner.CharacterStat.myBombPower);
         for (int x = -bombAreaLimit; x < bombAreaLimit + 1; x++) // -3 , -2, -1, 0, 1, 2, 3
         {
             int pozitifAmount = Mathf.Abs(bombAmount) + 1;
@@ -32,19 +33,19 @@ public class Bomb_Area : Bomb_Base
                 if (Map_Holder.Instance.GameBoard[MyCoor.x + x, MyCoor.y + y].board_Object is null)
                 {
                     // Bomb Fire bırak
-                    BombFirePool.HavuzdanObjeIste(new Vector3Int(MyCoor.x + x, 0, MyCoor.y + y)).GetComponent<Bomb_Fire>().SetFire(MyOwner.BombFirePower);
+                    BombFirePool.HavuzdanObjeIste(new Vector3Int(MyCoor.x + x, 0, MyCoor.y + y)).GetComponent<Bomb_Fire>().SetFire(MyOwner.CharacterStat.myBombPower);
                 }
                 // Bulunan obje deactif mi
                 else if (!Map_Holder.Instance.GameBoard[MyCoor.x + x, MyCoor.y + y].board_Object.activeSelf)
                 {
                     // Bomb Fire bırak
-                    BombFirePool.HavuzdanObjeIste(new Vector3Int(MyCoor.x + x, 0, MyCoor.y + y)).GetComponent<Bomb_Fire>().SetFire(MyOwner.BombFirePower);
+                    BombFirePool.HavuzdanObjeIste(new Vector3Int(MyCoor.x + x, 0, MyCoor.y + y)).GetComponent<Bomb_Fire>().SetFire(MyOwner.CharacterStat.myBombPower);
                 }
                 // Bulunan obje kutu mu
                 else if (Map_Holder.Instance.GameBoard[MyCoor.x + x, MyCoor.y + y].board_Game.boardType == BoardType.Box)
                 {
                     // Bomb Fire bırak
-                    BombFirePool.HavuzdanObjeIste(new Vector3Int(MyCoor.x + x, 0, MyCoor.y + y)).GetComponent<Bomb_Fire>().SetFire(MyOwner.BombFirePower);
+                    BombFirePool.HavuzdanObjeIste(new Vector3Int(MyCoor.x + x, 0, MyCoor.y + y)).GetComponent<Bomb_Fire>().SetFire(MyOwner.CharacterStat.myBombPower);
                 }
                 else if (Map_Holder.Instance.GameBoard[MyCoor.x + x, MyCoor.y + y].board_Object.TryGetComponent(out Bomb_Base bomb_Base))
                 {

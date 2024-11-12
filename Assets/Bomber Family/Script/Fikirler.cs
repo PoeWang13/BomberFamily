@@ -25,12 +25,15 @@ public class Fikirler : MonoBehaviour
     //        {
     //        });
 
-    /* Düşanlar Türleri
+    /* Düşanlar yön bulma türleri
      * 1-Rastgele dolaşan
      * 2-Playera yaklaşan
      * 3-Playerı tuzağa düşüren
-     * 4-Işınlanan
-     * 
+     * 4-Rastgele ışınlanan
+     * 5-Playerı görünce korkup kaçan
+     * 6-Kutuların içinden geçip giden
+     * 7-Duvarların içinden geçip giden
+     * 8-Şekil değiştiren
      */
 
     /* Düşanlar Hareket Çeşitleri
@@ -85,6 +88,22 @@ public class Fikirler : MonoBehaviour
      * Daha çok bomba atan
      * Zamanlı bomba alan
      * Fırlatılan bomba alan
+     * 
+     * Player_Simple        : Normal başlangıç karakteri
+     * Player_Natural       : Daha çok can toplayabilen
+     * Player_Stronger      : Daha çok vuran
+     * Player_Bomber        : Daha çok bomba atan
+     * Player_Flash         : Daha çok hızlanabilen
+     * Player_Thrower       : Fırlatılan bomba atabilen
+     * Player_Ghost         : 1 Kutunun içinden geçebilen
+     * Player_Broker        : 1 Kutunun ötesinede ateş bırakabilen
+     * Player_Arsonist      : Daha çok ateş bırabilen
+     * Player_Timer         : Sadece clock bombası bırakan
+     * Player_Radioactiv    : Sadece nucleer bombası bırakan
+     * Player_Area          : Sadece area bombası bırakan
+     * Player_Anti_Wall     : Sadece anti wall bombası bırakan
+     * Player_Searcher      : Sadece searcher bombası bırakan
+     * 
      */
 
     /* Mini oyunlar

@@ -115,6 +115,26 @@ PrefabInstance:
       propertyPath: playOnAwake
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1017669066924378226, guid: 72f5b94a4257a2b4ea5b1f0717f8c613,
+        type: 3}
+      propertyPath: InitialModule.startSize.maxCurve.m_RotationOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1017669066924378226, guid: 72f5b94a4257a2b4ea5b1f0717f8c613,
+        type: 3}
+      propertyPath: InitialModule.startSize.minCurve.m_RotationOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1017669066924378226, guid: 72f5b94a4257a2b4ea5b1f0717f8c613,
+        type: 3}
+      propertyPath: InitialModule.startLifetime.maxCurve.m_RotationOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1017669066924378226, guid: 72f5b94a4257a2b4ea5b1f0717f8c613,
+        type: 3}
+      propertyPath: InitialModule.startLifetime.minCurve.m_RotationOrder
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 1554294735167641421, guid: 72f5b94a4257a2b4ea5b1f0717f8c613,
         type: 3}
       propertyPath: playOnAwake
@@ -124,6 +144,26 @@ PrefabInstance:
         type: 3}
       propertyPath: playOnAwake
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2329902291570268266, guid: 72f5b94a4257a2b4ea5b1f0717f8c613,
+        type: 3}
+      propertyPath: spreadCustomCurve.m_RotationOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2329902291570268266, guid: 72f5b94a4257a2b4ea5b1f0717f8c613,
+        type: 3}
+      propertyPath: panLevelCustomCurve.m_RotationOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2329902291570268266, guid: 72f5b94a4257a2b4ea5b1f0717f8c613,
+        type: 3}
+      propertyPath: reverbZoneMixCustomCurve.m_RotationOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4932083447761509359, guid: 72f5b94a4257a2b4ea5b1f0717f8c613,
+        type: 3}
+      propertyPath: lengthInSec
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4932083447761509359, guid: 72f5b94a4257a2b4ea5b1f0717f8c613,
         type: 3}
@@ -138,7 +178,7 @@ PrefabInstance:
     - target: {fileID: 5746140527571558274, guid: 72f5b94a4257a2b4ea5b1f0717f8c613,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 5746140527571558274, guid: 72f5b94a4257a2b4ea5b1f0717f8c613,
         type: 3}
@@ -190,7 +230,8 @@ PrefabInstance:
       propertyPath: playOnAwake
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2329902291570268266, guid: 72f5b94a4257a2b4ea5b1f0717f8c613, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

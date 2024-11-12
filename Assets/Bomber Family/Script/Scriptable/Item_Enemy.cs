@@ -7,6 +7,7 @@ public class Item_Enemy : Item_Character
     [SerializeField] private int life;
     [SerializeField] private int speed;
 
+
     [Header("Enemy Loot")]
     [SerializeField] private int damage = 1;
     [SerializeField] private int lootChance = 5;

@@ -16,7 +16,7 @@ public class Direction_Teleport : Moving_Base
         Transform teleportParent = Utils.MakeChieldForGameElement("Teleport_Parent");
         teleportStart.transform.SetParent(teleportParent);
         teleportEnd.transform.SetParent(teleportParent);
-        MyBase.SetDirection(MyBase.LearnIntDirection(FindRandomDirection() - MyBase.LearnIntDirection(transform.position)));
+        MyBase.SetDirection(MyBase.LearnDirection(FindRandomDirection() - MyBase.LearnDirection(transform.position)));
         walkingTime = true;
     }
     private void DoTeleport()
@@ -38,11 +38,15 @@ public class Direction_Teleport : Moving_Base
         teleportStart.Stop();
         teleportEnd.Stop();
         yield return new WaitForSeconds(0.5f);
-        MyBase.SetDirection(FindRandomDirection() - MyBase.LearnIntDirection(transform.position));
+        MyBase.SetDirection(FindRandomDirection() - MyBase.LearnDirection(transform.position));
     }
     private void Update()
     {
         if (!Game_Manager.Instance.LevelStart)
+        {
+            return;
+        }
+        if (!MyBase.CanMove)
         {
             return;
         }
@@ -82,7 +86,7 @@ public class Direction_Teleport : Moving_Base
                 }
                 if (Vector3.Distance(transform.position, MyDirections[RndDirec]) < 0.05f)
                 {
-                    MyBase.SetDirection(FindRandomDirection() - MyBase.LearnIntDirection(transform.position));
+                    MyBase.SetDirection(FindRandomDirection() - MyBase.LearnDirection(transform.position));
                 }
                 transform.Translate(MyBase.Direction * Time.deltaTime * MyBase.MySpeed);
             }

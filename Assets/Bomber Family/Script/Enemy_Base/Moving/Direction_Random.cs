@@ -7,11 +7,15 @@ public class Direction_Random : Moving_Base
 
     public override void OnStart()
     {
-        MyBase.SetDirection(MyBase.LearnIntDirection(FindRandomDirection() - MyBase.LearnIntDirection(transform.position)));
+        MyBase.SetDirection(MyBase.LearnDirection(FindRandomDirection() - MyBase.LearnDirection(transform.position)));
     }
     private void Update()
     {
         if (!Game_Manager.Instance.LevelStart)
+        {
+            return;
+        }
+        if (!MyBase.CanMove)
         {
             return;
         }
@@ -21,11 +25,11 @@ public class Direction_Random : Moving_Base
             if (randomDirectionTimeNext > ChangeDirectionTime)
             {
                 randomDirectionTimeNext = 0;
-                MyBase.SetDirection(FindRandomDirection() - MyBase.LearnIntDirection(transform.position));
+                MyBase.SetDirection(FindRandomDirection() - MyBase.LearnDirection(transform.position));
             }
             if (Vector3.Distance(transform.position, MyDirections[RndDirec]) < 0.05f)
             {
-                MyBase.SetDirection(FindRandomDirection() - MyBase.LearnIntDirection(transform.position));
+                MyBase.SetDirection(FindRandomDirection() - MyBase.LearnDirection(transform.position));
             }
             transform.Translate(MyBase.Direction * Time.deltaTime * MyBase.MySpeed);
         }

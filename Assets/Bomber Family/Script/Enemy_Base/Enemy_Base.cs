@@ -5,36 +5,19 @@ public class Enemy_Base : Character_Base
 {
     [SerializeField] private Item_Enemy myItem;
 
-    private int clockBombAmount;
-    private int nukleerBombAmount;
-    private int areaBombAmount;
-    private int antiWallBombAmount;
-    private int searcherBombAmount;
+    public Item_Enemy MyItem { get { return myItem; } }
 
     public override void OnStart()
     {
-        SetLife(myItem.MyLife);
-        SetSpeed(myItem.MySpeed);
+        SetMyLife(CharacterStat.myLife);
+        SetMySpeed(CharacterStat.mySpeed);
     }
-    public override void IncreaseClockBombAmount()
+    public override void IncreaseBombAmount(BombType bombType)
     {
-        clockBombAmount++;
-    }
-    public override void IncreaseNukleerBombAmount()
-    {
-        nukleerBombAmount++;
-    }
-    public override void IncreaseAreaBombAmount()
-    {
-        areaBombAmount++;
-    }
-    public override void IncreaseAntiWallBombAmount()
-    {
-        antiWallBombAmount++;
-    }
-    public override void IncreaseSearcherBombAmount()
-    {
-        searcherBombAmount++;
+        if (myItem.MyBombType == bombType)
+        {
+            IncreaseBomb();
+        }
     }
 
     #region Taked Damage
@@ -51,6 +34,11 @@ public class Enemy_Base : Character_Base
             // Potansiyel item koyma koordinatlarý
             (List<Vector2Int>, int oldStart, int oldFinish, int newStart, int newFinish) potCoor =
                     PotansiyelKoordinatlar(oldStart, oldFinish, newStart, newFinish);
+
+            if (allLoot.Count > 0)
+            {
+                Audio_Manager.Instance.PlayGameDrop();
+            }
             while (allLoot.Count != 0)
             {
                 while (potCoor.Item1.Count != 0)

@@ -73,8 +73,11 @@ public class Board_Object : PoolObje
     }
     public override void ObjeHavuzEnter()
     {
+        if (myCollider is null)
+        {
+            myCollider.enabled = true;
+        }
         base.ObjeHavuzEnter();
-        myCollider.enabled = true;
     }
 
     internal object DOMoveY(int v1, float v2)

@@ -75,6 +75,7 @@ public enum BoardType
     BossEnemy = 5,
     Gate = 6,
     Bomb = 7,
+    Player = 8,
 }
 public enum TrapType
 {
@@ -83,39 +84,6 @@ public enum TrapType
 }
 public class Map_Holder : Singletion<Map_Holder>
 {
-    public class Araba
-    {
-        public virtual void FiyatSorAraba()
-        {
-            Debug.Log("Araba : " + 5);
-        }
-    }
-    public class Ford : Araba
-    {
-        public override void FiyatSorAraba()
-        {
-            Debug.Log("Ford Araba : " + 11);
-        }
-    }
-    public class Honda : Araba
-    {
-        public override void FiyatSorAraba()
-        {
-            Debug.Log("Honda Araba : " + 33);
-        }
-    }
-    [ContextMenu("Close 1")]
-    private void CloseGameBoard1()
-    {
-        Araba araba = new Araba();
-        araba.FiyatSorAraba();
-        araba = new Ford();
-        araba.FiyatSorAraba();
-        araba = new Honda();
-        araba.FiyatSorAraba();
-        Ford ford = new Ford();
-        ford.FiyatSorAraba();
-    }
     [Header("Genel")]
     //[SerializeField] private bool openParents;
     [SerializeField] private All_Item_Holder all_Item_Holder;
@@ -142,6 +110,7 @@ public class Map_Holder : Singletion<Map_Holder>
     private List<PoolObje> closerObjects = new List<PoolObje>();
     private List<PoolObje> bossEnemyObjects = new List<PoolObje>();
     private List<PoolObje> magicStoneObjects = new List<PoolObje>();
+    private List<PoolObje> allEnemyObjects = new List<PoolObje>();
 
     public GameBoard[,] GameBoard { get { return gameBoard; } }
     public Vector2Int BoardSize { get { return boardSize; } }
@@ -159,6 +128,7 @@ public class Map_Holder : Singletion<Map_Holder>
     public List<PoolObje> EnemyObjects { get { return enemyObjects; } }
     public List<PoolObje> BossEnemyObjects { get { return bossEnemyObjects; } }
     public List<PoolObje> MagicStoneObjects { get { return magicStoneObjects; } }
+    public List<PoolObje> AllEnemyObjects { get { return allEnemyObjects; } }
 
     private void Start()
     {
@@ -172,7 +142,7 @@ public class Map_Holder : Singletion<Map_Holder>
 
         //boardBoxParent.gameObject.SetActive(openParents);
         //boardWallParent.gameObject.SetActive(openParents);
-        //boardTrapParent.gameObject.SetActive(openParents);
+        boardTrapParent.gameObject.SetActive(false);
         //boardGateParent.gameObject.SetActive(openParents);
         //boardEnemyParent.gameObject.SetActive(openParents);
         //boardCloserParent.gameObject.SetActive(openParents);
@@ -190,10 +160,17 @@ public class Map_Holder : Singletion<Map_Holder>
         gateObjects.Clear();
         enemyObjects.Clear();
         bossEnemyObjects.Clear();
+        MagicStoneObjects.Clear();
+        AllEnemyObjects.Clear();
         SendToPoolCloserObject();
         boardGround.gameObject.SetActive(true);
         boardGround.localScale = new Vector3(boardSize.x + 1, 0.2f, boardSize.y + 1);
         boardGround.position = new Vector3((boardSize.x + 1) * 0.5f - 1, -0.1f, (boardSize.y + 1) * 0.5f - 1);
+        Renderer renderer = boardGround.GetComponent<Renderer>();
+        renderer.sharedMaterial.DOTiling(Vector2.one, 0);
+        renderer.sharedMaterial.DOTiling(new Vector2(boardSize.x, boardSize.y) * 0.5f, 5);
+        Camera_Manager.Instance.SetCameraLimit(boardSize);
+        Camera_Manager.Instance.SetCameraPos(new Vector3Int(boardSize.x, 0, boardSize.y));
 
         gameBoard = new GameBoard[boardSize.x, boardSize.y];
 
@@ -270,7 +247,23 @@ public class Map_Holder : Singletion<Map_Holder>
         {
             for (int y = -1; y <= gameBoard.GetLength(1); y++)
             {
-                if (y == -1 || y == gameBoard.GetLength(1))
+                if (x == -1 && y == -1) // Sol alt
+                {
+                    CreateWall(x, y, Map_Creater_Manager.Instance.WallOrder + 1, new Vector3Int(0, 270, 0));
+                }
+                else if (x == -1 && y == gameBoard.GetLength(1)) // Sol üst
+                {
+                    CreateWall(x, y, Map_Creater_Manager.Instance.WallOrder + 1, new Vector3Int(0, 0, 0));
+                }
+                else if (x == gameBoard.GetLength(0) && y == gameBoard.GetLength(1)) // sag üst
+                {
+                    CreateWall(x, y, Map_Creater_Manager.Instance.WallOrder + 1, new Vector3Int(0, 90, 0));
+                }
+                else if (x == gameBoard.GetLength(0) && y == -1) // sag alt
+                {
+                    CreateWall(x, y, Map_Creater_Manager.Instance.WallOrder + 1, new Vector3Int(0, 180, 0));
+                }
+                else if (y == -1 || y == gameBoard.GetLength(1))
                 {
                     CreateWall(x, y, Map_Creater_Manager.Instance.WallOrder);
                 }
@@ -283,8 +276,19 @@ public class Map_Holder : Singletion<Map_Holder>
     }
     public void CreateWall(int x, int y, int wallOrder)
     {
-        GameObject wallOutSide = all_Item_Holder.WallList[wallOrder].MyObject.HavuzdanObjeIste(new Vector3(x, 0, y)).gameObject;
+        GameObject wallOutSide = all_Item_Holder.WallList[wallOrder].MyPool.HavuzdanObjeIste(new Vector3(x, 0, y)).gameObject;
         wallOutSide.transform.SetParent(boardWallParent);
+        if (x != -1 && x != gameBoard.GetLength(0))
+        {
+            wallOutSide.transform.GetChild(0).eulerAngles = new Vector3Int(0, 90, 0);
+        }
+        wallOutSide.name = "WallOutSide -> X: " + x + ", Y: " + y;
+    }
+    public void CreateWall(int x, int y, int wallOrder, Vector3Int angle)
+    {
+        GameObject wallOutSide = all_Item_Holder.WallList[wallOrder].MyPool.HavuzdanObjeIste(new Vector3(x, 0, y)).gameObject;
+        wallOutSide.transform.SetParent(boardWallParent);
+        wallOutSide.transform.GetChild(0).eulerAngles = angle;
         wallOutSide.name = "WallOutSide -> X: " + x + ", Y: " + y;
     }
     public void SetBoardForNonUseable()
@@ -311,6 +315,56 @@ public class Map_Holder : Singletion<Map_Holder>
     {
         SendToPoolAllObjects();
         SetBoardGround();
+    }
+    public (Transform, Vector3Int) LearnClosestEnemy(Transform tr, bool isPlayer)
+    {
+        Node startNode = new Node(Mathf.RoundToInt(tr.position.x), Mathf.RoundToInt(tr.position.z));
+        Node endNode = null;
+        List<Node> closestPath = new List<Node>();
+        int closestEnemyIndex = -1;
+        float closestEnemyDistance = 55555555;
+        if (isPlayer)
+        {
+            if (allEnemyObjects.Count > 0)
+            {
+                for (int e = 0; e < allEnemyObjects.Count; e++)
+                {
+                    endNode = new Node(Mathf.RoundToInt(allEnemyObjects[e].transform.position.x), Mathf.RoundToInt(allEnemyObjects[e].transform.position.z));
+
+                    // Yol var mı kontrol et
+                    List<Node> findPath = FindPath(startNode, endNode);
+                    if (findPath.Count > 0)
+                    {
+                        float enemyDistance = Vector3.SqrMagnitude(allEnemyObjects[e].transform.position - tr.position);
+                        if (enemyDistance < closestEnemyDistance)
+                        {
+                            closestEnemyIndex = e;
+                            closestPath = findPath;
+                            closestEnemyDistance = enemyDistance;
+                        }
+                    }
+                }
+                return (allEnemyObjects[closestEnemyIndex].transform, new Vector3Int(closestPath[0].X, 0, closestPath[0].Z));
+            }
+            else
+            {
+                return (null, Vector3Int.one);
+            }
+        }
+        else
+        {
+            endNode = new Node(Mathf.RoundToInt(Player_Base.Instance.transform.position.x), Mathf.RoundToInt(Player_Base.Instance.transform.position.z));
+            // Yol var mı kontrol et
+            List<Node> findPath = FindPath(startNode, endNode);
+            if (findPath.Count > 0)
+            {
+                return (Player_Base.Instance.transform, new Vector3Int(findPath[0].X, 0, findPath[0].Z));
+            }
+            else
+            {
+                return (null, Vector3Int.zero);
+            }
+        }
     }
 
     #region Close Game Board
@@ -487,6 +541,14 @@ public class Map_Holder : Singletion<Map_Holder>
     }
     public int Heuristic(Node a, Node b)
     {
+        if (a is null)
+        {
+            Debug.LogError(a.X + " - " + a.X);
+        }
+        if (b is null)
+        {
+            Debug.LogError(b.X + " - " + b.X);
+        }
         return Math.Abs(a.X - b.X) + Math.Abs(a.Z - b.Z);
     }
     public List<Node> GetNeighbors(Node node)

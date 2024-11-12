@@ -24,19 +24,23 @@ public class Direction_Player : Moving_Base
             findPath = Map_Holder.Instance.FindPath(startNode, playerNode);
             if (findPath.Count == 0)
             {
-                MyBase.SetDirection(FindRandomDirection() - MyBase.LearnIntDirection(transform.position));
+                MyBase.SetDirection(FindRandomDirection() - MyBase.LearnDirection(transform.position));
             }
             else
             {
                 findPlayer = true;
                 nextPoint = new Vector3(findPath[0].X, 0, findPath[0].Z);
-                MyBase.SetDirection(MyBase.LearnIntDirection(nextPoint) - MyBase.LearnIntDirection(transform.position));
+                MyBase.SetDirection(MyBase.LearnDirection(nextPoint) - MyBase.LearnDirection(transform.position));
             }
         }
     }
     private void Update()
     {
         if (!Game_Manager.Instance.LevelStart)
+        {
+            return;
+        }
+        if (!MyBase.CanMove)
         {
             return;
         }
@@ -50,7 +54,7 @@ public class Direction_Player : Moving_Base
         {
             if (Vector3.Distance(transform.position, Player.position) < 0.05f)
             {
-                MyBase.SetSpeed(0);
+                MyBase.SetMySpeed(0);
             }
             else if (Vector3.Distance(transform.position, nextPoint) < 0.05f)
             {

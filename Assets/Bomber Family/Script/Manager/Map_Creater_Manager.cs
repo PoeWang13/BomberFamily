@@ -88,15 +88,25 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
     private Item createdNullItem;
     private Color createdObjectColor;
     private GameObject createdObject;
-    private Board_Trigger board_Trigger;
+    private Trap_Trigger board_Trigger;
     private Material createdObjectMaterial;
     private List<BoardCoor> myBoardList = new List<BoardCoor>();
     private List<BoardCoor> myBoardListBackup = new List<BoardCoor>();
+    private List<int> choosedWallList = new List<int>();
+    private List<int> choosedBoxList = new List<int>();
+    private List<int> choosedTrapList = new List<int>();
+    private List<int> choosedEnemyList = new List<int>();
+    private List<int> choosedBossEnemyList = new List<int>();
 
     public bool HasGate { get { return hasGate; } }
     public int WallOrder { get { return wallOrder; } }
     public int BoxOrder { get { return boxOrder; } }
     public int CreatedOrder { get { return createdOrder; } }
+    public List<int> ChoosedWallList { get { return choosedWallList; } }
+    public List<int> ChoosedBoxList { get { return choosedBoxList; } }
+    public List<int> ChoosedTrapList { get { return choosedTrapList; } }
+    public List<int> ChoosedEnemyList { get { return choosedEnemyList; } }
+    public List<int> ChoosedBossEnemyList { get { return choosedBossEnemyList; } }
 
     private void Start()
     {
@@ -170,7 +180,7 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
     {
         Canvas_Manager.Instance.SetPanelObjectBehaviourPanel(true, false, true);
         Canvas_Manager.Instance.SetCreatorButtons(false);
-        Board_Object board_Object = item.MyObject.HavuzdanObjeIste(myCamera.ScreenToWorldPoint(Input.mousePosition)).GetComponent<Board_Object>();
+        Board_Object board_Object = item.MyPool.HavuzdanObjeIste(myCamera.ScreenToWorldPoint(Input.mousePosition)).GetComponent<Board_Object>();
         board_Object.SetBoardOrder(all_Item_Holder.LearnOrder(item));
         createdObject = board_Object.gameObject;
         Canvas_Manager.Instance.SetSaveButtonForMyLevel();
@@ -180,12 +190,26 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
         createdObjectMaterial = createdObject.GetComponentInChildren<Renderer>().material;
         createdObjectColor = createdObjectMaterial.color;
     }
-    public void SetTriggerObject(Board_Trigger trigger)
+    public void SetCreatedObject(Item_Enemy item)
+    {
+        Canvas_Manager.Instance.SetPanelObjectBehaviourPanel(true, false, true);
+        Canvas_Manager.Instance.SetCreatorButtons(false);
+        Board_Object board_Object = item.MyPool.HavuzdanObjeIste(myCamera.ScreenToWorldPoint(Input.mousePosition)).GetComponent<Board_Object>();
+        board_Object.SetBoardOrder(all_Item_Holder.LearnOrder(item));
+        createdObject = board_Object.gameObject;
+        Canvas_Manager.Instance.SetSaveButtonForMyLevel();
+        Utils.SetParent(createdObject, "Board_" + board_Object.LearnBoardType());
+        createdItem = item;
+        createdOrder = all_Item_Holder.LearnOrder(item);
+        createdObjectMaterial = createdObject.GetComponentInChildren<Renderer>().material;
+        createdObjectColor = createdObjectMaterial.color;
+    }
+    public void SetTriggerObject(Trap_Trigger trigger)
     {
         board_Trigger = trigger;
         OnTriggerTime?.Invoke(this, System.EventArgs.Empty);
     }
-    public void SetObjectForTrigger(Board_Diken diken)
+    public void SetObjectForTrigger(Trap_Diken diken)
     {
         // Boardda bu koordinatları kullanarak special stringe dikenin koordinatlarını ver.
         BoardContainer boardContainer = new BoardContainer();
@@ -335,7 +359,7 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
                 }
                 if (Input.GetKeyUp(KeyCode.Escape))
                 {
-                    createdItem.MyObject.ObjeyiHavuzaYerlestir(createdObject.GetComponent<PoolObje>());
+                    createdItem.MyPool.ObjeyiHavuzaYerlestir(createdObject.GetComponent<PoolObje>());
                     createdItem = createdNullItem;
                     Canvas_Manager.Instance.SetCreatorButtons(true);
                     Canvas_Manager.Instance.SetPanelObjectBehaviourPanel(false);
@@ -721,13 +745,14 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
                 {
                     boardWallAmount--;
                     RemoveBoardFromList(rndX, rndY);
-                    PoolObje poolObje = all_Item_Holder.WallList[wallOrder].MyObject.HavuzdanObjeIste(new Vector3(rndX, 0, rndY));
+                    int rndWall = Random.Range(0,choosedWallList.Count);
+                    PoolObje poolObje = all_Item_Holder.WallList[choosedWallList[rndWall]].MyPool.HavuzdanObjeIste(new Vector3(rndX, 0, rndY));
                     GameObject gameObje = poolObje.gameObject;
                     gameObje.transform.SetParent(Map_Holder.Instance.BoardWallParent);
                     gameObje.name = "WallInSide -> X: " + rndX + ", Y: " + rndY;
                     Map_Holder.Instance.WallObjects.Add(poolObje);
-                    //Map_Holder.Instance.MyBoard[rndX, rndY] = new Board(BoardType.Wall, wallOrder);
-                    Map_Holder.Instance.GameBoard[rndX, rndY] = new GameBoard(BoardType.Wall, wallOrder, gameObje);
+                    //Map_Holder.Instance.MyBoard[rndX, rndY] = new Board(BoardType.Wall, rndWall);
+                    Map_Holder.Instance.GameBoard[rndX, rndY] = new GameBoard(BoardType.Wall, rndWall, gameObje);
                 }
             }
             Debug.LogWarning("Tüm duvarlar yerleştirildi. Map kontrol ediliyor.");
@@ -829,14 +854,15 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
                 {
                     boardBoxAmount--;
                     RemoveBoardFromList(rndX, rndY);
-                    PoolObje poolObje = all_Item_Holder.BoxList[boxOrder].MyObject.HavuzdanObjeIste(new Vector3(rndX, 0, rndY));
+                    int rndBox = Random.Range(0, choosedBoxList.Count);
+                    PoolObje poolObje = all_Item_Holder.BoxList[choosedBoxList[rndBox]].MyPool.HavuzdanObjeIste(new Vector3(rndX, 0, rndY));
                     GameObject gameObje = poolObje.gameObject;
                     gameObje.transform.SetParent(Map_Holder.Instance.BoardBoxParent);
                     gameObje.name = "Box - " + boardBoxAmount + " -> X: " + rndX + ", Y: " + rndY;
                     gameObje.GetComponent<Board_Object>().SetBoardCoor(new Vector2Int(rndX, rndY));
                     Map_Holder.Instance.BoxObjects.Add(poolObje);
-                    //Map_Holder.Instance.MyBoard[rndX, rndY] = new Board(BoardType.Box, boxOrder);
-                    Map_Holder.Instance.GameBoard[rndX, rndY] = new GameBoard(BoardType.Box, boxOrder, gameObje);
+                    //Map_Holder.Instance.MyBoard[rndX, rndY] = new Board(BoardType.Box, rndBox);
+                    Map_Holder.Instance.GameBoard[rndX, rndY] = new GameBoard(BoardType.Box, rndBox, gameObje);
                 }
             }
             Debug.LogWarning("Tüm kutular yerleştirildi.");
@@ -861,14 +887,15 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
                 {
                     boardEnemyAmount--;
                     RemoveBoardFromList(rndX, rndY);
-                    PoolObje poolObje = all_Item_Holder.EnemyList[enemyOrder].MyObject.HavuzdanObjeIste(new Vector3(rndX, 0, rndY));
+                    int rndEnemy = Random.Range(0, choosedEnemyList.Count);
+                    PoolObje poolObje = all_Item_Holder.EnemyList[choosedEnemyList[rndEnemy]].MyPool.HavuzdanObjeIste(new Vector3(rndX, 0, rndY));
                     GameObject gameObje = poolObje.gameObject;
                     gameObje.transform.SetParent(Map_Holder.Instance.BoardEnemyParent);
                     gameObje.name = "Enemy - " + boardEnemyAmount + " -> X: " + rndX + ", Y: " + rndY;
                     gameObje.GetComponent<Board_Object>().SetBoardCoor(new Vector2Int(rndX, rndY));
                     Map_Holder.Instance.EnemyObjects.Add(poolObje);
-                    //Map_Holder.Instance.MyBoard[rndX, rndY] = new Board(BoardType.Enemy, enemyOrder);
-                    Map_Holder.Instance.GameBoard[rndX, rndY] = new GameBoard(BoardType.Enemy, enemyOrder, gameObje);
+                    //Map_Holder.Instance.MyBoard[rndX, rndY] = new Board(BoardType.Enemy, rndEnemy);
+                    Map_Holder.Instance.GameBoard[rndX, rndY] = new GameBoard(BoardType.Enemy, rndEnemy, gameObje);
                 }
             }
             Debug.LogWarning("Tüm düşmanlar yerleştirildi.");
@@ -893,14 +920,15 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
                 {
                     boardBossEnemyAmount--;
                     RemoveBoardFromList(rndX, rndY);
-                    PoolObje poolObje = all_Item_Holder.BossEnemyList[bossEnemyOrder].MyObject.HavuzdanObjeIste(new Vector3(rndX, 0, rndY));
+                    int rndBossEnemy = Random.Range(0, choosedBossEnemyList.Count);
+                    PoolObje poolObje = all_Item_Holder.BossEnemyList[choosedBossEnemyList[rndBossEnemy]].MyPool.HavuzdanObjeIste(new Vector3(rndX, 0, rndY));
                     GameObject gameObje = poolObje.gameObject;
                     gameObje.name = "Boss Enemy - " + boardBossEnemyAmount + " -> X: " + rndX + ", Y: " + rndY;
                     gameObje.transform.SetParent(Map_Holder.Instance.BoardBossEnemyParent);
                     gameObje.GetComponent<Board_Object>().SetBoardCoor(new Vector2Int(rndX, rndY));
                     Map_Holder.Instance.BossEnemyObjects.Add(poolObje);
-                    //Map_Holder.Instance.MyBoard[rndX, rndY] = new Board(BoardType.BossEnemy, bossEnemyOrder);
-                    Map_Holder.Instance.GameBoard[rndX, rndY] = new GameBoard(BoardType.BossEnemy, bossEnemyOrder, gameObje);
+                    //Map_Holder.Instance.MyBoard[rndX, rndY] = new Board(BoardType.BossEnemy, rndBossEnemy);
+                    Map_Holder.Instance.GameBoard[rndX, rndY] = new GameBoard(BoardType.BossEnemy, rndBossEnemy, gameObje);
                 }
             }
             Debug.LogWarning("Tüm patron düşmanlar yerleştirildi.");
@@ -926,7 +954,7 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
                 {
                     boardTrapAmount--;
                     RemoveBoardFromList(rndX, rndY);
-                    PoolObje poolObje = all_Item_Holder.TrapList[trapOrder].MyObject.HavuzdanObjeIste(new Vector3(rndX, 0, rndY));
+                    PoolObje poolObje = all_Item_Holder.TrapList[trapOrder].MyPool.HavuzdanObjeIste(new Vector3(rndX, 0, rndY));
                     GameObject gameObje = poolObje.gameObject;
                     gameObje.transform.SetParent(Map_Holder.Instance.BoardTrapParent);
                     gameObje.name = "Trap - " + boardTrapAmount + " -> X: " + rndX + ", Y: " + rndY;
@@ -976,7 +1004,7 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
                 levelBoard.levelBoard.Add(Map_Holder.Instance.GameBoard[x, y].board_Game);
             }
         }
-        Save_Load_Manager.Instance.SaveBoard(BoardSaveType.GameLevelBoard, levelBoard);
+        Save_Load_Manager.Instance.SaveBoard(BoardSaveType.RecordLevelBoard, levelBoard);
     }
     #endregion
 }

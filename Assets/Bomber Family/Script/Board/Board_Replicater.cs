@@ -10,9 +10,10 @@ public class Board_Replicater : Board_Box
     private bool created = false;
     private Transform boardBoxParent;
 
-    private void Start()
+    public override void OnStart()
     {
         boardBoxParent = Utils.MakeChieldForGameElement("Board_Box");
+        this.enabled = false;
     }
     private void Update()
     {

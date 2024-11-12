@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class Direction_Coward : MonoBehaviour
+public class Direction_Coward : Moving_Base
 {
 
 }
