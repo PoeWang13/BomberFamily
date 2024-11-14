@@ -1,12 +1,14 @@
 ﻿using TMPro;
 using UnityEngine;
+using DG.Tweening;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
 public class Messages
 {
-    [HideInInspector] public TextMeshProUGUI warningtext;
-    [HideInInspector] public float warningTime;
-    [HideInInspector] public float warningTimeNext;
+    public TextMeshProUGUI warningtext;
+    public float warningTime;
+    public float warningTimeNext;
     public Messages(TextMeshProUGUI warning)
     {
         warningtext = warning;
@@ -16,7 +18,7 @@ public class Messages
         warningTimeNext += Time.deltaTime;
         if (warningTimeNext > warningTime)
         {
-            warningtext.gameObject.SetActive(false);
+            //warningtext.gameObject.SetActive(false);
             warningTimeNext = 0;
             return true;
         }
@@ -26,6 +28,7 @@ public class Messages
 public class Warning_Manager : Singletion<Warning_Manager>
 {
     [SerializeField] private Transform mesajKutusu;
+    [SerializeField] private RectTransform rectMesajKutusu;
     private List<Messages> warnings = new List<Messages>();
     private List<Messages> allWarnings = new List<Messages>();
     private bool warningVar;
@@ -36,11 +39,18 @@ public class Warning_Manager : Singletion<Warning_Manager>
         {
             warnings.Add(new Messages(mesajKutusu.GetChild(e).GetComponentInChildren<TextMeshProUGUI>(true)));
         }
+        rectMesajKutusu = mesajKutusu.GetComponent<RectTransform>();
     }
     public void ShowMessage(string msg, float duration = 1)
     {
-        warningVar = true;
-        mesajKutusu.gameObject.SetActive(true);
+        if (allWarnings.Count == 0)
+        {
+            rectMesajKutusu.DOAnchorPos3DY(-100, 0.5f).OnComplete(() => warningVar = true);
+        }
+        AddWarning(msg, duration);
+    }
+    private void AddWarning(string msg, float duration = 1)
+    {
         bool findWarning = false;
         int bulunanText = mesajKutusu.childCount - 1;
         for (int e = warnings.Count - 1; e >= 0 && !findWarning; e--)
@@ -78,10 +88,13 @@ public class Warning_Manager : Singletion<Warning_Manager>
                     warning = true;
                 }
             }
-            warningVar = warning;
             if (!warning)
             {
-                mesajKutusu.gameObject.SetActive(false);
+                rectMesajKutusu.DOAnchorPos3DY(300, 0.5f).OnComplete(() =>
+                {
+                    warnings.ForEach(m => m.warningtext.gameObject.SetActive(false));
+                    warningVar = false;
+                });
             }
         }
     }

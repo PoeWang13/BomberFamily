@@ -24,7 +24,7 @@ public class CurseClass
         this.curseType = (CurseType)curseType;
     }
 }
-public class Character_Base : PoolObje, IDamegable
+public class Character_Base : Board_Object, IDamegable
 {
     [SerializeField] private CharacterStat characterStat;
 
@@ -39,10 +39,8 @@ public class Character_Base : PoolObje, IDamegable
     private bool canCurse;
     private bool isDead;
     private bool isFreeze;
-    private Vector2Int myCoor;
     private Vector3 direction;
     private GameObject objFreeze;
-    private Collider myCollider;
     private Animator myAnimator;
     private Rigidbody myRigidbody;
     private Transform characterView;
@@ -59,14 +57,11 @@ public class Character_Base : PoolObje, IDamegable
     public Vector3 Direction { get { return direction; } }
     public CharacterStat CharacterStat { get { return characterStat; } }
     public Rigidbody MyRigidbody { get { return myRigidbody; } }
-    public Vector2Int MyCoor { get { return myCoor; } }
     public Animator MyAnimator { get { return myAnimator; } }
-    public Collider MyCollider { get { return myCollider; } }
     public Transform CharacterView { get { return characterView; } }
 
     private void Awake()
     {
-        myCollider = GetComponent<Collider>();
         myRigidbody = GetComponent<Rigidbody>();
         myAnimator = GetComponentInChildren<Animator>();
         characterView = transform.Find("CharacterView");
@@ -77,15 +72,8 @@ public class Character_Base : PoolObje, IDamegable
     {
 
     }
-    private void Start()
+    public override void OnStart()
     {
-        Canvas_Manager.Instance.OnGameWin += Instance_OnGameWin;
-        Canvas_Manager.Instance.OnGameLost += Instance_OnGameLost;
-        OnStart();
-    }
-    public virtual void OnStart()
-    {
-
     }
     public void SetCharacterStat(CharacterStat stat)
     {
@@ -95,11 +83,11 @@ public class Character_Base : PoolObje, IDamegable
     {
         characterView.gameObject.SetActive(isActive);
     }
-    private void Instance_OnGameLost(object sender, System.EventArgs e)
+    public override void OnGameLost()
     {
         canMove = false;
     }
-    private void Instance_OnGameWin(object sender, System.EventArgs e)
+    public override void OnGameWin()
     {
         canMove = false;
     }
@@ -124,8 +112,8 @@ public class Character_Base : PoolObje, IDamegable
         }
         UseShield();
         UseCurseTime();
-        SetMyCoor(new Vector2Int(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.z)));
-        MyAnimator.SetFloat("Speed", direction.sqrMagnitude * MySpeed);
+        SetBoardCoor(new Vector2Int(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.z)));
+        myAnimator.SetFloat("Speed", direction.sqrMagnitude * MySpeed);
     }
     public virtual void Move()
     {
@@ -283,10 +271,6 @@ public class Character_Base : PoolObje, IDamegable
     {
         canMove = move;
     }
-    public void SetMyCoor(Vector2Int coor)
-    {
-        myCoor = coor;
-    }
     public virtual void ResetBase()
     {
         shieldTime = 0;
@@ -296,6 +280,7 @@ public class Character_Base : PoolObje, IDamegable
         ResetLife();
         ResetSpeed();
         allCurses.Clear();
+        myAnimator.SetBool("Dead", false);
     }
     public bool CanCreateBomb()
     {
@@ -324,6 +309,7 @@ public class Character_Base : PoolObje, IDamegable
         TakedDamage(damage);
         if (myLife <= 0)
         {
+            MyAnimator.SetBool("Dead", true);
             isDead = true;
             Dead();
         }

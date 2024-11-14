@@ -80,6 +80,7 @@ public class Map_Construct_Manager : Singletion<Map_Construct_Manager>
                 }
                 else if (Map_Holder.Instance.GameBoard[x, y].board_Game.boardType == BoardType.Enemy)
                 {
+                    Debug.LogWarning(Map_Holder.Instance.GameBoard[x, y].board_Game.boardOrder);
                     boardType = BoardType.Enemy;
                     poolObject = all_Item_Holder.EnemyList[Map_Holder.Instance.GameBoard[x, y].board_Game.boardOrder].MyPool.HavuzdanObjeIste(new Vector3(x, 0, y));
                     poolObject.transform.SetParent(Map_Holder.Instance.BoardEnemyParent);

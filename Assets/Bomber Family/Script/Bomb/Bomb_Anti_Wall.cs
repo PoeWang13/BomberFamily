@@ -4,6 +4,9 @@ using UnityEngine;
 public class Bomb_Anti_Wall : Bomb_Base
 {
     private Transform view;
+    private int bombAreaLimit = 1;
+    private int bombAmount = 0;
+    private int bombDirection = -1;
     private ParticleSystem bombTrail;
 
     private void Awake()
@@ -33,9 +36,10 @@ public class Bomb_Anti_Wall : Bomb_Base
     {
         bombTrail.Stop();
         BombFirePool.HavuzdanObjeIste(new Vector3Int(MyCoor.x, 0, MyCoor.y)).GetComponent<Bomb_Fire>().SetFire(MyOwner.CharacterStat.myBombPower);
-        for (int x = -1; x < 2; x++)
+        for (int x = -bombAreaLimit; x < bombAreaLimit + 1; x++) // -3 , -2, -1, 0, 1, 2, 3
         {
-            for (int y = -1; y < 2; y++)
+            int pozitifAmount = Mathf.Abs(bombAmount) + 1;
+            for (int y = bombAmount; y < pozitifAmount; y++)// -3, 0 + -2,1 + 
             {
                 // X sınırlar içinde mi
                 if (MyCoor.x + x < 0 || MyCoor.x + x >= Map_Holder.Instance.GameBoard.GetLength(0))
@@ -71,6 +75,11 @@ public class Bomb_Anti_Wall : Bomb_Base
                     bomb_Base.Bombed();
                 }
             }
+            if (x == 0)
+            {
+                bombDirection = 1;
+            }
+            bombAmount += bombDirection;
         }
         view.eulerAngles = Vector3.zero;
         transform.localPosition = Vector3.zero;

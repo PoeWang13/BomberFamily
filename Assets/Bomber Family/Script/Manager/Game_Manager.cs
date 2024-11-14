@@ -13,32 +13,13 @@ public enum GameType
 }
 public class Game_Manager : Singletion<Game_Manager>
 {
-    [SerializeField] private List<ParticleSystem> level1 = new List<ParticleSystem>();
-    [SerializeField] private List<ParticleSystem> level2 = new List<ParticleSystem>();
-    [SerializeField] private List<ParticleSystem> level3 = new List<ParticleSystem>();
-    [ContextMenu("Level 1 Particle")]
-    private void SetParticle1()
-    {
-        level1.ForEach(x => x.Play());
-    }
-    [ContextMenu("Level 2 Particle")]
-    private void SetParticle2()
-    {
-        level2.ForEach(x => x.Play());
-    }
-    [ContextMenu("Level 3 Particle")]
-    private void SetParticle3()
-    {
-        level3.ForEach(x => x.Play());
-    }
-
-
     [Header("Genel")]
     [SerializeField] private Pooler magicStone;
     [SerializeField] private Transform gameElements;
     [SerializeField] private Transform playerWaitingPoint;
     [SerializeField] private GameObject onlineController;
     [SerializeField] private All_Item_Holder all_Item_Holder;
+    [SerializeField] private List<GameObject> finishParticles = new List<GameObject>();
 
     private bool levelStart;
     private bool areWeOnline;
@@ -91,7 +72,7 @@ public class Game_Manager : Singletion<Game_Manager>
         }
         catch (WebException)
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            SetOnlineController(false);
         }
     }
     private void SetOnlineController(bool online)
@@ -107,32 +88,22 @@ public class Game_Manager : Singletion<Game_Manager>
     IEnumerator ControlConnection()
     {
         yield return new WaitForSeconds(1);
-        DayTime();
-    }
-    private bool CheckAreWeOnline()
-    {
-        // Internet var mı?
-        if (Application.internetReachability == NetworkReachability.ReachableViaLocalAreaNetwork)
-        {
-            //Debug.Log("İnternet adsl ile var.");
-            SetOnlineController(true);
-        }
-        else if (Application.internetReachability == NetworkReachability.ReachableViaCarrierDataNetwork)
-        {
-            //Debug.Log("İnternet telefon hattı ile var.");
-            SetOnlineController(true);
-        }
-        else if (Application.internetReachability == NetworkReachability.NotReachable)
-        {
-            //Debug.Log("İnternet yok.");
-            SetOnlineController(false);
-        }
-        return areWeOnline;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
     private void Start()
     {
         Canvas_Manager.Instance.OnGameWin += Instance_OnGameWin;
         Canvas_Manager.Instance.OnGameLost += Instance_OnGameLost;
+    }
+    public void GameWin()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            GameObject rndObj = finishParticles[Random.Range(0, finishParticles.Count)];
+            Vector3 rndPos = new Vector3(Player_Base.Instance.transform.position.x + Random.Range(-5, 5), 5,
+                Player_Base.Instance.transform.position.z + Random.Range(-5 , 5));
+            Destroy(Instantiate(rndObj, rndPos, Quaternion.identity));
+        }
     }
     private void Instance_OnGameLost(object sender, System.EventArgs e)
     {
@@ -150,7 +121,6 @@ public class Game_Manager : Singletion<Game_Manager>
     }
     public void CreateMagicStone(Vector3 pos)
     {
-        Debug.LogWarning(pos);
         Map_Holder.Instance.MagicStoneObjects.Add(magicStone.HavuzdanObjeIste(pos));
     }
     public void AddLootObhjectList(PoolObje poolObje)
@@ -169,11 +139,11 @@ public class Game_Manager : Singletion<Game_Manager>
         }
     }
 
-
     #region Set
     public void SetGameType(GameType type)
     {
         gameType = type;
+        beginingLevelTime = Time.time;
     }
     #endregion
 

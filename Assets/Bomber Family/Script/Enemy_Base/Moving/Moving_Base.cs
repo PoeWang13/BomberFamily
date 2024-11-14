@@ -33,11 +33,15 @@ public class Moving_Base : MonoBehaviour
         player_Base = Player_Base.Instance.transform;
         boardWeight = Map_Holder.Instance.GameBoard.GetLength(0);
         boardHeight = Map_Holder.Instance.GameBoard.GetLength(1);
-        changeDirectionTime = 1 / myBase.MySpeed;
+        Invoke("SetDirectionTime", 0.1f);
         OnStart();
     }
     public virtual void OnStart()
     {
+    }
+    private void SetDirectionTime()
+    {
+        changeDirectionTime = 1 / myBase.MySpeed;
     }
     public virtual void OnSet()
     {

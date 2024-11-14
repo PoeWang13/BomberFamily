@@ -2,9 +2,6 @@
 
 public class Bomb_Area : Bomb_Base
 {
-    private int bombAreaLimit = 1;
-    private int bombAmount = 0;
-    private int bombDirection = -1;
     public override void Bombed()
     {
         if (IsExploded)
@@ -14,10 +11,9 @@ public class Bomb_Area : Bomb_Base
         SetExploded();
         MyOwner.IncreaseBombAmount(BombType.Area);
         BombFirePool.HavuzdanObjeIste(new Vector3Int(MyCoor.x, 0, MyCoor.y)).GetComponent<Bomb_Fire>().SetFire(MyOwner.CharacterStat.myBombPower);
-        for (int x = -bombAreaLimit; x < bombAreaLimit + 1; x++) // -3 , -2, -1, 0, 1, 2, 3
+        for (int x = -1; x < 2; x++)
         {
-            int pozitifAmount = Mathf.Abs(bombAmount) + 1;
-            for (int y = bombAmount; y < pozitifAmount; y++)// -3, 0 + -2,1 + 
+            for (int y = -1; y < 2; y++)
             {
                 // X sınırlar içinde mi
                 if (MyCoor.x + x < 0 || MyCoor.x + x >= Map_Holder.Instance.GameBoard.GetLength(0))
@@ -53,11 +49,6 @@ public class Bomb_Area : Bomb_Base
                     bomb_Base.Bombed();
                 }
             }
-            if (x == 0)
-            {
-                bombDirection = 1;
-            }
-            bombAmount += bombDirection;
         }
         EnterHavuz();
     }

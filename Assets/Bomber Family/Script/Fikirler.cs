@@ -3,6 +3,13 @@
 
 public class Fikirler : MonoBehaviour
 {
+    /// Viking
+    /// Normal
+    /// Cowboy
+    /// Büyü
+    /// Korsan
+    /// Samuray
+
     //public List<Transform> transforms = new List<Transform>();
     //[ContextMenu("Deneme")]
     //public void Deneme()

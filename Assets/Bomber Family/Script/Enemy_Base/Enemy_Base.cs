@@ -9,8 +9,10 @@ public class Enemy_Base : Character_Base
 
     public override void OnStart()
     {
+        base.OnStart();
         SetMyLife(CharacterStat.myLife);
         SetMySpeed(CharacterStat.mySpeed);
+        SetCharacterStat(myItem.MyStartingStat);
     }
     public override void IncreaseBombAmount(BombType bombType)
     {
@@ -104,9 +106,9 @@ public class Enemy_Base : Character_Base
     {
         if (other.CompareTag("Player"))
         {
-            Game_Manager.Instance.AddLoseLifeAmount(myItem.MyDamage);
+            Game_Manager.Instance.AddLoseLifeAmount(CharacterStat.myBombPower);
             Character_Base character_Base = other.GetComponent<Character_Base>();
-            character_Base.TakeDamage(myItem.MyDamage);
+            character_Base.TakeDamage(CharacterStat.myBombPower);
         }
     }
 }

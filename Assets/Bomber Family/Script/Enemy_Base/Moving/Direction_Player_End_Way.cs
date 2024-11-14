@@ -37,7 +37,7 @@ public class Direction_Player_End_Way : Moving_Base
                 {
                     if (CheckDistance(raycast.transform.position, transform.position, 1))
                     {
-                        raycast.transform.GetComponent<Player_Base>().TakeDamage(MyBase.MyItem.MyDamage);
+                        raycast.transform.GetComponent<Player_Base>().TakeDamage(MyBase.CharacterStat.myBombPower);
                         StopAttackToPlayer();
                     }
                 }

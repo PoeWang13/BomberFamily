@@ -37,7 +37,6 @@ public class Pooler : ScriptableObject
         }
         // Kullanılabilir obje yoksa yeni obje insa et
         havuzObjesi = Instantiate(prefab, pos, Quaternion.identity);
-        havuzObjesi.ObjeHavuzExit();
         // Yeni objeyi gönder
         return havuzObjesi;
     }

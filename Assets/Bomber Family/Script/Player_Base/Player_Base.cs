@@ -19,21 +19,14 @@ public class Player_Base : Character_Base
     private Transform boardBombParent;
     private List<Bomb_Base> clocks = new List<Bomb_Base>();
 
-    public override void OnAwake()
+    public void SetInstance()
     {
-        if (instance == null)
-        {
-            instance = this;
-        }
-        else if (instance != this)
-        {
-            Destroy(gameObject);
-        }
+        instance = this;
     }
     public override void OnStart()
     {
         // Görünmez ve etkisiz yap
-        SetEffectivePlayer(false);
+        //SetEffectivePlayer(false);
         boardBombParent = Utils.MakeChieldForGameElement("Board_Bomb");
     }
     public void SetPlayerStat(Joystick joystick)

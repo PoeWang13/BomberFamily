@@ -15,9 +15,9 @@ public class BombRect
 
     public BombRect(BombRect bombRect)
     {
-        this.bombType = bombRect.bombType;
-        this.rectBomb = bombRect.rectBomb;
-        this.buttonBomb = bombRect.buttonBomb;
+        bombType = bombRect.bombType;
+        rectBomb = bombRect.rectBomb;
+        buttonBomb = bombRect.buttonBomb;
     }
 }
 public class Canvas_Manager : Singletion<Canvas_Manager>
@@ -26,7 +26,6 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     public event EventHandler OnGameLost;
 
     [Header("Genel")]
-    [SerializeField] private bool saveForGame;
     [SerializeField] private Transform sceneMaskedImage;
     [SerializeField] private All_Item_Holder all_Item_Holder;
     [SerializeField] private TextMeshProUGUI textMenuGoldAmount;
@@ -76,7 +75,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     [SerializeField] private Button buttonSaveMap;
     [SerializeField] private Image imageProcess;
     [SerializeField] private TextMeshProUGUI textProcess;
-    [SerializeField] private GameObject objCheckingMapButton;
+    [SerializeField] private GameObject objCheckingMapButton;///
     [SerializeField] private GameObject panelObjectBehaviour;
     [SerializeField] private GameObject panelObjectMove;
     [SerializeField] private GameObject panelObjectDestroy;
@@ -153,8 +152,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     [SerializeField] private TextMeshProUGUI textShopPlayerUpgradeBoxPassing;
     [SerializeField] private TextMeshProUGUI textShopPlayerUpgradeBoxPushingTime;
 
-    private Player_Base player_Base;
-    private BoardSaveType boardSaveType;
+    private bool isBuyed;
     private bool correctWallAmount;
     private bool correctBoxAmount;
     private bool correctTrapAmount;
@@ -167,6 +165,8 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     private int goldChangedAmount;
     private int goldChangedStaertedAmount;
 
+    private Player_Base player_Base;
+
     private List<bool> buttonCreaterWallList = new List<bool>();
     private List<bool> buttonCreaterBoxList = new List<bool>();
     private List<bool> buttonCreaterTrapList = new List<bool>();
@@ -175,60 +175,23 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
 
     public bool ToggleDungeonSetting { get { return toggleDungeonSetting.isOn; } }
 
-    private void Start()
+    #region Menu
+    public void GameStart()
     {
-        //sceneMaskedImage.gameObject.SetActive(true);
+        sceneMaskedImage.gameObject.SetActive(true);
         CloseMask(0.1f, () => {
             if (string.IsNullOrEmpty(Save_Load_Manager.Instance.gameData.accountName))
             {
                 panelName.SetActive(true);
+                panelHelp.gameObject.SetActive(true);
             }
             else
             {
+                CloseHTP(false);
                 SetEverything();
             }
         });
     }
-    // Canvas -> Panel-Name -> Button-Name'a atandı.
-    public void SetName()
-    {
-        if (inputName.text.Length < 3)
-        {
-            Warning_Manager.Instance.ShowMessage("Your name should more than 3 letter.");
-            return;
-        }
-        else if(inputName.text.Length > 15)
-        {
-            Warning_Manager.Instance.ShowMessage("Your name should less than 16 letter.");
-            return;
-        }
-        else
-        {
-            Save_Load_Manager.Instance.gameData.accountName = inputName.text;
-            SetEverything();
-        }
-    }
-    private void SetEverything()
-    {
-        panelName.SetActive(false);
-        panelMenu.SetActive(true);
-        SetPlayerInfo();
-        SetGold();
-        SetGateCreatorSlot();
-        SetWallCreatorSlot();
-        SetBoxCreatorSlot();
-        SetTrapCreatorSlot();
-        SetEnemyCreatorSlot();
-        SetBossEnemyCreatorSlot();
-        SetPlayerStats();
-        SetMapButtons();
-        SetMyLevelButtons();
-        SetGameLevelButtons();
-        SetDungeonSetting();
-        CreateAllDungeonBoardCreatorChooser();
-    }
-
-    #region Menu
     // Canvas -> Panel-Menu -> Button-Continue'a atandı
     public void ContinueGame()
     {
@@ -237,8 +200,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         panelMenu.SetActive(false);
         // Son haritanın mapini oluştur ve oyuna başlat
         Game_Manager.Instance.SetGameType(GameType.Game);
-        boardSaveType = BoardSaveType.RecordLevelBoard;
-        Map_Construct_Manager.Instance.ConstructMap(Save_Load_Manager.Instance.LoadBoard(boardSaveType, Save_Load_Manager.Instance.gameData.lastLevel));
+        Map_Construct_Manager.Instance.ConstructMap(Save_Load_Manager.Instance.LoadBoard(BoardSaveType.GameLevel, Save_Load_Manager.Instance.gameData.lastLevel));
     }
     private void SetMyLevelButtons()
     {
@@ -258,8 +220,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         panelMenu.SetActive(false);
         myLevelButtonParent.parent.parent.gameObject.SetActive(false);
         Game_Manager.Instance.SetGameType(GameType.Game);
-        boardSaveType = BoardSaveType.MyLevelBoard;
-        Map_Construct_Manager.Instance.ConstructMap(Save_Load_Manager.Instance.LoadBoard(boardSaveType, order));
+        Map_Construct_Manager.Instance.ConstructMap(Save_Load_Manager.Instance.LoadBoard(BoardSaveType.MyLevel, order));
     }
     private void SetGameLevelButtons()
     {
@@ -278,8 +239,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         panelMenu.SetActive(false);
         myLevelButtonParent.parent.parent.gameObject.SetActive(false);
         Game_Manager.Instance.SetGameType(GameType.Game);
-        boardSaveType = BoardSaveType.RecordLevelBoard;
-        Map_Construct_Manager.Instance.ConstructMap(Save_Load_Manager.Instance.LoadBoard(boardSaveType, order));
+        Map_Construct_Manager.Instance.ConstructMap(Save_Load_Manager.Instance.LoadBoard(BoardSaveType.GameLevel, order));
     }
     private void SetMapButtons()
     {
@@ -339,25 +299,22 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     #region Player Choose
     public void SetPlayerInfo()
     {
-        if (player_Base != null)
-        {
-            player_Base.EnterHavuz();
-        }
         bombClockActiviter.SetActive(all_Item_Holder.PlayerSourceList[Save_Load_Manager.Instance.gameData.playerOrder].MyBombType == BombType.Clock);
-        player_Base = all_Item_Holder.PlayerSourceList[Save_Load_Manager.Instance.gameData.playerOrder].MyPool.HavuzdanObjeIste(Game_Manager.Instance.PlayerWaitingPoint).GetComponent<Player_Base>();
         player_Base.SetPlayerStat(joystickMove);
-        buttonPlayerBuy.gameObject.SetActive(!Save_Load_Manager.Instance.gameData.allPlayers[playerOrder].playerBuyed);
-        buttonPlayerChoose.gameObject.SetActive(Save_Load_Manager.Instance.gameData.allPlayers[playerOrder].playerBuyed);
+        isBuyed = Save_Load_Manager.Instance.gameData.allPlayers[playerOrder].playerBuyed;
+        buttonPlayerBuy.gameObject.SetActive(!isBuyed);
+        buttonPlayerChoose.gameObject.SetActive(isBuyed);
+        buttonPlayerChoose.interactable = playerOrder != Save_Load_Manager.Instance.gameData.playerOrder;
         all_Item_Holder.PlayerSourceList[playerOrder].SetSpriteOrder();
         imageBombFire.sprite = all_Item_Holder.PlayerSourceList[playerOrder].SetImageBombFireLimit(0);
-
         textShopPlayerName.text = all_Item_Holder.PlayerSourceList[playerOrder].MyName;
-        textShopPlayerPrice.text = all_Item_Holder.PlayerSourceList[playerOrder].MyPrice.ToString();
+        textShopPlayerPrice.text = isBuyed ? "Buyed" : all_Item_Holder.PlayerSourceList[playerOrder].MyPrice.ToString();
+
         textShopPlayerBombType.text = all_Item_Holder.PlayerSourceList[playerOrder].MyBombingType;
         textShopPlayerLevel.text = Save_Load_Manager.Instance.gameData.allPlayers[playerOrder].playerLevel.ToString();
 
         textShopPlayerLife.text = Save_Load_Manager.Instance.gameData.allPlayers[playerOrder].playerStat.myLife.ToString();
-        textShopPlayerSpeed.text = Save_Load_Manager.Instance.gameData.allPlayers[playerOrder].playerStat.mySpeed.ToString();
+        textShopPlayerSpeed.text = (Save_Load_Manager.Instance.gameData.allPlayers[playerOrder].playerStat.mySpeed * 0.01f).ToString();
         textShopPlayerBombAmount.text = Save_Load_Manager.Instance.gameData.allPlayers[playerOrder].playerStat.myBombAmount.ToString();
         textShopPlayerBombPower.text = Save_Load_Manager.Instance.gameData.allPlayers[playerOrder].playerStat.myBombPower.ToString();
         textShopPlayerBombFireLimit.text = Save_Load_Manager.Instance.gameData.allPlayers[playerOrder].playerStat.myBombFireLimit.ToString();
@@ -380,6 +337,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     // Canvas -> Panel-Menu -> Panel-Shop -> Panel-Shop-Player-Container -> Image-PlayerBg -> Button-Left ve Button-Right'a atandı
     public void PlayerNext(int next)
     {
+        player_Base.EnterHavuz();
         playerOrder += next;
         if (playerOrder == -1)
         {
@@ -389,6 +347,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         {
             playerOrder = 0;
         }
+        player_Base = all_Item_Holder.PlayerSourceList[playerOrder].MyPool.HavuzdanObjeIste(Game_Manager.Instance.PlayerWaitingPoint).GetComponent<Player_Base>();
         SetPlayerInfo();
         buttonPlayerBuy.gameObject.SetActive(!Save_Load_Manager.Instance.gameData.allPlayers[playerOrder].playerBuyed);
         buttonPlayerChoose.gameObject.SetActive(Save_Load_Manager.Instance.gameData.allPlayers[playerOrder].playerBuyed);
@@ -401,18 +360,63 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
             Save_Load_Manager.Instance.gameData.allPlayers[playerOrder].playerBuyed = true;
             buttonPlayerBuy.gameObject.SetActive(!Save_Load_Manager.Instance.gameData.allPlayers[playerOrder].playerBuyed);
             buttonPlayerChoose.gameObject.SetActive(Save_Load_Manager.Instance.gameData.allPlayers[playerOrder].playerBuyed);
-            Save_Load_Manager.Instance.gameData.gold -= all_Item_Holder.PlayerSourceList[playerOrder].MyPrice;
             SetGoldSmooth(-all_Item_Holder.PlayerSourceList[playerOrder].MyPrice);
+        }
+        else
+        {
+            Warning_Manager.Instance.ShowMessage("You dont have enough Gold.", 2);
         }
     }
     // Canvas -> Panel-Menu -> Panel-Shop -> Panel-Shop-Player-Container -> Button-Player-Choose'a atandı
     public void PlayerChoose()
     {
         Save_Load_Manager.Instance.gameData.playerOrder = playerOrder;
+        player_Base.SetInstance();
     }
     #endregion
 
     #region Set
+    // Canvas -> Panel-Name -> Button-Name'a atandı.
+    public void SetName()
+    {
+        if (inputName.text.Length < 3)
+        {
+            Warning_Manager.Instance.ShowMessage("Your name should more than 3 letter.");
+            return;
+        }
+        else if (inputName.text.Length > 15)
+        {
+            Warning_Manager.Instance.ShowMessage("Your name should less than 16 letter.");
+            return;
+        }
+        else
+        {
+            Save_Load_Manager.Instance.gameData.accountName = inputName.text;
+            SetEverything();
+        }
+    }
+    private void SetEverything()
+    {
+        panelName.SetActive(false);
+        panelMenu.SetActive(true);
+        player_Base = all_Item_Holder.PlayerSourceList[Save_Load_Manager.Instance.gameData.playerOrder].MyPool.HavuzdanObjeIste(Game_Manager.Instance.PlayerWaitingPoint).GetComponent<Player_Base>();
+        player_Base.SetInstance();
+        playerOrder = Save_Load_Manager.Instance.gameData.playerOrder;
+        SetPlayerInfo();
+        SetGold();
+        SetGateCreatorSlot();
+        SetWallCreatorSlot();
+        SetBoxCreatorSlot();
+        SetTrapCreatorSlot();
+        SetEnemyCreatorSlot();
+        SetBossEnemyCreatorSlot();
+        SetPlayerStats();
+        SetMapButtons();
+        SetMyLevelButtons();
+        SetGameLevelButtons();
+        SetDungeonSetting();
+        CreateAllDungeonBoardCreatorChooser();
+    }
     public void SetGold()
     {
         Audio_Manager.Instance.PlayGoldChance();
@@ -492,7 +496,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     }
     public void SetPlayerSpeedText()
     {
-        textPlayerSpeed.text = Player_Base.Instance.MySpeed.ToString();
+        textPlayerSpeed.text = (Player_Base.Instance.MySpeed * 0.01f).ToString();
         textPlayerSpeed.transform.DOShakePosition(2, 50, 25, 180).OnComplete(() =>
         {
             rectPlayerSpeed.DOAnchorPos(new Vector3(60, 0, 0), 0.5f);
@@ -587,26 +591,33 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     // Canvas -> Panel-Creator -> Panel-Map-Size -> Panel-Dungeon-Setting -> Create-Setting -> Panel-Wall-Container -> InputField-Wall-Object'a atandı
     public void SetDungeonWallObject()
     {
-        correctWallAmount = false;
+        correctWallAmount = true;
         if (string.IsNullOrEmpty(inputWallAmount.text))
         {
             Warning_Manager.Instance.ShowMessage("Wall input can not be empty.");
-            return;
+            correctWallAmount = false;
         }
         if (int.TryParse(inputWallAmount.text, out int wallAmount))
         {
             if (wallAmount < 0)
             {
                 Warning_Manager.Instance.ShowMessage("The number of Wall can not be less than 0.");
-                return;
+                correctWallAmount = false;
+            }
+            if (wallAmount > 0)
+            {
+                if (Map_Creater_Manager.Instance.ChoosedWallList.Count == 0)
+                {
+                    Warning_Manager.Instance.ShowMessage("You must choose some Wall.");
+                    correctWallAmount = false;
+                }
             }
         }
         else
         {
             Warning_Manager.Instance.ShowMessage("The number of Wall must be number, NOT letter.");
-            return;
+            correctWallAmount = false;
         }
-        correctWallAmount = true;
         Map_Creater_Manager.Instance.SetWallBoard(wallAmount);
         CheckDungeonSettingCorrect();
     }
@@ -626,6 +637,14 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
                 Warning_Manager.Instance.ShowMessage("The number of Magic Stone must be more than 1");
                 correctMagicStoneAmount = false;
             }
+            if (magicStoneAmount > 0)
+            {
+                if (Map_Creater_Manager.Instance.ChoosedBoxList.Count == 0)
+                {
+                    Warning_Manager.Instance.ShowMessage("You must choose some Box.");
+                    correctMagicStoneAmount = false;
+                }
+            }
         }
         else
         {
@@ -644,6 +663,14 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
             {
                 Warning_Manager.Instance.ShowMessage("The number of Boxes must be equal or more to the number of Magic Stone. (" + magicStoneAmount + ")");
                 correctBoxAmount = false;
+            }
+            if (boxAmount > 0)
+            {
+                if (Map_Creater_Manager.Instance.ChoosedBoxList.Count == 0)
+                {
+                    Warning_Manager.Instance.ShowMessage("You must choose some Box.");
+                    correctBoxAmount = false;
+                }
             }
         }
         else
@@ -671,6 +698,14 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
                 Warning_Manager.Instance.ShowMessage("The number of Trap must be more than 0");
                 correctTrapAmount = false;
             }
+            if (trapAmount > 0)
+            {
+                if (Map_Creater_Manager.Instance.ChoosedTrapList.Count == 0)
+                {
+                    Warning_Manager.Instance.ShowMessage("You must choose some Trap.");
+                    correctTrapAmount = false;
+                }
+            }
         }
         else
         {
@@ -696,6 +731,14 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
                 Warning_Manager.Instance.ShowMessage("The number of Enemy must be more than 0");
                 correctEnemyAmount = false;
             }
+            if (enemyAmount > 0)
+            {
+                if (Map_Creater_Manager.Instance.ChoosedEnemyList.Count == 0)
+                {
+                    Warning_Manager.Instance.ShowMessage("You must choose some Enemy.");
+                    correctEnemyAmount = false;
+                }
+            }
         }
         else
         {
@@ -720,6 +763,14 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
             {
                 Warning_Manager.Instance.ShowMessage("The number of Boss Enemy must be more than 0");
                 correctBossEnemyAmount = false;
+            }
+            if (bossEnemyAmount > 0)
+            {
+                if (Map_Creater_Manager.Instance.ChoosedBossEnemyList.Count == 0)
+                {
+                    Warning_Manager.Instance.ShowMessage("You must choose some Boss Enemy.");
+                    correctBossEnemyAmount = false;
+                }
             }
         }
         else
@@ -796,6 +847,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         {
             buttonCreaterWallList.Add(false);
             Button chooser = Instantiate(buttonChooser, wallChooseParent);
+            chooser.transform.GetChild(0).GetComponent<Image>().sprite = all_Item_Holder.WallList[e].MyIcon;
             int order = e;
             Transform buton = chooser.transform;
             chooser.onClick.AddListener(() => CreaterWallOrder(buton, order));
@@ -819,6 +871,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
                 Map_Creater_Manager.Instance.ChoosedWallList.Remove(order);
             }
         }
+        SetDungeonWallObject();
     }
     private void CreaterBoxChooseButton()
     {
@@ -826,6 +879,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         {
             buttonCreaterBoxList.Add(false);
             Button chooser = Instantiate(buttonChooser, boxChooseParent);
+            chooser.transform.GetChild(0).GetComponent<Image>().sprite = all_Item_Holder.BoxList[e].MyIcon;
             int order = e;
             Transform buton = chooser.transform;
             chooser.onClick.AddListener(() => CreaterBoxOrder(buton, order));
@@ -849,6 +903,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
                 Map_Creater_Manager.Instance.ChoosedBoxList.Remove(order);
             }
         }
+        SetDungeonBoxObject();
     }
     private void CreaterTrapChooseButton()
     {
@@ -856,6 +911,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         {
             buttonCreaterTrapList.Add(false);
             Button chooser = Instantiate(buttonChooser, trapChooseParent);
+            chooser.transform.GetChild(0).GetComponent<Image>().sprite = all_Item_Holder.TrapList[e].MyIcon;
             int order = e;
             Transform buton = chooser.transform;
             chooser.onClick.AddListener(() => CreaterTrapOrder(buton, order));
@@ -879,6 +935,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
                 Map_Creater_Manager.Instance.ChoosedTrapList.Remove(order);
             }
         }
+        SetDungeonTrapObject();
     }
     private void CreaterEnemyChooseButton()
     {
@@ -886,6 +943,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         {
             buttonCreaterEnemyList.Add(false);
             Button chooser = Instantiate(buttonChooser, enemyChooseParent);
+            chooser.transform.GetChild(0).GetComponent<Image>().sprite = all_Item_Holder.EnemyList[e].MyIcon;
             int order = e;
             Transform buton = chooser.transform;
             chooser.onClick.AddListener(() => CreaterEnemyOrder(buton, order));
@@ -909,6 +967,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
                 Map_Creater_Manager.Instance.ChoosedEnemyList.Remove(order);
             }
         }
+        SetDungeonEnemyObject();
     }
     private void CreaterBossEnemyChooseButton()
     {
@@ -916,6 +975,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         {
             buttonCreaterBossEnemyList.Add(false);
             Button chooser = Instantiate(buttonChooser, bossEnemyChooseParent);
+            chooser.transform.GetChild(0).GetComponent<Image>().sprite = all_Item_Holder.BossEnemyList[e].MyIcon;
             int order = e;
             Transform buton = chooser.transform;
             chooser.onClick.AddListener(() => CreaterBossEnemyOrder(buton, order));
@@ -939,6 +999,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
                 Map_Creater_Manager.Instance.ChoosedBossEnemyList.Remove(order);
             }
         }
+        SetDungeonBossEnemyObject();
     }
     #endregion
 
@@ -947,8 +1008,8 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     public void CreateMapBoard()
     {
         panelBoardSize.SetActive(false);
-        objCheckingMapButton.SetActive(!saveForGame);
-        buttonSaveMap.interactable = saveForGame;
+        objCheckingMapButton.SetActive(Save_Load_Manager.Instance.SaveType == BoardSaveType.MyLevel);
+        buttonSaveMap.interactable = Save_Load_Manager.Instance.SaveType == BoardSaveType.GameLevel;
         Map_Creater_Manager.Instance.SetBoardSize(int.Parse(inputBoardSizeX.text), int.Parse(inputBoardSizeY.text));
     }
     public void MapProcess(float process)
@@ -962,10 +1023,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     }
     public void SetSaveButtonForMyLevel()
     {
-        if (!saveForGame)
-        {
-            buttonSaveMap.interactable = false;
-        }
+        buttonSaveMap.interactable = Save_Load_Manager.Instance.SaveType == BoardSaveType.GameLevel;
     }
     public void SetSaveButton()
     {
@@ -1019,7 +1077,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     public void SaveMap()
     {
         // Save map for my level
-        if (saveForGame)
+        if (Save_Load_Manager.Instance.SaveType == BoardSaveType.GameLevel)
         {
             // Yaptığımız boardı deniyoruz.
             Map_Creater_Manager.Instance.SaveGameMap();
@@ -1035,7 +1093,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         panelCreator.SetActive(true);
         // kayıt butonu kapatılsın
         buttonSaveMap.interactable = false;
-        objCheckingMapButton.SetActive(true);
+        objCheckingMapButton.SetActive(Save_Load_Manager.Instance.SaveType == BoardSaveType.MyLevel);
         // Objeler
         objCreatorButtonTypeList.SetActive(true);
         // Obje listesi
@@ -1047,6 +1105,11 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     {
         Map_Holder.Instance.ReleaseMap();
     }
+    // Canvas -> Panel-Creator -> Button-Close'a atandı
+    public void CloseMap()
+    {
+        Map_Holder.Instance.CloseMap();
+    }
     public void SetCreatorPanel(bool isActive)
     {
         panelCreator.SetActive(isActive);
@@ -1056,7 +1119,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         // Butonlar
         objSaveMapButtonsParent.SetActive(isActive);
         // Check level
-        if (saveForGame)
+        if (Save_Load_Manager.Instance.SaveType == BoardSaveType.GameLevel)
         {
             objCheckingMapButton.SetActive(false);
         }
@@ -1153,12 +1216,12 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     public void GameWin()
     {
         Audio_Manager.Instance.PlayGameSuccess();
+        OnGameWin?.Invoke(this, EventArgs.Empty);
         LearnStats("Game Win");
         objNextLevelButton.SetActive(true);
         objReloadButton.SetActive(false);
         panelGameFinish.SetActive(true);
-        OnGameWin?.Invoke(this, EventArgs.Empty);
-        if (boardSaveType == BoardSaveType.RecordLevelBoard)
+        if (Save_Load_Manager.Instance.SaveType == BoardSaveType.GameLevel)
         {
             Save_Load_Manager.Instance.gameData.lastLevel++;
         }
@@ -1166,17 +1229,17 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     public void GameLost()
     {
         Audio_Manager.Instance.PlayGameFailed();
+        OnGameLost?.Invoke(this, EventArgs.Empty);
         LearnStats("Game Lost");
         objNextLevelButton.SetActive(false);
         objReloadButton.SetActive(true);
         panelGameFinish.SetActive(true);
-        OnGameLost?.Invoke(this, EventArgs.Empty);
     }
     private void LearnStats(string result)
     {
         textLevelResult.text = result;
         Player_Base.Instance.SetEffectivePlayer(false);
-        int time = (int)Game_Manager.Instance.LevelTime;
+        int time = Mathf.RoundToInt(Game_Manager.Instance.LevelTime);
         int hour = time / 3600;
         int minute = (time - (hour * 3600)) / 60;
         int second = time % 60;
@@ -1193,7 +1256,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     public void NextLevel()
     {
         panelGameFinish.SetActive(false);
-        Map_Construct_Manager.Instance.ConstructMap(Save_Load_Manager.Instance.LoadBoard(BoardSaveType.RecordLevelBoard, Save_Load_Manager.Instance.gameData.lastLevel));
+        Map_Construct_Manager.Instance.ConstructMap(Save_Load_Manager.Instance.LoadBoard(BoardSaveType.GameLevel, Save_Load_Manager.Instance.gameData.lastLevel));
     }
     public void GoMenu()
     {
@@ -1205,7 +1268,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     public void Reload()
     {
         panelGameFinish.SetActive(false);
-        Map_Construct_Manager.Instance.ConstructMap(Save_Load_Manager.Instance.LoadBoard(BoardSaveType.RecordLevelBoard, Save_Load_Manager.Instance.gameData.lastLevel));
+        Map_Construct_Manager.Instance.ConstructMap(Save_Load_Manager.Instance.LoadBoard(BoardSaveType.GameLevel, Save_Load_Manager.Instance.gameData.lastLevel));
     }
     #endregion
 

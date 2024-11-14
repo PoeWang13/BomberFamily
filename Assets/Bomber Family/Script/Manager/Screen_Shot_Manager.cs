@@ -7,8 +7,7 @@ public class Screen_Shot_Manager : MonoBehaviour
 {
     [Header("Genel")]
     public Camera myCamera;
-    public string fileName;
-    public List<GameObject> allCanvas = new List<GameObject>();
+    public string fileName = "Sprite";
 
     [Header("SS bölgesi")]
     [Tooltip("SS'den kesilip icon olarak kullanılacak bölge")]
@@ -43,31 +42,43 @@ public class Screen_Shot_Manager : MonoBehaviour
     }
     IEnumerator ListIcon()
     {
-        allCanvas.ForEach(x => x.SetActive(false));
-        allObjects.ForEach(x => x.SetActive(false));
+        if (allObjects.Count > 0)
+        {
+            yield return new WaitForEndOfFrame();
+
+            // Ekran görüntüsünü al ve gösterilen klasöre koy
+            var baseIconTexture = ScreenCapture.CaptureScreenshotAsTexture();
+            // Obje için istenen boyutta texture oluştur
+            var iconTexture = new Texture2D(textureFinishWidth - textureStartWidth, textureFinishHeight - textureStartHeight, TextureFormat.RGBA32, false);
+            // Objenin bulunduğu alandaki renkleri öğren
+            Color[] allColor = baseIconTexture.GetPixels(textureStartWidth, textureStartHeight, textureFinishWidth - textureStartWidth, textureFinishHeight - textureStartHeight);
+            // Texture dosyasının min ve max arasında kalan kısımlarını al yeni texture kaydet
+            iconTexture.SetPixels(0, 0, textureFinishWidth - textureStartWidth, textureFinishHeight - textureStartHeight, allColor);
+
+            yield return new WaitForEndOfFrame();
+
+            string path = Application.dataPath + "/Bomber Family/Sprite/" + fileName + "/";
+            byte[] screenIconArray = iconTexture.EncodeToPNG();
+            File.WriteAllBytes(path + "Icon_" + allObjects[0].name + ".png", screenIconArray);
+
+            yield return new WaitForEndOfFrame();
+
+            Destroy(baseIconTexture);
+            UnityEditor.AssetDatabase.Refresh();
+        }
+        else
+        {
+            Debug.LogError("Object list is empty.");
+        }
+    }
+    public void DeleteFirstObject()
+    {
+        Destroy(allObjects[0]);
+        allObjects.RemoveAt(0);
         allObjects[0].SetActive(true);
-        yield return new WaitForEndOfFrame();
-
-        // Ekran görüntüsünü al ve gösterilen klasöre koy
-        var baseIconTexture = ScreenCapture.CaptureScreenshotAsTexture();
-        // Obje için istenen boyutta texture oluştur
-        var iconTexture = new Texture2D(textureFinishWidth - textureStartWidth, textureFinishHeight - textureStartHeight, TextureFormat.RGBA32, false);
-        // Objenin bulunduğu alandaki renkleri öğren
-        Color[] allColor = baseIconTexture.GetPixels(textureStartWidth, textureStartHeight, textureFinishWidth - textureStartWidth, textureFinishHeight - textureStartHeight);
-        // Texture dosyasının min ve max arasında kalan kısımlarını al yeni texture kaydet
-        iconTexture.SetPixels(0, 0, textureFinishWidth - textureStartWidth, textureFinishHeight - textureStartHeight, allColor);
-
-        yield return new WaitForEndOfFrame();
-
-        string path = Application.dataPath + "/Bomber Family/Sprite/" + fileName + "/";
-        byte[] screenIconArray = iconTexture.EncodeToPNG();
-        File.WriteAllBytes(path + allObjects[0].name + "_Icon.png", screenIconArray);
-
-        yield return new WaitForEndOfFrame();
-
-        Destroy(baseIconTexture);
-        allObjects[0].SetActive(false);
-        allCanvas.ForEach(x => x.SetActive(true));
-        UnityEditor.AssetDatabase.Refresh();
+    }
+    public void SetFalseAllObject()
+    {
+        allObjects.ForEach(x => x.SetActive(false));
     }
 }

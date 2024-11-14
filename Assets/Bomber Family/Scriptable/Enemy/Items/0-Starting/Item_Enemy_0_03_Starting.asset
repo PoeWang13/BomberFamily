@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7928d88f821c1cf409556417299ba4dc, type: 3}
+  m_Name: Item_Enemy_0_03_Starting
+  m_EditorClassIdentifier: 
+  myIcon: {fileID: 21300000, guid: 3147c224e3f30ee4186278021720052d, type: 3}
+  myPrice: 250
+  boardType: 4
+  myPool: {fileID: 11400000, guid: 6ac404af486c54d46a9833505e2d77bf, type: 2}
+  myBombType: 0
+  myName: Viking
+  life: 1
+  speed: 1
+  damage: 1
+  lootChance: 5
+  myExp: {x: 2, y: 5}
+  loot_Controller: {fileID: 11400000, guid: fc82f6ab3b1578a42b3a7fd851889cd5, type: 2}

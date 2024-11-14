@@ -76,6 +76,7 @@ public enum BoardType
     Gate = 6,
     Bomb = 7,
     Player = 8,
+    Npc = 9
 }
 public enum TrapType
 {
@@ -140,13 +141,13 @@ public class Map_Holder : Singletion<Map_Holder>
         boardCloserParent = Utils.MakeChieldForGameElement("Board_Closer");
         boardBossEnemyParent = Utils.MakeChieldForGameElement("Board_Boss_Enemy");
 
-        //boardBoxParent.gameObject.SetActive(openParents);
-        //boardWallParent.gameObject.SetActive(openParents);
+        boardBoxParent.gameObject.SetActive(false);
+        boardWallParent.gameObject.SetActive(false);
         boardTrapParent.gameObject.SetActive(false);
-        //boardGateParent.gameObject.SetActive(openParents);
-        //boardEnemyParent.gameObject.SetActive(openParents);
-        //boardCloserParent.gameObject.SetActive(openParents);
-        //boardBossEnemyParent.gameObject.SetActive(openParents);
+        boardGateParent.gameObject.SetActive(false);
+        boardEnemyParent.gameObject.SetActive(false);
+        boardCloserParent.gameObject.SetActive(false);
+        boardBossEnemyParent.gameObject.SetActive(false);
     }
     public void SetBoardSize(Vector2Int boardSize)
     {
@@ -243,53 +244,62 @@ public class Map_Holder : Singletion<Map_Holder>
     }
     public void CreateOutsideWall()
     {
+        int wallOrder = Random.Range(Mathf.RoundToInt(all_Item_Holder.WallList.Count * 0.5f), all_Item_Holder.WallList.Count - 1);
         for (int x = -1; x <= gameBoard.GetLength(0); x++)
         {
             for (int y = -1; y <= gameBoard.GetLength(1); y++)
             {
                 if (x == -1 && y == -1) // Sol alt
                 {
-                    CreateWall(x, y, Map_Creater_Manager.Instance.WallOrder + 1, new Vector3Int(0, 270, 0));
+                    CreateWall(x, y, wallOrder + 1, new Vector3Int(0, 270, 0));
+                    CreateWall(x, y, wallOrder + 1, new Vector3Int(0, 270, 0));
                 }
                 else if (x == -1 && y == gameBoard.GetLength(1)) // Sol üst
                 {
-                    CreateWall(x, y, Map_Creater_Manager.Instance.WallOrder + 1, new Vector3Int(0, 0, 0));
+                    CreateWall(x, y, wallOrder + 1, new Vector3Int(0, 0, 0));
                 }
                 else if (x == gameBoard.GetLength(0) && y == gameBoard.GetLength(1)) // sag üst
                 {
-                    CreateWall(x, y, Map_Creater_Manager.Instance.WallOrder + 1, new Vector3Int(0, 90, 0));
+                    CreateWall(x, y, wallOrder + 1, new Vector3Int(0, 90, 0));
                 }
                 else if (x == gameBoard.GetLength(0) && y == -1) // sag alt
                 {
-                    CreateWall(x, y, Map_Creater_Manager.Instance.WallOrder + 1, new Vector3Int(0, 180, 0));
+                    CreateWall(x, y, wallOrder + 1, new Vector3Int(0, 180, 0));
                 }
                 else if (y == -1 || y == gameBoard.GetLength(1))
                 {
-                    CreateWall(x, y, Map_Creater_Manager.Instance.WallOrder);
+                    CreateWall(x, y, wallOrder);
                 }
                 else if (x == -1 || x == gameBoard.GetLength(0))
                 {
-                    CreateWall(x, y, Map_Creater_Manager.Instance.WallOrder);
+                    CreateWall(x, y, wallOrder);
                 }
             }
         }
     }
     public void CreateWall(int x, int y, int wallOrder)
     {
-        GameObject wallOutSide = all_Item_Holder.WallList[wallOrder].MyPool.HavuzdanObjeIste(new Vector3(x, 0, y)).gameObject;
-        wallOutSide.transform.SetParent(boardWallParent);
+        Transform wallOutSide = CreateOtSideWall(x, y, wallOrder);
+
         if (x != -1 && x != gameBoard.GetLength(0))
         {
-            wallOutSide.transform.GetChild(0).eulerAngles = new Vector3Int(0, 90, 0);
+            wallOutSide.GetChild(0).eulerAngles = new Vector3Int(0, 90, 0);
         }
-        wallOutSide.name = "WallOutSide -> X: " + x + ", Y: " + y;
     }
     public void CreateWall(int x, int y, int wallOrder, Vector3Int angle)
     {
-        GameObject wallOutSide = all_Item_Holder.WallList[wallOrder].MyPool.HavuzdanObjeIste(new Vector3(x, 0, y)).gameObject;
+        Transform wallOutSide = CreateOtSideWall(x, y, wallOrder);
+
+        wallOutSide.GetChild(0).eulerAngles = angle;
+    }
+    private Transform CreateOtSideWall(int x, int y, int wallOrder)
+    {
+        PoolObje poolObje = all_Item_Holder.WallList[wallOrder].MyPool.HavuzdanObjeIste(new Vector3(x, 0, y));
+        Transform wallOutSide = poolObje.transform;
         wallOutSide.transform.SetParent(boardWallParent);
-        wallOutSide.transform.GetChild(0).eulerAngles = angle;
+        wallObjects.Add(poolObje);
         wallOutSide.name = "WallOutSide -> X: " + x + ", Y: " + y;
+        return wallOutSide;
     }
     public void SetBoardForNonUseable()
     {
@@ -315,6 +325,13 @@ public class Map_Holder : Singletion<Map_Holder>
     {
         SendToPoolAllObjects();
         SetBoardGround();
+        Map_Creater_Manager.Instance.ReleaseMap();
+    }
+    public void CloseMap()
+    {
+        SendToPoolAllObjects();
+        boardGround.gameObject.SetActive(false);
+        Map_Creater_Manager.Instance.ReleaseMap();
     }
     public (Transform, Vector3Int) LearnClosestEnemy(Transform tr, bool isPlayer)
     {
@@ -537,7 +554,7 @@ public class Map_Holder : Singletion<Map_Holder>
             }
         }
         Debug.LogError("Yol bulunamadı.");
-        return openSet;
+        return new List<Node>();
     }
     public int Heuristic(Node a, Node b)
     {

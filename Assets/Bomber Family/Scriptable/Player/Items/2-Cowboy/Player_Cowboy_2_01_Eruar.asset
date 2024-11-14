@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01f29d10a193c9042891857d3522d662, type: 3}
+  m_Name: Player_Cowboy_2_01_Eruar
+  m_EditorClassIdentifier: 
+  myIcon: {fileID: 21300000, guid: b813bd42ea5f50f4893550423385d63b, type: 3}
+  myPrice: 250
+  boardType: 8
+  myPool: {fileID: 11400000, guid: a4f3b6556961be54ca7bfbac6fba6990, type: 2}
+  myBombType: 0
+  myName: Eruar
+  myBombPooler: {fileID: 11400000, guid: 799287bb672f95a47a4697866c0ae97d, type: 2}
+  myUpgrade:
+    myLife: 1
+    mySpeed: 10
+    myBombAmount: 1
+    myBombPower: 1
+    myBombFireLimit: 1
+    myBombBoxPassing: 1
+    myBombPushingTime: 1
+  myBombFire:
+  - {fileID: 21300000, guid: da9e67cfa96d2594d807258f0ccf5b8f, type: 3}
+  - {fileID: 21300000, guid: 649cefa05aafa4d4c8f379793fcaa809, type: 3}
+  - {fileID: 21300000, guid: db25c2409948dc84b8f845980d9dc1b3, type: 3}
+  - {fileID: 21300000, guid: 41db4ded3e0cd9744a4f543cc2c081fb, type: 3}
+  - {fileID: 21300000, guid: 4e753b9579b0e6c4284afddc1fb7082c, type: 3}
+  - {fileID: 21300000, guid: b5fbd8c645a219948bcee570369a560c, type: 3}
+  - {fileID: 21300000, guid: 002bc1d27796e4b458bae1057949e8e7, type: 3}
+  - {fileID: 21300000, guid: b944049020ca1f84182901f59fab7f1b, type: 3}
+  - {fileID: 21300000, guid: 5d029f845aa1b324ba02c062e7a2fc3a, type: 3}
+  - {fileID: 21300000, guid: d45bbfc23ad984b44bbb1b66224a3219, type: 3}
+  - {fileID: 21300000, guid: 8d9482c5ea7c2be4d97678f4a3ac40fc, type: 3}
+  - {fileID: 21300000, guid: a0cedc2cb11ab1b41ba2f54f63191f69, type: 3}
+  - {fileID: 21300000, guid: 7b81092230209964cb4ae14b0223b833, type: 3}
+  - {fileID: 21300000, guid: a6d903efd02aae94d8da498b07a401e3, type: 3}
+  - {fileID: 21300000, guid: f869448885ec58744b633d406a3320cd, type: 3}
+  - {fileID: 21300000, guid: 9bd5924d7a974dc4091a7481962e5059, type: 3}
+  - {fileID: 21300000, guid: ee543e72e56d431429c4322dc777860b, type: 3}
+  - {fileID: 21300000, guid: 0f6005390e5fee04fb6561ab2ad855ae, type: 3}

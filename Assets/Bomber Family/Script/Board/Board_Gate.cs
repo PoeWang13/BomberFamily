@@ -80,6 +80,7 @@ public class Board_Gate : Board_Object
         }
         magicStone.EnterHavuz();
     }
+    private bool gameFinish;
     private void OnTriggerEnter(Collider other)
     {
         Debug.LogWarning(gameObject, gameObject);
@@ -95,7 +96,12 @@ public class Board_Gate : Board_Object
                 }
                 else
                 {
-                    Canvas_Manager.Instance.GameWin();
+                    if (!gameFinish)
+                    {
+                        Canvas_Manager.Instance.GameWin();
+                        Game_Manager.Instance.GameWin();
+                        gameFinish = true;
+                    }
                 }
             }
             else if(Game_Manager.Instance.GameType == GameType.MapCreate)

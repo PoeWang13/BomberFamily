@@ -54,7 +54,7 @@ public class Board_Door : Board_Box
                 enemy_Base.MyCollider.enabled = false;
                 SendBossOutSide(enemy_Base, rndDirec);
                 enemy_Base.transform.SetParent(boardBossEnemyParent);
-                enemy_Base.SetMyCoor(new Vector2Int(boardCoors[rndDirec].x, boardCoors[rndDirec].y));
+                enemy_Base.SetBoardCoor(new Vector2Int(boardCoors[rndDirec].x, boardCoors[rndDirec].y));
             }
         }
     }

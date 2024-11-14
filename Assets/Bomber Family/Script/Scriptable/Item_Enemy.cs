@@ -4,19 +4,17 @@
 public class Item_Enemy : Item_Character
 {
     [Header("Character Base")]
-    [SerializeField] private int life;
-    [SerializeField] private int speed;
+    [SerializeField] private CharacterStat myStartingStat;
+    [SerializeField] private CharacterStat myUpgradeStat;
 
 
     [Header("Enemy Loot")]
-    [SerializeField] private int damage = 1;
     [SerializeField] private int lootChance = 5;
     [SerializeField] private Vector2Int myExp = new Vector2Int(2, 5);
     [SerializeField] private Loot_Controller_Multi loot_Controller;
 
-    public int MyLife { get { return life; } }
-    public int MySpeed { get { return speed; } }
-    public int MyDamage { get { return damage; } }
+    public CharacterStat MyStartingStat { get { return myStartingStat; } }
+    public CharacterStat MyUpgradeStat { get { return myUpgradeStat; } }
     public int MyLootChance { get { return lootChance; } }
     public Loot_Controller_Multi MyLootController { get { return loot_Controller; } }
 

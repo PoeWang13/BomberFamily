@@ -3,9 +3,8 @@ using System.IO;
 using UnityEngine;
 using System.Collections;
 using UnityEngine.Networking;
-using UnityEngine.SceneManagement;
 using System.Collections.Generic;
-using Unity.VisualScripting.Antlr3.Runtime.Misc;
+using UnityEditor;
 
 [Serializable]
 public class LevelBoard
@@ -21,8 +20,8 @@ public class MyBoard
 }
 public enum BoardSaveType
 {
-    RecordLevelBoard,
-    MyLevelBoard
+    GameLevel,
+    MyLevel
 }
 [Serializable]
 public class CharacterStat
@@ -108,18 +107,22 @@ public class LevelDataContainer
 }
 public class Save_Load_Manager : Singletion<Save_Load_Manager>
 {
-    public int saveGameOrder;
-    public bool saveGameToMasa;
-    [SerializeField] private All_Item_Holder all_Item_Holder;
     [Header("Save-Load")]
     [SerializeField] private string fileName;
     [SerializeField] private bool useSifre;
+    [Header("Save-Type")]
+    [SerializeField] private int saveGameOrder;
+    [SerializeField] private BoardSaveType saveType;
+    [SerializeField] private All_Item_Holder all_Item_Holder;
     public GameData gameData;
 
     private Save_Load_File_Data_Handler save_Load_File_Data_Handler;
     private LevelDataContainer allLevelDatas = new LevelDataContainer();
     private string driveJsonLink = "1eDluhDH_KcaMFIQgg1xkoVTePs9R_JxQ";// Jsonun download linki
     private string driveStartLink = "https://drive.google.com/uc?export=download&id=";
+
+    public BoardSaveType SaveType { get { return saveType; } }
+
     public override void OnAwake()
     {
         DontDestroyOnLoad(gameObject);
@@ -148,7 +151,10 @@ public class Save_Load_Manager : Singletion<Save_Load_Manager>
     #region Download Board Fonksiyon
     IEnumerator GetGamesData(string url)
     {
-        Warning_Manager.Instance.ShowMessage("We are checking your levels. Wait a second please...", 3);
+        if (!string.IsNullOrEmpty(gameData.accountName))
+        {
+            Warning_Manager.Instance.ShowMessage("We are checking your levels. Wait a second please...", 3);
+        }
         UnityWebRequest unityWebRequest = UnityWebRequest.Get(url);
 
         yield return unityWebRequest.SendWebRequest();
@@ -163,11 +169,13 @@ public class Save_Load_Manager : Singletion<Save_Load_Manager>
             {
                 allLevelDatas = JsonUtility.FromJson<LevelDataContainer>(unityWebRequest.downloadHandler.text);
                 gameData.maxGameLevel = allLevelDatas.GameDatas.LevelLinks.Count;
+                StartCoroutine(GetLastLevelsData(gameData.lastLevel, allLevelDatas.GameDatas.LevelLinks[gameData.lastLevel]));
                 StartCoroutine(GetLevelsData());
             }
             catch
             {
-                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                Debug.Log(gameData.lastLevel);
+                //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             }
         }
         unityWebRequest.Dispose();
@@ -211,56 +219,78 @@ public class Save_Load_Manager : Singletion<Save_Load_Manager>
             }
         }
     }
+    IEnumerator GetLastLevelsData(int lastLevel, string linkLevel)
+    {
+        if (File.Exists(Application.persistentDataPath + "/Game-Level/Game-Level-" + lastLevel + ".kimex"))
+        {
+            // Canvası başlat
+            Canvas_Manager.Instance.GameStart();
+        }
+        else
+        {
+            UnityWebRequest unityWebRequest = UnityWebRequest.Get(driveStartLink + linkLevel);
+            yield return unityWebRequest.SendWebRequest();
+            UnityWebRequest.Result result = unityWebRequest.result;
+            if (result == UnityWebRequest.Result.ConnectionError)
+            {
+                Debug.LogWarning("Bilgi gelmedi. Hata : " + unityWebRequest.error);
+            }
+            else
+            {
+                try
+                {
+                    // Dosya var yani resim indirilmiş.
+                    LevelBoard levelBoard = JsonUtility.FromJson<LevelBoard>(unityWebRequest.downloadHandler.text);
+                    string levelJson = JsonUtility.ToJson(levelBoard);
+                    File.WriteAllText(Application.persistentDataPath + "/Game-Level/Game-Level-" + lastLevel + ".kimex", levelJson);
+                    // Canvası başlat
+                    Canvas_Manager.Instance.GameStart();
+                    if (!string.IsNullOrEmpty(gameData.accountName))
+                    {
+                        Warning_Manager.Instance.ShowMessage("You can play to continue last LEVEL.", 3);
+                    }
+                }
+                catch
+                {
+                    Debug.LogError("Bilgi gelmedi. Hata : " + unityWebRequest.error);
+                }
+            }
+            unityWebRequest.Dispose();
+        }
+    }
     #endregion
 
     #region Save-Load Board Fonksiyon
-    [ContextMenu("Deneme")]
-    private void Deneme()
-    {
-        File.WriteAllText("C:/Users/90545/Desktop/My-Level-1.kimex", "asd");
-    }
-    public void SaveBoard(BoardSaveType saveType, LevelBoard levelBoard)
+    public void SaveBoard(LevelBoard levelBoard)
     {
         // Dosya yazılıyor.
         string levelJson = JsonUtility.ToJson(levelBoard);
-        if (saveType == BoardSaveType.MyLevelBoard)
+        if (saveType == BoardSaveType.MyLevel)
         {
             if (File.Exists(Application.persistentDataPath + "/My-Level/My-Level-" + gameData.maxMyLevel + ".kimex"))
             {
                 Warning_Manager.Instance.ShowMessage("Your level order is wrong check save data files.", 2);
                 return;
             }
+            Warning_Manager.Instance.ShowMessage("Saved level board.", 2);
             File.WriteAllText(Application.persistentDataPath + "/My-Level/My-Level-" + gameData.maxMyLevel + ".kimex", levelJson);
             gameData.maxMyLevel++;
         }
         else
         {
-            if (saveGameToMasa)
+            if (File.Exists("C:/Users/90545/Desktop/Game-Level-" + saveGameOrder + ".kimex"))
             {
-                if (File.Exists("C:/Users/90545/Desktop/Game-Level-" + saveGameOrder + ".kimex"))
-                {
-                    Warning_Manager.Instance.ShowMessage("Your level order is wrong check save data files.", 2);
-                    return;
-                }
-                File.WriteAllText("C:/Users/90545/Desktop/Game-Level-" + saveGameOrder + ".kimex", levelJson);
-                saveGameOrder++;
+                Warning_Manager.Instance.ShowMessage("Your level order is wrong check save data files.", 2);
+                return;
             }
-            else
-            {
-                if (File.Exists(Application.persistentDataPath + "/Game-Level/Game-Level-" + gameData.maxGameLevel + ".kimex"))
-                {
-                    Warning_Manager.Instance.ShowMessage("Your level order is wrong check save data files.", 2);
-                    return;
-                }
-                File.WriteAllText(Application.persistentDataPath + "/Game-Level/Game-Level-" + gameData.maxGameLevel + ".kimex", levelJson);
-                gameData.maxGameLevel++;
-            }
+            Warning_Manager.Instance.ShowMessage("Saved level board. Check level files.", 2);
+            File.WriteAllText("C:/Users/90545/Desktop/Game-Level-" + saveGameOrder + ".kimex", levelJson);
         }
         SaveGame();
     }
-    public LevelBoard LoadBoard(BoardSaveType saveType, int order)
+    public LevelBoard LoadBoard(BoardSaveType boardSaveType, int order)
     {
-        if (saveType == BoardSaveType.MyLevelBoard)
+        if (boardSaveType == BoardSaveType.MyLevel)
         {
             if (File.Exists(Application.persistentDataPath + "/My-Level/My-Level-" + order + ".kimex"))
             {
@@ -311,6 +341,7 @@ public class Save_Load_Manager : Singletion<Save_Load_Manager>
                 gameData.allPlayers.Add(new PlayerData());
             }
             gameData.allPlayers[0].playerBuyed = true;
+            saveType = BoardSaveType.MyLevel;
         }
     }
     [ContextMenu("Save Game")]

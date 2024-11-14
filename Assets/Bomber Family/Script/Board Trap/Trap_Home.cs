@@ -50,7 +50,7 @@ public class Trap_Home : Board_Object
             poolObje = enemies[Random.Range(0, enemies.Count)].HavuzdanObjeIste(transform.position + Vector3.down * 5);
             Enemy_Base enemy_Base = poolObje.GetComponent<Enemy_Base>();
             enemy_Base.GetComponent<Character_Base>().DebuffMySpeed(0.0f);
-            enemy_Base.SetMyCoor(new Vector2Int(MyCoor.x, MyCoor.y));
+            enemy_Base.SetBoardCoor(new Vector2Int(MyCoor.x, MyCoor.y));
             SendBossOutSide(enemy_Base);
             enemy_Base.transform.SetParent(boardEnemyParent);
         }

@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Board_Object : PoolObje
 {
@@ -73,15 +72,10 @@ public class Board_Object : PoolObje
     }
     public override void ObjeHavuzEnter()
     {
-        if (myCollider is null)
+        if (myCollider is not null)
         {
             myCollider.enabled = true;
         }
         base.ObjeHavuzEnter();
-    }
-
-    internal object DOMoveY(int v1, float v2)
-    {
-        throw new NotImplementedException();
     }
 }
