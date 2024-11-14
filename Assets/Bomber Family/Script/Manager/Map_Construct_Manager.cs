@@ -11,6 +11,7 @@ public class Map_Construct_Manager : Singletion<Map_Construct_Manager>
 
     public void ConstructMap(LevelBoard levelBoard)
     {
+        Camera_Manager.Instance.transform.position = Vector3.zero;
         Canvas_Manager.Instance.SetActiveMapProcess(true);
         Player_Base.Instance.SetEffectivePlayer(false);
         Map_Holder.Instance.SetBoardSize(levelBoard.levelSize);
@@ -36,6 +37,9 @@ public class Map_Construct_Manager : Singletion<Map_Construct_Manager>
     }
     IEnumerator CreateBoard(int magicStoneAmount)
     {
+        Vector3 cameraDirec = new Vector3(Map_Holder.Instance.GameBoard.GetLength(0), 0, 
+            Map_Holder.Instance.GameBoard.GetLength(1)) / Map_Holder.Instance.GameBoard.GetLength(0);
+
         // Dış çerçeveye duvarlar eklenecek
         Map_Holder.Instance.CreateOutsideWall();
 
@@ -44,6 +48,8 @@ public class Map_Construct_Manager : Singletion<Map_Construct_Manager>
         List<MapStrings> trapList = new List<MapStrings>();
         for (int x = 0; x < Map_Holder.Instance.GameBoard.GetLength(0); x++)
         {
+            Camera_Manager.Instance.ShowConstructLevelBoard(cameraDirec);
+            //Camera_Manager.Instance.ShowConstructLevelBoard(cameraDirec * x);
             for (int y = 0; y < Map_Holder.Instance.GameBoard.GetLength(1); y++)
             {
                 MapProcess();
@@ -55,7 +61,6 @@ public class Map_Construct_Manager : Singletion<Map_Construct_Manager>
                     continue;
                 }
                 boardType = BoardType.Empty;
-                int boardOrder = -1;
                 PoolObje poolObject = null;
                 if (Map_Holder.Instance.GameBoard[x, y].board_Game.boardType == BoardType.Wall)
                 {
@@ -80,7 +85,6 @@ public class Map_Construct_Manager : Singletion<Map_Construct_Manager>
                 }
                 else if (Map_Holder.Instance.GameBoard[x, y].board_Game.boardType == BoardType.Enemy)
                 {
-                    Debug.LogWarning(Map_Holder.Instance.GameBoard[x, y].board_Game.boardOrder);
                     boardType = BoardType.Enemy;
                     poolObject = all_Item_Holder.EnemyList[Map_Holder.Instance.GameBoard[x, y].board_Game.boardOrder].MyPool.HavuzdanObjeIste(new Vector3(x, 0, y));
                     poolObject.transform.SetParent(Map_Holder.Instance.BoardEnemyParent);
@@ -110,21 +114,13 @@ public class Map_Construct_Manager : Singletion<Map_Construct_Manager>
                 }
                 Board_Object board_Object = poolObject.gameObject.GetComponent<Board_Object>();
                 board_Object.SetBoardCoor(new Vector2Int(x, y));
-                boardOrder = board_Object.BoardOrder;
-                Map_Holder.Instance.GameBoard[x, y] = new GameBoard(boardType, boardOrder, poolObject.gameObject);
+                Map_Holder.Instance.GameBoard[x, y] = new GameBoard(boardType, board_Object.MyBoardOrder, poolObject.gameObject);
                 yield return new WaitForSeconds(0.1f);
             }
         }
         SetTrapList(trapList);
-        Debug.LogWarning("Player hazır.");
-        Game_Manager.Instance.SetLevelStats();
-        Canvas_Manager.Instance.SetPlayerStats();
-        Canvas_Manager.Instance.SetGamePanel(true);
-        Player_Base.Instance.SetEffectivePlayer(true);
-        Player_Base.Instance.SetPosition(Vector3.zero);
-        Canvas_Manager.Instance.SetActiveMapProcess(false);
+        Camera_Manager.Instance.SetCameraPos(new Vector3Int(Map_Holder.Instance.BoardSize.x, 0, Map_Holder.Instance.BoardSize.y));
         Map_Holder.Instance.SetMagicStone(magicStoneAmount);
-        //Camera_Manager.Instance.SetCameraPos(new Vector3Int(Map_Holder.Instance.GameBoard.GetLength(0), 0, Map_Holder.Instance.GameBoard.GetLength(1)));
     }
     private void SetTrapList(List<MapStrings> trapList)
     {

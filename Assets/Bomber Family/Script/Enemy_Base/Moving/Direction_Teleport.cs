@@ -6,69 +6,62 @@ public class Direction_Teleport : Moving_Base
     // Rastgele bir yere ışınlanır
     [SerializeField] private ParticleSystem teleportEnd;
     [SerializeField] private ParticleSystem teleportStart;
+    [SerializeField] private float teleportTime;
 
     private bool walkingTime;
     private Vector3Int teleportPos;
     private float randomDirectionTimeNext;
+    private float teleportTimeNext;
 
     public override void OnStart()
     {
         Transform teleportParent = Utils.MakeChieldForGameElement("Teleport_Parent");
         teleportStart.transform.SetParent(teleportParent);
         teleportEnd.transform.SetParent(teleportParent);
-        MyBase.SetDirection(MyBase.LearnDirection(FindRandomDirection() - MyBase.LearnDirection(transform.position)));
+        MyBase.SetDirection(FindRandomDirection());
         walkingTime = true;
     }
-    private void DoTeleport()
+    public override void Move()
     {
-        StartCoroutine(TeleportStarted());
-    }
-    IEnumerator TeleportStarted()
-    {
-        // Teleport başlattransform.position
-        teleportStart.Play();
-        teleportStart.transform.position = transform.position;
-        teleportEnd.transform.position = teleportPos;
-        teleportEnd.Play();
-        yield return new WaitForSeconds(1);
-        // Transfer ol
-        transform.position = teleportPos;
-        yield return new WaitForSeconds(1);
-        walkingTime = true;
-        teleportStart.Stop();
-        teleportEnd.Stop();
-        yield return new WaitForSeconds(0.5f);
-        MyBase.SetDirection(FindRandomDirection() - MyBase.LearnDirection(transform.position));
-    }
-    private void Update()
-    {
-        if (!Game_Manager.Instance.LevelStart)
+        if (walkingTime)
         {
-            return;
-        }
-        if (!MyBase.CanMove)
-        {
-            return;
-        }
-        if (Vector3.Distance(transform.position, Player.position) > 0.05f)
-        {
-            if (walkingTime)
+            if (Vector3.SqrMagnitude(transform.position + MyBase.Direction - Player.position) < 0.01f)
+            {
+                MyBase.StopMovingForXTime();
+                return;
+            }
+            RaycastHit raycast;
+            Ray ray = new(transform.position + Vector3.up * 0.5f, MyBase.Direction);
+            if (Physics.Raycast(ray, out raycast, 1, BoardMaskIndex))
+            {
+                if (Vector3.SqrMagnitude(transform.position + MyBase.Direction - raycast.transform.position) < 0.01f)
+                {
+                    ChangeDirection();
+                }
+            }
+            else
             {
                 randomDirectionTimeNext += Time.deltaTime;
                 if (randomDirectionTimeNext > ChangeDirectionTime)
                 {
+                    ChangeDirection();
+                    return;
+                }
+                teleportTimeNext += Time.deltaTime;
+                if (teleportTimeNext > teleportTime)
+                {
                     walkingTime = false;
-                    randomDirectionTimeNext = 0;
+                    teleportTimeNext = 0;
                     bool finded = false;
                     while (!finded)
                     {
                         int x = Random.Range(0, Map_Holder.Instance.GameBoard.GetLength(0));
                         int z = Random.Range(0, Map_Holder.Instance.GameBoard.GetLength(1));
-                        if (x < 0 || z >= Map_Holder.Instance.GameBoard.GetLength(0))
+                        if (x < 0 || x >= Map_Holder.Instance.GameBoard.GetLength(0))
                         {
                             continue;
                         }
-                        if (x < 0 || z >= Map_Holder.Instance.GameBoard.GetLength(1))
+                        if (z < 0 || z >= Map_Holder.Instance.GameBoard.GetLength(1))
                         {
                             continue;
                         }
@@ -82,14 +75,31 @@ public class Direction_Teleport : Moving_Base
                         teleportPos = new Vector3Int(x, 0, z);
                     }
                     // Teleport yap
-                    DoTeleport();
+                    StartCoroutine(TeleportStarted());
                 }
-                if (Vector3.Distance(transform.position, MyDirections[RndDirec]) < 0.05f)
-                {
-                    MyBase.SetDirection(FindRandomDirection() - MyBase.LearnDirection(transform.position));
-                }
-                transform.Translate(MyBase.Direction * Time.deltaTime * MyBase.MySpeed);
             }
         }
+    }
+    private void ChangeDirection()
+    {
+        MyBase.SetIntPos();
+        randomDirectionTimeNext = 0;
+        MyBase.SetDirection(FindRandomDirection());
+    }
+    IEnumerator TeleportStarted()
+    {
+        // Teleport başlattransform.position
+        teleportEnd.Play();
+        teleportStart.Play();
+        teleportEnd.transform.position = teleportPos;
+        teleportStart.transform.position = transform.position;
+        yield return new WaitForSeconds(0.5f);
+        // Transfer ol
+        transform.position = teleportPos;
+        MyBase.SetIntPos();
+        teleportEnd.Stop();
+        teleportStart.Stop();
+        MyBase.SetDirection(FindRandomDirection());
+        walkingTime = true;
     }
 }

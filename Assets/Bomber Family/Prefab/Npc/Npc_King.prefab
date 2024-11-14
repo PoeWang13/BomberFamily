@@ -9,9 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 879271115316475903}
-  - component: {fileID: 8664875825872213826}
-  - component: {fileID: 2682251202931294933}
   - component: {fileID: 232430414043747480}
+  - component: {fileID: 2682251202931294933}
+  - component: {fileID: 8664875825872213826}
+  - component: {fileID: 6267544277749957766}
   m_Layer: 3
   m_Name: Npc_King
   m_TagString: Player
@@ -35,6 +36,42 @@ Transform:
   - {fileID: 8885362976276286372}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &232430414043747480
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6409528069723675043}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fdaee1089d505d54c919f9b5201a4c3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  havuzum: {fileID: 11400000, guid: b85a37bf385de894a96f6abe61fc5f33, type: 2}
+--- !u!136 &2682251202931294933
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6409528069723675043}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!54 &8664875825872213826
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -62,7 +99,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 116
   m_CollisionDetection: 0
---- !u!136 &2682251202931294933
+--- !u!136 &6267544277749957766
 CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -81,23 +118,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 0.48
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
---- !u!114 &232430414043747480
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6409528069723675043}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fdaee1089d505d54c919f9b5201a4c3c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  havuzum: {fileID: 11400000, guid: b85a37bf385de894a96f6abe61fc5f33, type: 2}
 --- !u!1001 &8881509264313943872
 PrefabInstance:
   m_ObjectHideFlags: 0

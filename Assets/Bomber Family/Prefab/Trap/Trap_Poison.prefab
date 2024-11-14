@@ -48,7 +48,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   havuzum: {fileID: 11400000, guid: 309309c432706dc4ebfe517c742269da, type: 2}
-  boardType: 3
+  myBoardType: 3
+  myCollider: {fileID: 0}
   damage: 2
   posionTime: 5
 --- !u!54 &2765371854414870441

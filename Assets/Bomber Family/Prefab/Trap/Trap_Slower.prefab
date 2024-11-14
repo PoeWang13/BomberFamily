@@ -48,7 +48,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   havuzum: {fileID: 11400000, guid: 166f25ee5b3709f4ba59374166d23dc7, type: 2}
-  boardType: 3
+  myBoardType: 3
+  myCollider: {fileID: 0}
   slowerPercent: 0.2
 --- !u!54 &2856774946244458110
 Rigidbody:

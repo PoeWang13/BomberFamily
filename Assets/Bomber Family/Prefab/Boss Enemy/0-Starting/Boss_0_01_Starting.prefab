@@ -47,7 +47,8 @@ GameObject:
   - component: {fileID: 516800665909208745}
   - component: {fileID: -336793405759388239}
   - component: {fileID: 4489884712178505934}
-  m_Layer: 0
+  - component: {fileID: -9172613688281617440}
+  m_Layer: 8
   m_Name: Boss_0_01_Starting
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -83,7 +84,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   havuzum: {fileID: 11400000, guid: 1ad21b86a6222c441a95b9b464dfe1eb, type: 2}
-  boardType: 5
+  myBoardType: 5
+  myCollider: {fileID: -9172613688281617440}
   characterStat:
     myLife: 1
     mySpeed: 1
@@ -108,11 +110,11 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 0.4
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
@@ -164,6 +166,29 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!136 &-9172613688281617440
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7099655024501674456}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.38
+  m_Height: 1
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &7099655024573255015
 GameObject:
   m_ObjectHideFlags: 0

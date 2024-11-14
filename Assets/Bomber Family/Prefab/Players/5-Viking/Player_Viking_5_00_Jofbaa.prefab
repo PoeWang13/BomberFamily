@@ -10,8 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4775525228899716180}
   - component: {fileID: 1644060194256793490}
-  - component: {fileID: 5668567129121208104}
   - component: {fileID: 6158891422636836764}
+  - component: {fileID: 5668567129121208104}
+  - component: {fileID: -4916385204180756633}
   m_Layer: 3
   m_Name: Player_Viking_5_00_Jofbaa
   m_TagString: Player
@@ -48,7 +49,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   havuzum: {fileID: 11400000, guid: 10c1d4f323bbf2847a815336d92282dc, type: 2}
-  boardType: 8
+  myBoardType: 8
+  myCollider: {fileID: -4916385204180756633}
   characterStat:
     myLife: 1
     mySpeed: 1
@@ -58,6 +60,29 @@ MonoBehaviour:
     myBombBoxPassing: 1
     myBombPushingTime: 1
   player_Source: {fileID: 11400000, guid: db2a9e13d9b236047949aa1d9eb01315, type: 2}
+--- !u!136 &6158891422636836764
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5715550670934038255}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!54 &5668567129121208104
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -85,7 +110,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 116
   m_CollisionDetection: 0
---- !u!136 &6158891422636836764
+--- !u!136 &-4916385204180756633
 CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -104,7 +129,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 0.48
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}

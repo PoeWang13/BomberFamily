@@ -4,7 +4,6 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.Networking;
 using System.Collections.Generic;
-using UnityEditor;
 
 [Serializable]
 public class LevelBoard
@@ -110,6 +109,7 @@ public class Save_Load_Manager : Singletion<Save_Load_Manager>
     [Header("Save-Load")]
     [SerializeField] private string fileName;
     [SerializeField] private bool useSifre;
+
     [Header("Save-Type")]
     [SerializeField] private int saveGameOrder;
     [SerializeField] private BoardSaveType saveType;

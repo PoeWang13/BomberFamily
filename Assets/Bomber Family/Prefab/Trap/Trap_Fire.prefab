@@ -50,7 +50,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   havuzum: {fileID: 11400000, guid: 5d18f2dcfe29f184d8b394ec4ce07de8, type: 2}
-  boardType: 3
+  myBoardType: 3
+  myCollider: {fileID: 0}
 --- !u!33 &3352550
 MeshFilter:
   m_ObjectHideFlags: 0

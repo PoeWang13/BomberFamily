@@ -10,8 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 7654478886188347113}
   - component: {fileID: 7929178036266821090}
-  - component: {fileID: 8060837832117841656}
   - component: {fileID: 7608378765578969224}
+  - component: {fileID: 8060837832117841656}
+  - component: {fileID: -2377392083342518953}
   m_Layer: 3
   m_Name: Player_17_Serito
   m_TagString: Player
@@ -48,6 +49,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   havuzum: {fileID: 11400000, guid: 55747afc4fabda840bbc032985e0c0ee, type: 2}
+  myBoardType: 8
+  myCollider: {fileID: -2377392083342518953}
   characterStat:
     myLife: 1
     mySpeed: 1
@@ -57,6 +60,29 @@ MonoBehaviour:
     myBombBoxPassing: 1
     myBombPushingTime: 1
   player_Source: {fileID: 11400000, guid: bb71c7cb1326a004dbe7dbffa2de48b3, type: 2}
+--- !u!136 &7608378765578969224
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3956398995326304776}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!54 &8060837832117841656
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -84,7 +110,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 116
   m_CollisionDetection: 0
---- !u!136 &7608378765578969224
+--- !u!136 &-2377392083342518953
 CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -103,7 +129,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 0.48
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
@@ -169,6 +195,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4497262683522610, guid: ddafa5fb4e3e8fb4aa97a7ea8e8b72d6, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9192733040059330681, guid: ddafa5fb4e3e8fb4aa97a7ea8e8b72d6,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 9196275674975519997, guid: ddafa5fb4e3e8fb4aa97a7ea8e8b72d6,
+        type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

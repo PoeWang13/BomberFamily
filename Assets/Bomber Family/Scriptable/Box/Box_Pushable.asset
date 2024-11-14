@@ -10,6 +10,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b1416e8cfe8aa1b4cac9561d57c2c1f6, type: 3}
-  m_Name: Pooler_Box_
+  m_Name: Box_Pushable
   m_EditorClassIdentifier: 
-  prefab: {fileID: 0}
+  prefab: {fileID: 213566989647258387, guid: 5527826a6315a224d850675a730c4f62, type: 3}

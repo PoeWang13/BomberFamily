@@ -141,8 +141,8 @@ public class Map_Holder : Singletion<Map_Holder>
         boardCloserParent = Utils.MakeChieldForGameElement("Board_Closer");
         boardBossEnemyParent = Utils.MakeChieldForGameElement("Board_Boss_Enemy");
 
-        boardBoxParent.gameObject.SetActive(false);
-        boardWallParent.gameObject.SetActive(false);
+        //boardBoxParent.gameObject.SetActive(false);
+        //boardWallParent.gameObject.SetActive(false);
         boardTrapParent.gameObject.SetActive(false);
         boardGateParent.gameObject.SetActive(false);
         boardEnemyParent.gameObject.SetActive(false);
@@ -171,7 +171,6 @@ public class Map_Holder : Singletion<Map_Holder>
         renderer.sharedMaterial.DOTiling(Vector2.one, 0);
         renderer.sharedMaterial.DOTiling(new Vector2(boardSize.x, boardSize.y) * 0.5f, 5);
         Camera_Manager.Instance.SetCameraLimit(boardSize);
-        Camera_Manager.Instance.SetCameraPos(new Vector3Int(boardSize.x, 0, boardSize.y));
 
         gameBoard = new GameBoard[boardSize.x, boardSize.y];
 

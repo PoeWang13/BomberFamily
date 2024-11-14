@@ -28,6 +28,13 @@ public class Player_Base : Character_Base
         // Görünmez ve etkisiz yap
         //SetEffectivePlayer(false);
         boardBombParent = Utils.MakeChieldForGameElement("Board_Bomb");
+        Game_Manager.Instance.OnGameStart += Instance_OnGameStart;
+    }
+    private void Instance_OnGameStart(object sender, System.EventArgs e)
+    {
+        SetMove(true);
+        SetEffectivePlayer(true);
+        SetPosition(Vector3.zero);
     }
     public void SetPlayerStat(Joystick joystick)
     {
@@ -120,7 +127,7 @@ public class Player_Base : Character_Base
         bomb.SetBomb(this, isSearcher);
         bomb.SetBoardCoor(MyCoor);
         bomb.transform.SetParent(boardBombParent);
-        Map_Holder.Instance.GameBoard[MyCoor.x, MyCoor.y] = new GameBoard(BoardType.Bomb, bomb.BoardOrder, bomb.gameObject);
+        Map_Holder.Instance.GameBoard[MyCoor.x, MyCoor.y] = new GameBoard(BoardType.Bomb, bomb.MyBoardOrder, bomb.gameObject);
     }
     public void UseBombClockActiviter()
     {

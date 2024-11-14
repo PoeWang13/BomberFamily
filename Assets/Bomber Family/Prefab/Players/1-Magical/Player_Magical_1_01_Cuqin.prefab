@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 388785016950440442}
   - component: {fileID: 1919743787323610898}
   - component: {fileID: 831262039387332721}
+  - component: {fileID: -4729890845287575363}
   m_Layer: 3
   m_Name: Player_Magical_1_01_Cuqin
   m_TagString: Player
@@ -48,7 +49,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   havuzum: {fileID: 11400000, guid: 9ae952410c0208847b9048008f03f09c, type: 2}
-  boardType: 8
+  myBoardType: 8
+  myCollider: {fileID: -4729890845287575363}
   characterStat:
     myLife: 1
     mySpeed: 1
@@ -73,7 +75,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -108,6 +110,29 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 116
   m_CollisionDetection: 0
+--- !u!136 &-4729890845287575363
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6830629819179113037}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.48
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1001 &3683304639382932319
 PrefabInstance:
   m_ObjectHideFlags: 0

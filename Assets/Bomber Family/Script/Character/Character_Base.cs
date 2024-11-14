@@ -66,6 +66,7 @@ public class Character_Base : Board_Object, IDamegable
         myAnimator = GetComponentInChildren<Animator>();
         characterView = transform.Find("CharacterView");
         objFreeze = characterView.Find("Freeze").gameObject;
+        Game_Manager.Instance.OnGameStart += Instance_OnGameStart;
         OnAwake();
     }
     public virtual void OnAwake()
@@ -74,6 +75,10 @@ public class Character_Base : Board_Object, IDamegable
     }
     public override void OnStart()
     {
+    }
+    private void Instance_OnGameStart(object sender, System.EventArgs e)
+    {
+        canMove = true;
     }
     public void SetCharacterStat(CharacterStat stat)
     {
@@ -207,9 +212,9 @@ public class Character_Base : Board_Object, IDamegable
     {
         return new Vector3Int(Mathf.RoundToInt(vector.x), 0, Mathf.RoundToInt(vector.z));
     }
-    public Vector3Int SetPos()
+    public void SetIntPos()
     {
-        return new Vector3Int(Mathf.RoundToInt(transform.position.x), 0, Mathf.RoundToInt(transform.position.z));
+        transform.position = new Vector3Int(Mathf.RoundToInt(transform.position.x), 0, Mathf.RoundToInt(transform.position.z));
     }
     public void TurnPlayerView(Vector3 dir)
     {
@@ -270,6 +275,16 @@ public class Character_Base : Board_Object, IDamegable
     public void SetMove(bool move)
     {
         canMove = move;
+    }
+    public void StopMovingForXTime(float stoppingTime = 1)
+    {
+        canMove = false;
+        Vector3 endPos = LearnIntDirection(transform.position);
+        transform.DOMove(endPos, stoppingTime * 0.5f);
+        DOVirtual.DelayedCall(stoppingTime, () =>
+        {
+            canMove = true;
+        });
     }
     public virtual void ResetBase()
     {

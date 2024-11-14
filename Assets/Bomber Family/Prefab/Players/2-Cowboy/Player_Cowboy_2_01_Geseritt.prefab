@@ -10,8 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 2354063038248872496}
   - component: {fileID: 8611372779646260978}
-  - component: {fileID: 9036451108821400350}
   - component: {fileID: 8750336292754261670}
+  - component: {fileID: 9036451108821400350}
+  - component: {fileID: -6184902196276957537}
   m_Layer: 3
   m_Name: Player_Cowboy_2_01_Geseritt
   m_TagString: Player
@@ -48,7 +49,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   havuzum: {fileID: 11400000, guid: c5db5cadd7aaecc4da886b493533b54e, type: 2}
-  boardType: 8
+  myBoardType: 8
+  myCollider: {fileID: -6184902196276957537}
   characterStat:
     myLife: 1
     mySpeed: 1
@@ -58,6 +60,29 @@ MonoBehaviour:
     myBombBoxPassing: 1
     myBombPushingTime: 1
   player_Source: {fileID: 11400000, guid: fc9b4d88f6cee43418c359348495fc59, type: 2}
+--- !u!136 &8750336292754261670
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8105436539680076917}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!54 &9036451108821400350
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -85,7 +110,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 116
   m_CollisionDetection: 0
---- !u!136 &8750336292754261670
+--- !u!136 &-6184902196276957537
 CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -104,7 +129,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 0.48
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}

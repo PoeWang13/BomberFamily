@@ -10,11 +10,12 @@ GameObject:
   m_Component:
   - component: {fileID: 3858701917160300804}
   - component: {fileID: -3962885556931846915}
-  - component: {fileID: 3267501032552548110}
   - component: {fileID: 635515897451732432}
-  m_Layer: 3
+  - component: {fileID: 3267501032552548110}
+  - component: {fileID: -5552452217040083336}
+  m_Layer: 8
   m_Name: Enemy_1_02_Magical
-  m_TagString: Player
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -48,7 +49,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   havuzum: {fileID: 11400000, guid: be4364c9acbd1c049911661474e9c039, type: 2}
-  boardType: 4
+  myBoardType: 4
+  myCollider: {fileID: -6680699287816817842, guid: 6a8cef30b26edd141bb1e3bb3fa47ec7,
+    type: 3}
   characterStat:
     myLife: 1
     mySpeed: 1
@@ -58,6 +61,29 @@ MonoBehaviour:
     myBombBoxPassing: 1
     myBombPushingTime: 1
   myItem: {fileID: 11400000, guid: 655199bdac4fb2a408a6de01a7b998c5, type: 2}
+--- !u!136 &635515897451732432
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8306464344083893147}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!54 &3267501032552548110
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -85,7 +111,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 116
   m_CollisionDetection: 0
---- !u!136 &635515897451732432
+--- !u!136 &-5552452217040083336
 CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -104,7 +130,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 0.48
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}

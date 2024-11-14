@@ -85,10 +85,10 @@ public class Board_Replicater : Board_Box
     private void CreateReplicator(int x, int y)
     {
         Board_Object board_Object = havuzum.HavuzdanObjeIste(new Vector3(MyCoor.x, 0, MyCoor.y)).GetComponent<Board_Object>();
-        board_Object.SetBoardOrder(BoardOrder);
+        board_Object.SetBoardOrder(MyBoardOrder);
         board_Object.SetBoardCoor(new Vector2Int(x, y));
         board_Object.transform.SetParent(boardBoxParent);
-        Map_Holder.Instance.GameBoard[x, y] = new GameBoard(board_Object.LearnBoardType(), BoardOrder, board_Object.gameObject);
+        Map_Holder.Instance.GameBoard[x, y] = new GameBoard(board_Object.MyBoardType, MyBoardOrder, board_Object.gameObject);
 
         // Bossu dışarı çıkar
         board_Object.transform.DOMoveY(0, 1.0f).OnComplete(() =>

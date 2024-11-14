@@ -7,31 +7,40 @@ public class Direction_Random : Moving_Base
 
     public override void OnStart()
     {
-        MyBase.SetDirection(MyBase.LearnDirection(FindRandomDirection() - MyBase.LearnDirection(transform.position)));
+        MyBase.SetDirection(FindRandomDirection());
     }
-    private void Update()
+    public override void Move()
     {
-        if (!Game_Manager.Instance.LevelStart)
+        if (Vector3.SqrMagnitude(transform.position + MyBase.Direction - Player.position) < 0.01f)
         {
+            MyBase.StopMovingForXTime();
             return;
         }
-        if (!MyBase.CanMove)
+        RaycastHit raycast;
+        Ray ray = new(transform.position + Vector3.up * 0.5f, MyBase.Direction);
+        if (Physics.Raycast(ray, out raycast, 1, BoardMaskIndex))
         {
-            return;
+            if (Vector3.SqrMagnitude(transform.position + MyBase.Direction - raycast.transform.position) < 0.01f)
+            {
+                ChangeDirection();
+            }
         }
-        if (Vector3.Distance(transform.position, Player.position) > 0.05f)
+        else
         {
             randomDirectionTimeNext += Time.deltaTime;
             if (randomDirectionTimeNext > ChangeDirectionTime)
             {
-                randomDirectionTimeNext = 0;
-                MyBase.SetDirection(FindRandomDirection() - MyBase.LearnDirection(transform.position));
+                if (Vector3.SqrMagnitude(transform.position - MyBase.LearnIntDirection(transform.position)) < 0.01f)
+                {
+                    ChangeDirection();
+                }
             }
-            if (Vector3.Distance(transform.position, MyDirections[RndDirec]) < 0.05f)
-            {
-                MyBase.SetDirection(FindRandomDirection() - MyBase.LearnDirection(transform.position));
-            }
-            transform.Translate(MyBase.Direction * Time.deltaTime * MyBase.MySpeed);
         }
+    }
+    private void ChangeDirection()
+    {
+        MyBase.SetIntPos();
+        randomDirectionTimeNext = 0;
+        MyBase.SetDirection(FindRandomDirection());
     }
 }

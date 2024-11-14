@@ -42,9 +42,10 @@ GameObject:
   - component: {fileID: 4549644435828676}
   - component: {fileID: 3702977918797950952}
   - component: {fileID: 5397495593784094052}
+  - component: {fileID: 1661232061584203742}
   - component: {fileID: 5763715094698741696}
   - component: {fileID: 2535533942341685525}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Enemy_0_04_Starting
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -80,7 +81,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   havuzum: {fileID: 11400000, guid: e501449102ea68143b47161cfedfce5c, type: 2}
-  boardType: 4
+  myBoardType: 4
+  myCollider: {fileID: 2535533942341685525}
   characterStat:
     myLife: 1
     mySpeed: 1
@@ -102,6 +104,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4550c78d1abd8646a3acbd4ce16b63e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  changeDirectionTime: 5
+--- !u!136 &1661232061584203742
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1046869630431942}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.27
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!54 &5763715094698741696
 Rigidbody:
   m_ObjectHideFlags: 0

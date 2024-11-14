@@ -2,21 +2,21 @@
 
 public class Board_Object : PoolObje
 {
-    [SerializeField] private BoardType boardType;
+    [SerializeField] private BoardType myBoardType;
+    [SerializeField] private Collider myCollider;
 
-    private int boardOrder;
-    private Vector2Int myCoor;
     private bool isStuck;
-    private Collider myCollider;
+    private int myBoardOrder;
+    private Vector2Int myCoor;
 
     public Vector2Int MyCoor { get { return myCoor; } }
     public bool IsStuck { get { return isStuck; } }
-    public int BoardOrder { get { return boardOrder; } }
+    public int MyBoardOrder { get { return myBoardOrder; } }
+    public BoardType MyBoardType { get { return myBoardType; } }
     public Collider MyCollider { get { return myCollider; } }
 
     private void Start()
     {
-        myCollider = GetComponent<Collider>();
         Canvas_Manager.Instance.OnGameWin += Instance_OnGameWin;
         Canvas_Manager.Instance.OnGameLost += Instance_OnGameLost;
         OnStart();
@@ -55,7 +55,7 @@ public class Board_Object : PoolObje
     }
     public void SetBoardOrder(int order)
     {
-        boardOrder = order;
+        myBoardOrder = order;
     }
     public void SetBoardCoor(Vector2Int coor)
     {
@@ -66,13 +66,9 @@ public class Board_Object : PoolObje
     public virtual void SetObject()
     {
     }
-    public BoardType LearnBoardType()
-    {
-        return boardType;
-    }
     public override void ObjeHavuzEnter()
     {
-        if (myCollider is not null)
+        if (myCollider != null)
         {
             myCollider.enabled = true;
         }

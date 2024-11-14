@@ -5,6 +5,8 @@ public class Enemy_Base : Character_Base
 {
     [SerializeField] private Item_Enemy myItem;
 
+    private List<Vector2Int> possibleLootPos = new List<Vector2Int>();
+
     public Item_Enemy MyItem { get { return myItem; } }
 
     public override void OnStart()
@@ -34,8 +36,7 @@ public class Enemy_Base : Character_Base
             int newStart = -1;
             int newFinish = Mathf.Abs(newStart) + 1;
             // Potansiyel item koyma koordinatlarý
-            (List<Vector2Int>, int oldStart, int oldFinish, int newStart, int newFinish) potCoor =
-                    PotansiyelKoordinatlar(oldStart, oldFinish, newStart, newFinish);
+            PotansiyelKoordinatlar(oldStart, oldFinish, newStart, newFinish);
 
             if (allLoot.Count > 0)
             {
@@ -43,11 +44,11 @@ public class Enemy_Base : Character_Base
             }
             while (allLoot.Count != 0)
             {
-                while (potCoor.Item1.Count != 0)
+                while (possibleLootPos.Count != 0)
                 {
-                    int rndOrder = Random.Range(0, potCoor.Item1.Count);
-                    Vector2Int randomDirec = potCoor.Item1[rndOrder];
-                    potCoor.Item1.RemoveAt(rndOrder);
+                    int rndOrder = Random.Range(0, possibleLootPos.Count);
+                    Vector2Int randomDirec = possibleLootPos[rndOrder];
+                    possibleLootPos.RemoveAt(rndOrder);
                     if (Map_Holder.Instance.GameBoard[randomDirec.x, randomDirec.y] == null)
                     {
                         PoolObje poolObje = allLoot[0].HavuzdanObjeIste(new Vector3Int(randomDirec.x, 0, randomDirec.y));
@@ -63,18 +64,18 @@ public class Enemy_Base : Character_Base
                     oldFinish = newFinish;
                     newStart = newStart - 1;
                     newFinish = newFinish + 1;
-                    potCoor = PotansiyelKoordinatlar(oldStart, oldFinish, newStart, newFinish);
+                    PotansiyelKoordinatlar(oldStart, oldFinish, newStart, newFinish);
                 }
             }
         }
         Game_Manager.Instance.AddEnemyAmount();
         Game_Manager.Instance.AddExpAmount(myItem.LearnExp());
+        
         EnterHavuz();
     }
-    private (List<Vector2Int>, int oldStart, int oldFinish, int newStart, int newFinish) PotansiyelKoordinatlar
-        (int oldStart, int oldFinish, int newStart, int newFinish)
+    private void PotansiyelKoordinatlar(int oldStart, int oldFinish, int newStart, int newFinish)
     {
-        List<Vector2Int> coor = new List<Vector2Int>();
+        possibleLootPos.Clear();
 
         for (int x = newStart; x < newFinish; x++)
         {
@@ -89,16 +90,15 @@ public class Enemy_Base : Character_Base
                     }
                     else
                     {
-                        coor.Add(new Vector2Int(x, y));
+                        possibleLootPos.Add(new Vector2Int(x, y));
                     }
                 }
                 else
                 {
-                    coor.Add(new Vector2Int(x, y));
+                    possibleLootPos.Add(new Vector2Int(x, y));
                 }
             }
         }
-        return (coor, oldStart, oldFinish, newStart, newFinish);
     }
     #endregion
 
@@ -106,9 +106,14 @@ public class Enemy_Base : Character_Base
     {
         if (other.CompareTag("Player"))
         {
+            StopMovingForXTime();
             Game_Manager.Instance.AddLoseLifeAmount(CharacterStat.myBombPower);
             Character_Base character_Base = other.GetComponent<Character_Base>();
             character_Base.TakeDamage(CharacterStat.myBombPower);
+        }
+        else if (other.CompareTag("Enemy"))
+        {
+            Physics.IgnoreCollision(MyCollider, other.GetComponent<Board_Object>().MyCollider);
         }
     }
 }

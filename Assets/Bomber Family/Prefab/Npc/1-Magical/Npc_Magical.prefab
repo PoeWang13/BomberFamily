@@ -9,9 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4982057653837957565}
-  - component: {fileID: 4150213238891538028}
-  - component: {fileID: 7863505045366632149}
   - component: {fileID: 7733612846643263336}
+  - component: {fileID: 7863505045366632149}
+  - component: {fileID: 4150213238891538028}
+  - component: {fileID: 5218166964744187077}
   m_Layer: 3
   m_Name: Npc_Magical
   m_TagString: Player
@@ -35,6 +36,42 @@ Transform:
   - {fileID: 1739016042708621673}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7733612846643263336
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5073182239484269070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fdaee1089d505d54c919f9b5201a4c3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  havuzum: {fileID: 11400000, guid: b58ad529fa678f74ab780b9b0b555150, type: 2}
+--- !u!136 &7863505045366632149
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5073182239484269070}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!54 &4150213238891538028
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -62,7 +99,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 116
   m_CollisionDetection: 0
---- !u!136 &7863505045366632149
+--- !u!136 &5218166964744187077
 CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -81,23 +118,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 0.48
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
---- !u!114 &7733612846643263336
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5073182239484269070}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fdaee1089d505d54c919f9b5201a4c3c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  havuzum: {fileID: 11400000, guid: b58ad529fa678f74ab780b9b0b555150, type: 2}
 --- !u!1001 &1741902779671157143
 PrefabInstance:
   m_ObjectHideFlags: 0

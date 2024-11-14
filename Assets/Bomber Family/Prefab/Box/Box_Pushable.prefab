@@ -9,10 +9,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4035765028099436}
+  - component: {fileID: 213566989647258387}
   - component: {fileID: -7110263392945972925}
   - component: {fileID: 4407419040972682387}
+  - component: {fileID: 5223860150511808126}
   m_Layer: 7
-  m_Name: Box_
+  m_Name: Box_Pushable
   m_TagString: Board
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -34,6 +36,21 @@ Transform:
   - {fileID: 8445972242465531755}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &213566989647258387
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1118085362977378}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef48c02aafef48440af2e43b217a960a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  havuzum: {fileID: 11400000, guid: d7f78fcbce1d27e46b4fbf59bf266b4b, type: 2}
+  myBoardType: 2
+  myCollider: {fileID: 5223860150511808126}
 --- !u!54 &-7110263392945972925
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -76,11 +93,32 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0.5, z: 0}
+--- !u!65 &5223860150511808126
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1118085362977378}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.9, y: 1, z: 0.9}
   m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!1 &639520328396135093
 GameObject:
@@ -94,7 +132,7 @@ GameObject:
   - component: {fileID: 8529195560912245408}
   - component: {fileID: 686942115011735699}
   m_Layer: 0
-  m_Name: Box_ (1)
+  m_Name: BoardBoxPushableView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -75,7 +75,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     [SerializeField] private Button buttonSaveMap;
     [SerializeField] private Image imageProcess;
     [SerializeField] private TextMeshProUGUI textProcess;
-    [SerializeField] private GameObject objCheckingMapButton;///
+    [SerializeField] private GameObject objCheckingMapButton;
     [SerializeField] private GameObject panelObjectBehaviour;
     [SerializeField] private GameObject panelObjectMove;
     [SerializeField] private GameObject panelObjectDestroy;
@@ -110,6 +110,9 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     [SerializeField] private Button buttonHelpCloser;
     [SerializeField] private GameObject panelPlayerSetting;
     [SerializeField] private Image imagePlayerIcon;
+    [SerializeField] private Image imagePlayerLevelPercent;
+    [SerializeField] private TextMeshProUGUI textPlayerExp;
+    [SerializeField] private TextMeshProUGUI textPlayerLevel;
     [SerializeField] private TextMeshProUGUI textPlayerName;
     [SerializeField] private RectTransform rectPlayerLife;
     [SerializeField] private TextMeshProUGUI textPlayerLife;
@@ -176,6 +179,10 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     public bool ToggleDungeonSetting { get { return toggleDungeonSetting.isOn; } }
 
     #region Menu
+    private void Start()
+    {
+        Game_Manager.Instance.OnGameStart += Instance_OnGameStart;
+    }
     public void GameStart()
     {
         sceneMaskedImage.gameObject.SetActive(true);
@@ -403,6 +410,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         player_Base.SetInstance();
         playerOrder = Save_Load_Manager.Instance.gameData.playerOrder;
         SetPlayerInfo();
+        SetLevel();
         SetGold();
         SetGateCreatorSlot();
         SetWallCreatorSlot();
@@ -410,7 +418,6 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         SetTrapCreatorSlot();
         SetEnemyCreatorSlot();
         SetBossEnemyCreatorSlot();
-        SetPlayerStats();
         SetMapButtons();
         SetMyLevelButtons();
         SetGameLevelButtons();
@@ -457,16 +464,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     #endregion
 
     #region Player Stats
-    public void SetGamePanel(bool isActive)
-    {
-        panelGame.SetActive(isActive);
-        Game_Manager.Instance.SetLevelStart();
-    }
-    public void SetPlayerSettingPanel(bool isActive)
-    {
-        panelPlayerSetting.SetActive(isActive);
-    }
-    public void SetPlayerStats()
+    private void Instance_OnGameStart(object sender, EventArgs e)
     {
         Player_Base.Instance.ResetBase();
         SetPlayerSettingPanel(true);
@@ -477,6 +475,23 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         SetPlayerSpeedText();
         SetPlayerBombFireLimitText();
         SetPlayerBombAmountText();
+        panelGame.SetActive(true);
+        SetActiveMapProcess(false);
+    }
+    public void SetLevel()
+    {
+        int exp = Save_Load_Manager.Instance.gameData.allPlayers[Save_Load_Manager.Instance.gameData.playerOrder].playerExp;
+        int expMax = Save_Load_Manager.Instance.gameData.allPlayers[Save_Load_Manager.Instance.gameData.playerOrder].playerExpMax;
+        int level = Save_Load_Manager.Instance.gameData.allPlayers[Save_Load_Manager.Instance.gameData.playerOrder].playerLevel;
+
+        textPlayerExp.text = "Exp : " + exp.ToString();
+        float percent = 1.0f * exp / expMax;
+        textPlayerLevel.text = "Level : " + level + " - %" + (percent * 100);
+        imagePlayerLevelPercent.fillAmount = percent;
+    }
+    public void SetPlayerSettingPanel(bool isActive)
+    {
+        panelPlayerSetting.SetActive(isActive);
     }
     public void SetPlayerLifeText()
     {
@@ -549,9 +564,10 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
                 correctDungeonSize = false;
                 Warning_Manager.Instance.ShowMessage("Board Size Width can not be smallest than 11.", 3);
             }
-            else if (sizeX > 99)
+            else if (sizeX > 25)
             {
-                Warning_Manager.Instance.ShowMessage("Board Size Width can not be bigger than 99.", 3);
+                correctDungeonSize = false;
+                Warning_Manager.Instance.ShowMessage("Board Size Width can not be bigger than 25.", 3);
             }
             else if (sizeX % 2 == 0)
             {
@@ -571,9 +587,10 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
                 correctDungeonSize = false;
                 Warning_Manager.Instance.ShowMessage("Board Size Height can not be smallest than 11.", 3);
             }
-            else if (sizeY > 99)
+            else if (sizeY > 25)
             {
-                Warning_Manager.Instance.ShowMessage("Board Size Height can not be bigger than 99.", 3);
+                correctDungeonSize = false;
+                Warning_Manager.Instance.ShowMessage("Board Size Height can not be bigger than 25.", 3);
             }
             else if (sizeY % 2 == 0)
             {
@@ -585,6 +602,11 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         {
             correctDungeonSize = false;
             Warning_Manager.Instance.ShowMessage("Board Size Height must be number, NOT letter.");
+        }
+        if (sizeX * sizeY > 500)
+        {
+            correctDungeonSize = false;
+            Warning_Manager.Instance.ShowMessage("Board Size Area can not be bigger than 500.");
         }
         CheckDungeonSettingCorrect();
     }
@@ -1041,10 +1063,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
             panelMap.SetActive(false);
             panelGame.SetActive(true);
             panelCreator.SetActive(false);
-            SetPlayerStats();
-            Player_Base.Instance.SetMove(true);
-            Player_Base.Instance.SetEffectivePlayer(true);
-            Player_Base.Instance.SetPosition(Vector3.zero);
+            Camera_Manager.Instance.SetCameraPos(new Vector3Int(Map_Holder.Instance.BoardSize.x, 0, Map_Holder.Instance.BoardSize.y));
             Warning_Manager.Instance.ShowMessage("Finish game for save.");
         }
     }

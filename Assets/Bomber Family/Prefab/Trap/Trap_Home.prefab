@@ -49,7 +49,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   havuzum: {fileID: 11400000, guid: 413d9898475a9284b87164d890ac5f94, type: 2}
-  boardType: 3
+  myBoardType: 3
+  myCollider: {fileID: 0}
   spawnTime: 5
   enemies:
   - {fileID: 11400000, guid: e501449102ea68143b47161cfedfce5c, type: 2}

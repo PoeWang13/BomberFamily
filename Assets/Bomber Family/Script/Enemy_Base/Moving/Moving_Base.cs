@@ -3,12 +3,13 @@ using System.Collections.Generic;
 
 public class Moving_Base : MonoBehaviour
 {
+    [SerializeField] private float changeDirectionTime = 5;
 
     private int rndDirec;
     private int boardWeight;
     private int boardHeight;
     private int boardMaskIndex;
-    private float changeDirectionTime;
+    private int playerMaskIndex;
 
     private Enemy_Base myBase;
     private Transform player_Base;
@@ -20,6 +21,7 @@ public class Moving_Base : MonoBehaviour
     public int BoardHeight { get { return boardHeight; } }
     public int RndDirec { get { return rndDirec; } }
     public int BoardMaskIndex { get { return boardMaskIndex; } }
+    public int PlayerMaskIndex { get { return playerMaskIndex; } }
     public Enemy_Base MyBase { get { return myBase; } }
     public List<Vector3> MyDirections { get { return myDirections; } }
 
@@ -27,61 +29,99 @@ public class Moving_Base : MonoBehaviour
     {
         myBase = GetComponent<Enemy_Base>();
         boardMaskIndex = 1 << LayerMask.NameToLayer("Board");
+        playerMaskIndex = 1 << LayerMask.NameToLayer("Player");
     }
     private void Start()
     {
         player_Base = Player_Base.Instance.transform;
         boardWeight = Map_Holder.Instance.GameBoard.GetLength(0);
         boardHeight = Map_Holder.Instance.GameBoard.GetLength(1);
-        Invoke("SetDirectionTime", 0.1f);
         OnStart();
     }
     public virtual void OnStart()
     {
     }
-    private void SetDirectionTime()
+    public void OnSet()
     {
-        changeDirectionTime = 1 / myBase.MySpeed;
+        myBase.SetMove(true);
     }
-    public virtual void OnSet()
+    private void Update()
     {
+        if (!Game_Manager.Instance.LevelStart)
+        {
+            return;
+        }
+        if (!MyBase.CanMove)
+        {
+            return;
+        }
+        Move();
+        MyBase.TurnPlayerView(MyBase.Direction);
+        transform.Translate(MyBase.Direction * Time.deltaTime * MyBase.MySpeed);
     }
-    public Vector3 FindRandomDirection()
+    public virtual void Move()
+    {
+
+    }
+    public Vector3 FindRandomDirection(bool isCoward = false)
     {
         myDirections.Clear();
         // Sağ bak
-        RaycastHit hitInfo;
-        Ray ray = new Ray(transform.position + Vector3.up * 0.5f, Vector3.right);
-        if (Physics.Raycast(ray, out hitInfo, boardWeight, boardMaskIndex))
+        if (!Physics.Raycast(transform.position + Vector3.up * 0.5f, Vector3.right, 1, boardMaskIndex))
         {
-            if (Vector3.Distance(hitInfo.transform.position, transform.position) > 1.25f)
+            if (isCoward)
+            {
+                if (!Physics.Raycast(transform.position + Vector3.up * 0.5f, Vector3.right, BoardWeight, playerMaskIndex))
+                {
+                    myDirections.Add(Vector3.right);
+                }
+            }
+            else
             {
                 myDirections.Add(Vector3.right);
             }
         }
         // Sol bak
-        ray = new Ray(transform.position + Vector3.up * 0.5f, Vector3.left);
-        if (Physics.Raycast(ray, out hitInfo, boardWeight, boardMaskIndex))
+        if (!Physics.Raycast(transform.position + Vector3.up * 0.5f, Vector3.left, 1, boardMaskIndex))
         {
-            if (Vector3.Distance(hitInfo.transform.position, transform.position) > 1.25f)
+            if (isCoward)
+            {
+                if (!Physics.Raycast(transform.position + Vector3.up * 0.5f, Vector3.left, BoardWeight, playerMaskIndex))
+                {
+                    myDirections.Add(Vector3.left);
+                }
+            }
+            else
             {
                 myDirections.Add(Vector3.left);
             }
         }
         // İleri bak
-        ray = new Ray(transform.position + Vector3.up * 0.5f, Vector3.forward);
-        if (Physics.Raycast(ray, out hitInfo, boardHeight, boardMaskIndex))
+        if (!Physics.Raycast(transform.position + Vector3.up * 0.5f, Vector3.forward, 1, boardMaskIndex))
         {
-            if (Vector3.Distance(hitInfo.transform.position, transform.position) > 1.25f)
+            if (isCoward)
+            {
+                if (!Physics.Raycast(transform.position + Vector3.up * 0.5f, Vector3.forward, boardHeight, playerMaskIndex))
+                {
+                    myDirections.Add(Vector3.forward);
+                }
+            }
+            else
             {
                 myDirections.Add(Vector3.forward);
             }
         }
         // Geri bak
-        ray = new Ray(transform.position + Vector3.up * 0.5f, Vector3.back);
-        if (Physics.Raycast(ray, out hitInfo, boardHeight, boardMaskIndex))
+        if (!Physics.Raycast(transform.position + Vector3.up * 0.5f, Vector3.back, 1, boardMaskIndex))
         {
-            if (Vector3.Distance(hitInfo.transform.position, transform.position) > 1.25f)
+            if (isCoward)
+            {
+                if (!Physics.Raycast(transform.position + Vector3.up * 0.5f, Vector3.back, boardHeight, playerMaskIndex))
+                {
+                    myDirections.Add(Vector3.back);
+                }
+            }
+            else
             {
                 myDirections.Add(Vector3.back);
             }

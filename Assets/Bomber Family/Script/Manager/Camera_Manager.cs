@@ -28,12 +28,27 @@ public class Camera_Manager : Singletion<Camera_Manager>
             Player_Base.Instance.SetMove(true);
         });
     }
+    public void ShowConstructLevelBoard(Vector3 pos)
+    {
+        Vector3 startingPos = transform.position;
+        DOTween.To(value => 
+        {
+            if (!showContructLevel)
+            {
+                transform.position = startingPos + pos * value;
+            }
+        }, startValue: 0, endValue: 1, duration: 0.5f);
+    }
+    private bool showContructLevel;
     public void SetCameraPos(Vector3Int pos)
     {
-        transform.position = pos + Vector3.left * 5 + Vector3.back * 5;
-        transform.DOMove(new Vector3(xMinLimit, 0, zMinLimit), 2.5f).OnComplete(() =>
+        showContructLevel = true;
+        transform.DOMove(pos + Vector3.left * 5 + Vector3.back * 5, 0.5f).OnComplete(() =>
         {
-            Player_Base.Instance.SetMove(true);
+            transform.DOMove(new Vector3(xMinLimit, 0, zMinLimit), 2.5f).OnComplete(() =>
+            {
+                Game_Manager.Instance.StartLevel();
+            });
         });
     }
     private void Update()

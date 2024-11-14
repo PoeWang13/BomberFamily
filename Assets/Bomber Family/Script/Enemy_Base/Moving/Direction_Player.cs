@@ -16,15 +16,16 @@ public class Direction_Player : Moving_Base
     [ContextMenu("Find Player")]
     private void TryToFindPlayer()
     {
-        if (Vector3.Distance(transform.position, Player.position) > 0.05f)
+        if (Vector3.SqrMagnitude(transform.position + MyBase.Direction - Player.position) > 0.01f)
         {
+            MyBase.SetIntPos();
             findPlayer = false;
-            Node startNode = new Node(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.z));
-            Node playerNode = new Node(Mathf.RoundToInt(Player.position.x), Mathf.RoundToInt(Player.position.z));
+            Node playerNode = LearnNode(Player.position);
+            Node startNode = LearnNode(transform.position);
             findPath = Map_Holder.Instance.FindPath(startNode, playerNode);
             if (findPath.Count == 0)
             {
-                MyBase.SetDirection(FindRandomDirection() - MyBase.LearnDirection(transform.position));
+                MyBase.SetDirection(FindRandomDirection());
             }
             else
             {
@@ -34,40 +35,48 @@ public class Direction_Player : Moving_Base
             }
         }
     }
-    private void Update()
+    private Node LearnNode(Vector3 pos)
     {
-        if (!Game_Manager.Instance.LevelStart)
+        return new Node(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.z));
+    }
+    public override void Move()
+    {
+        if (Vector3.SqrMagnitude(transform.position + MyBase.Direction - Player.position) < 0.01f)
         {
+            MyBase.StopMovingForXTime();
             return;
         }
-        if (!MyBase.CanMove)
+        RaycastHit raycast;
+        Ray ray = new(transform.position + Vector3.up * 0.5f, MyBase.Direction);
+        if (Physics.Raycast(ray, out raycast, 1, BoardMaskIndex))
         {
-            return;
-        }
-        tryingToFindPlayerTimeNext += Time.deltaTime;
-        if (tryingToFindPlayerTimeNext > ChangeDirectionTime)
-        {
-            tryingToFindPlayerTimeNext = 0;
-            TryToFindPlayer();
-        }
-        if (findPlayer)
-        {
-            if (Vector3.Distance(transform.position, Player.position) < 0.05f)
-            {
-                MyBase.SetMySpeed(0);
-            }
-            else if (Vector3.Distance(transform.position, nextPoint) < 0.05f)
+            if (Vector3.SqrMagnitude(transform.position + MyBase.Direction - raycast.transform.position) < 0.01f)
             {
                 TryToFindPlayer();
+                tryingToFindPlayerTimeNext = 0;
             }
         }
         else
         {
-            if (Vector3.Distance(transform.position, MyDirections[RndDirec]) < 0.05f)
+            if (findPlayer)
             {
-                TryToFindPlayer();
+                if (Vector3.SqrMagnitude(transform.position - nextPoint) < 0.01f)
+                {
+                    TryToFindPlayer();
+                }
+            }
+            else
+            {
+                tryingToFindPlayerTimeNext += Time.deltaTime;
+                if (tryingToFindPlayerTimeNext > ChangeDirectionTime)
+                {
+                    if (Vector3.SqrMagnitude(transform.position - MyBase.LearnIntDirection(transform.position)) < 0.01f)
+                    {
+                        TryToFindPlayer();
+                        tryingToFindPlayerTimeNext = 0;
+                    }
+                }
             }
         }
-        transform.Translate(MyBase.Direction * Time.deltaTime * MyBase.MySpeed);
     }
 }

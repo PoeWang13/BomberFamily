@@ -1,8 +1,10 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using Random = UnityEngine.Random;
 
 public enum GameType
 {
@@ -13,12 +15,15 @@ public enum GameType
 }
 public class Game_Manager : Singletion<Game_Manager>
 {
+    public event EventHandler OnGameStart;
+
     [Header("Genel")]
     [SerializeField] private Pooler magicStone;
     [SerializeField] private Transform gameElements;
     [SerializeField] private Transform playerWaitingPoint;
     [SerializeField] private GameObject onlineController;
     [SerializeField] private All_Item_Holder all_Item_Holder;
+    [SerializeField] private Level_Exp_Holder level_Exp_Holder;
     [SerializeField] private List<GameObject> finishParticles = new List<GameObject>();
 
     private bool levelStart;
@@ -105,19 +110,24 @@ public class Game_Manager : Singletion<Game_Manager>
             Destroy(Instantiate(rndObj, rndPos, Quaternion.identity));
         }
     }
-    private void Instance_OnGameLost(object sender, System.EventArgs e)
+    private void Instance_OnGameLost(object sender, EventArgs e)
+    {
+        GameFinish();
+    }
+    private void Instance_OnGameWin(object sender, EventArgs e)
+    {
+        GameFinish();
+    }
+    private void GameFinish()
     {
         levelStart = false;
         levelTime = Time.time - beginingLevelTime;
     }
-    private void Instance_OnGameWin(object sender, System.EventArgs e)
-    {
-        levelStart = false;
-        levelTime = Time.time - beginingLevelTime;
-    }
-    public void SetLevelStart()
+    public void StartLevel()
     {
         levelStart = true;
+        SetLevelStats();
+        OnGameStart?.Invoke(this, EventArgs.Empty);
     }
     public void CreateMagicStone(Vector3 pos)
     {
@@ -189,6 +199,29 @@ public class Game_Manager : Singletion<Game_Manager>
     public void AddExpAmount(int amount)
     {
         earnExp += amount;
+        int exp = Save_Load_Manager.Instance.gameData.allPlayers[Save_Load_Manager.Instance.gameData.playerOrder].playerExp;
+        int expMax = Save_Load_Manager.Instance.gameData.allPlayers[Save_Load_Manager.Instance.gameData.playerOrder].playerExpMax;
+        int level = Save_Load_Manager.Instance.gameData.allPlayers[Save_Load_Manager.Instance.gameData.playerOrder].playerLevel;
+
+        exp += amount;
+        if (exp >= expMax)
+        {
+            if (level_Exp_Holder.CanIncreaseMyLevel(level))
+            {
+                level++;
+                exp -= expMax;
+            }
+        }
+        expMax = level_Exp_Holder.LearnMyLevelMaxExp(level);
+
+        Save_Load_Manager.Instance.gameData.allPlayers[Save_Load_Manager.Instance.gameData.playerOrder].playerExp = exp;
+        Save_Load_Manager.Instance.gameData.allPlayers[Save_Load_Manager.Instance.gameData.playerOrder].playerExpMax = expMax;
+        Save_Load_Manager.Instance.gameData.allPlayers[Save_Load_Manager.Instance.gameData.playerOrder].playerLevel = level;
+        if (exp >= expMax)
+        {
+            AddExpAmount(0);
+        }
+        Canvas_Manager.Instance.SetLevel();
     }
     #endregion
 }

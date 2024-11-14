@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: -5841811438219992981}
   - component: {fileID: -6802777436516813297}
   - component: {fileID: 1729457835251721266}
+  - component: {fileID: 6415965185427034643}
   m_Layer: 7
   m_Name: Box_Simple
   m_TagString: Board
@@ -48,7 +49,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   havuzum: {fileID: 11400000, guid: 9a04e09065a06f04988f4b696076116e, type: 2}
-  boardType: 2
+  myBoardType: 2
+  myCollider: {fileID: 6415965185427034643}
   life: 1
   lootChance: 15
   loot_Controller: {fileID: 11400000, guid: 4223c774c2e5e744ebc60628c7b0bd95, type: 2}
@@ -67,7 +69,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -100,6 +102,27 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 0
+--- !u!65 &6415965185427034643
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100000}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.9, y: 1, z: 0.9}
+  m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!1 &937956519668947796
 GameObject:
   m_ObjectHideFlags: 0
@@ -116,7 +139,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &3096622704283797491
 Transform:

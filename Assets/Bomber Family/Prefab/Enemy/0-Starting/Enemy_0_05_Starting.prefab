@@ -329,7 +329,8 @@ GameObject:
   - component: {fileID: 8739690402032822082}
   - component: {fileID: 8975250082014306211}
   - component: {fileID: 4129450459442926988}
-  m_Layer: 0
+  - component: {fileID: 7218889343115976522}
+  m_Layer: 8
   m_Name: Enemy_0_05_Starting
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -367,7 +368,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   havuzum: {fileID: 11400000, guid: e9615810a6dfb2a47b18cfd37dc89b64, type: 2}
-  boardType: 4
+  myBoardType: 4
+  myCollider: {fileID: 7218889343115976522}
   characterStat:
     myLife: 1
     mySpeed: 1
@@ -389,8 +391,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43efb0126151b8c42ab6d0fff3d4e248, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  changeDirectionTime: 5
   teleportEnd: {fileID: 232024545087829284}
   teleportStart: {fileID: 5411949499425266996}
+  teleportTime: 10
 --- !u!95 &8739690402032822082
 Animator:
   serializedVersion: 5
@@ -427,11 +431,11 @@ SphereCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.3
+  m_Radius: 0.32
   m_Center: {x: 0, y: 0.25, z: 0}
 --- !u!54 &4129450459442926988
 Rigidbody:
@@ -460,6 +464,27 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!135 &7218889343115976522
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8690605241640038912}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.3
+  m_Center: {x: 0, y: 0.25, z: 0}
 --- !u!1 &9015523559222192662
 GameObject:
   m_ObjectHideFlags: 0
@@ -555,6 +580,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Teleport End
       objectReference: {fileID: 0}
+    - target: {fileID: 183362, guid: 3f97cdb2dde8d7f44a37ce3a93c2bf69, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 433904, guid: 3f97cdb2dde8d7f44a37ce3a93c2bf69, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -623,6 +652,10 @@ PrefabInstance:
     - target: {fileID: 197318, guid: c82022460ac6d274cb9e2aefc6da9dc9, type: 3}
       propertyPath: m_Name
       value: Teleport Start
+      objectReference: {fileID: 0}
+    - target: {fileID: 197318, guid: c82022460ac6d274cb9e2aefc6da9dc9, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 429692, guid: c82022460ac6d274cb9e2aefc6da9dc9, type: 3}
       propertyPath: m_LocalPosition.x

@@ -227,10 +227,11 @@ GameObject:
   m_Component:
   - component: {fileID: 6118174221721670358}
   - component: {fileID: 5655385664379011417}
+  - component: {fileID: -4864222339352473858}
   - component: {fileID: 4163376835217235203}
   - component: {fileID: 5414271345073380139}
-  - component: {fileID: -4864222339352473858}
-  m_Layer: 0
+  - component: {fileID: 5641395265664788024}
+  m_Layer: 8
   m_Name: Boss_0_00_Starting
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -266,7 +267,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   havuzum: {fileID: 11400000, guid: 0ae2d0e3b8697fd46845547190f82106, type: 2}
-  boardType: 5
+  myBoardType: 5
+  myCollider: {fileID: 5641395265664788024}
   characterStat:
     myLife: 1
     mySpeed: 1
@@ -276,6 +278,27 @@ MonoBehaviour:
     myBombBoxPassing: 1
     myBombPushingTime: 1
   myItem: {fileID: 11400000, guid: dda018905cb1bb04db225300a57c4ba6, type: 2}
+--- !u!95 &-4864222339352473858
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6891580169314388076}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 32aef57d6c12f574a8efc6a33038ec61, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!136 &4163376835217235203
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -291,11 +314,11 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 0.4
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
@@ -326,27 +349,29 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 116
   m_CollisionDetection: 0
---- !u!95 &-4864222339352473858
-Animator:
-  serializedVersion: 5
+--- !u!136 &5641395265664788024
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6891580169314388076}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
   m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 32aef57d6c12f574a8efc6a33038ec61, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
+  serializedVersion: 2
+  m_Radius: 0.38
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &7647819984296596885
 GameObject:
   m_ObjectHideFlags: 0

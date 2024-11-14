@@ -180,21 +180,7 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
         board_Object.SetBoardOrder(all_Item_Holder.LearnOrder(item));
         createdObject = board_Object.gameObject;
         Canvas_Manager.Instance.SetSaveButtonForMyLevel();
-        Utils.SetParent(createdObject, "Board_" + board_Object.LearnBoardType());
-        createdItem = item;
-        createdOrder = all_Item_Holder.LearnOrder(item);
-        createdObjectMaterial = createdObject.GetComponentInChildren<Renderer>().material;
-        createdObjectColor = createdObjectMaterial.color;
-    }
-    public void SetCreatedObject(Item_Enemy item)
-    {
-        Canvas_Manager.Instance.SetPanelObjectBehaviourPanel(true, false, true);
-        Canvas_Manager.Instance.SetCreatorButtons(false);
-        Board_Object board_Object = item.MyPool.HavuzdanObjeIste(myCamera.ScreenToWorldPoint(Input.mousePosition)).GetComponent<Board_Object>();
-        board_Object.SetBoardOrder(all_Item_Holder.LearnOrder(item));
-        createdObject = board_Object.gameObject;
-        Canvas_Manager.Instance.SetSaveButtonForMyLevel();
-        Utils.SetParent(createdObject, "Board_" + board_Object.LearnBoardType());
+        Utils.SetParent(createdObject, "Board_" + board_Object.MyBoardType);
         createdItem = item;
         createdOrder = all_Item_Holder.LearnOrder(item);
         createdObjectMaterial = createdObject.GetComponentInChildren<Renderer>().material;
@@ -269,10 +255,9 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
                     {
                         // Seçili parçayı ayarla ve bırak
                         Board_Object board_Object = createdObject.GetComponent<Board_Object>();
-                        BoardType boardType = board_Object.LearnBoardType();
+                        BoardType boardType = board_Object.MyBoardType;
                         board_Object.SetBoardCoor(new Vector2Int(x, z));
-                        Map_Holder.Instance.GameBoard[x, z] = new GameBoard(new Board(boardType, board_Object.BoardOrder), board_Object.gameObject);
-                        //Map_Holder.Instance.MyBoard[x, z] = new Board(boardType, board_Object.BoardOrder);
+                        Map_Holder.Instance.GameBoard[x, z] = new GameBoard(boardType, board_Object.MyBoardOrder, board_Object.gameObject);
                         Canvas_Manager.Instance.SetCreatorButtons(true);
                         Canvas_Manager.Instance.SetPanelObjectBehaviourPanel(false);
                         // Objeyi bırak
@@ -311,10 +296,9 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
                         {
                             // Seçili parçayı ayarla ve bırak
                             Board_Object board_Object = createdObject.GetComponent<Board_Object>();
-                            BoardType boardType = board_Object.LearnBoardType();
+                            BoardType boardType = board_Object.MyBoardType;
                             board_Object.SetBoardCoor(new Vector2Int(x, z));
                             Map_Holder.Instance.GameBoard[x, z] = new GameBoard(boardType, createdOrder, board_Object.gameObject);
-                            //Map_Holder.Instance.MyBoard[x, z] = new Board(boardType, createdOrder);
                             if (boardType == BoardType.Wall)
                             {
                                 Map_Holder.Instance.WallObjects.Add(board_Object);
@@ -386,10 +370,9 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
                 {
                     // Seçili parçayı ayarla ve bırak
                     Board_Object board_Object = createdObject.GetComponent<Board_Object>();
-                    BoardType boardType = board_Object.LearnBoardType();
+                    BoardType boardType = board_Object.MyBoardType;
                     board_Object.SetBoardCoor(new Vector2Int(x, z));
                     Map_Holder.Instance.GameBoard[x, z] = new GameBoard(boardType, createdOrder, board_Object.gameObject);
-                    //Map_Holder.Instance.MyBoard[x, z] = new Board(boardType, createdOrder);
                     if (isMover)
                     {
                         MoverActive(boardType);
@@ -460,7 +443,6 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
         movingObj = true;
         Canvas_Manager.Instance.SetPanelObjectBehaviourPanel(false);
         Board_Object board_Object = createdObject.GetComponent<Board_Object>();
-        //Map_Holder.Instance.MyBoard[board_Object.MyCoor.x, board_Object.MyCoor.y] = new Board();
         Map_Holder.Instance.GameBoard[board_Object.MyCoor.x, board_Object.MyCoor.y] = new GameBoard();
     }
     public void TurnObject()
@@ -599,7 +581,7 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
                             {
                                 Board_Object board_Object = Map_Holder.Instance.GameBoard[x, y].board_Object.GetComponent<Board_Object>();
                                 board_Object.SetBoardCoor(new Vector2Int(x, y));
-                                Map_Holder.Instance.GameBoard[x, y].board_Game.boardType = board_Object.LearnBoardType();
+                                Map_Holder.Instance.GameBoard[x, y].board_Game = new Board(board_Object.MyBoardType, board_Object.MyBoardOrder);
                                 board_Object.havuzum.HavuzdanObjeIste(new Vector3(x, 0, y));
                             }
                         }
@@ -633,7 +615,7 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
                             {
                                 Board_Object board_Object = Map_Holder.Instance.GameBoard[x, y].board_Object.GetComponent<Board_Object>();
                                 board_Object.SetBoardCoor(new Vector2Int(x, y));
-                                Map_Holder.Instance.GameBoard[x, y].board_Game.boardType = board_Object.LearnBoardType();
+                                Map_Holder.Instance.GameBoard[x, y].board_Game = new Board(board_Object.MyBoardType, board_Object.MyBoardOrder);
                                 board_Object.havuzum.HavuzdanObjeIste(new Vector3(x, 0, y));
                             }
                         }

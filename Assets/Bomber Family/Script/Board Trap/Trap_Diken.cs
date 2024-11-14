@@ -34,6 +34,8 @@ public class Trap_Diken : Board_Object
             waitingTrigged = false;
             transform.localScale = Vector3.one;
             Map_Creater_Manager.Instance.SetObjectForTrigger(this);
+            // Creator Menu aç
+            Canvas_Manager.Instance.SetCreatorPanel(true);
         }
     }
     public void SetDiken()

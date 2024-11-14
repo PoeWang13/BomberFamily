@@ -10,8 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 8679800788411677568}
   - component: {fileID: 3465465612559469975}
-  - component: {fileID: 9159339801047188893}
   - component: {fileID: 6696441939649226889}
+  - component: {fileID: 9159339801047188893}
+  - component: {fileID: -2001763473312050097}
   m_Layer: 3
   m_Name: Player_Korsan_3_01_Eruar
   m_TagString: Player
@@ -48,7 +49,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   havuzum: {fileID: 11400000, guid: a4f3b6556961be54ca7bfbac6fba6990, type: 2}
-  boardType: 8
+  myBoardType: 8
+  myCollider: {fileID: -2001763473312050097}
   characterStat:
     myLife: 1
     mySpeed: 1
@@ -58,6 +60,29 @@ MonoBehaviour:
     myBombBoxPassing: 1
     myBombPushingTime: 1
   player_Source: {fileID: 11400000, guid: a5aec939a3b5d034e8c77e1d3250b2ec, type: 2}
+--- !u!136 &6696441939649226889
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 629455004556180459}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!54 &9159339801047188893
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -85,7 +110,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 116
   m_CollisionDetection: 0
---- !u!136 &6696441939649226889
+--- !u!136 &-2001763473312050097
 CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -104,7 +129,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 0.48
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}

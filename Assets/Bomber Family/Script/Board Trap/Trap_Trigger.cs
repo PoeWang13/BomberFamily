@@ -3,7 +3,13 @@ using System.Collections.Generic;
 
 public class Trap_Trigger : Board_Object
 {
+    private Animator myAnimator;
     private List<Trap_Diken> myDikens = new List<Trap_Diken>();
+
+    private void Awake()
+    {
+        myAnimator = GetComponent<Animator>();
+    }
     public override void SetMouseButton()
     {
         if (IsStuck)
