@@ -6,7 +6,12 @@ public class Loot_Bomb_Area : PoolObje
     [SerializeField] private BombType myBombType;
 
     private bool isTaked;
+    private GameObject lootEffect;
 
+    private void Awake()
+    {
+        lootEffect = transform.Find("Loot_Effect").gameObject;
+    }
     private void OnTriggerEnter(Collider other)
     {
         if (!isTaked)
@@ -14,6 +19,7 @@ public class Loot_Bomb_Area : PoolObje
             if (other.TryGetComponent(out Player_Base player_Base))
             {
                 isTaked = true;
+                lootEffect.SetActive(false);
                 player_Base.IncreaseBombAmount(myBombType);
                 transform.DOLocalMoveY(1, 0.2f).OnComplete(() =>
                 {
@@ -40,6 +46,7 @@ public class Loot_Bomb_Area : PoolObje
     public override void ObjeHavuzExit()
     {
         isTaked = false;
+        lootEffect.SetActive(true);
         transform.localScale = Vector3.zero;
         transform.localPosition = Vector3.zero;
         base.ObjeHavuzExit();

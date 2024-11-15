@@ -9875,7 +9875,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fileName: Bomber Family
   useSifre: 0
-  saveGameOrder: 1
+  saveGameOrder: 0
   saveType: 0
   all_Item_Holder: {fileID: 11400000, guid: d49edd28b1ef24d4fbb235c4e18bcad5, type: 2}
   gameData:
@@ -9922,7 +9922,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17e331cee97930543bc8ff89fec1b959, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  exp: 0
   sceneMaskedImage: {fileID: 4148302961462659198}
   all_Item_Holder: {fileID: 11400000, guid: d49edd28b1ef24d4fbb235c4e18bcad5, type: 2}
   textMenuGoldAmount: {fileID: 520761299}
@@ -10061,6 +10060,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c6d7fdac10a5d6418e07aac883511cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  boxParents: 1
+  wallParents: 1
+  trapParents: 1
+  gateParents: 1
+  enemyParents: 0
+  closerParents: 0
+  bossEnemyParents: 0
   all_Item_Holder: {fileID: 11400000, guid: d49edd28b1ef24d4fbb235c4e18bcad5, type: 2}
   boardCloser: {fileID: 11400000, guid: 712015450be988648bb47414d17e919a, type: 2}
   boardGround: {fileID: 703535075}
@@ -43514,7 +43520,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2277211748471059443
 RectTransform:
   m_ObjectHideFlags: 0
@@ -46255,7 +46261,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &5062205557416115353
 GameObject:
   m_ObjectHideFlags: 0

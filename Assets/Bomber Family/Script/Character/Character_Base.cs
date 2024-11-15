@@ -79,6 +79,7 @@ public class Character_Base : Board_Object, IDamegable
     private void Instance_OnGameStart(object sender, System.EventArgs e)
     {
         canMove = true;
+        SetScale(true);
     }
     public void SetCharacterStat(CharacterStat stat)
     {
@@ -312,6 +313,10 @@ public class Character_Base : Board_Object, IDamegable
     #region TakeDamage
     public void TakeDamage(int damage)
     {
+        if (isDead)
+        {
+            return;
+        }
         if (canHurt)
         {
             return;
@@ -346,12 +351,16 @@ public class Character_Base : Board_Object, IDamegable
             // Hız düşür
             mySpeed = 0;
             myRigidbody.velocity = Vector3.zero;
-            // 3 saniye sonra freeze bozulsun.
-            DOTween.To(value => { }, startValue: 0, endValue: 1, duration: 3.0f).SetEase(Ease.Linear).
+            // 3 saniye sonra freeze bozulsun
+            DOVirtual.DelayedCall(2.5f, () =>
+            {
+                objFreeze.transform.DOScale(Vector3.zero, 0.5f).
                     OnComplete(() =>
                     {
                         Freeze(false);
+                        objFreeze.transform.localScale = Vector3.one * 1.5f;
                     });
+            });
         }
         else
         {

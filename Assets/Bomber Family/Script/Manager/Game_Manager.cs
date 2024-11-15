@@ -31,14 +31,14 @@ public class Game_Manager : Singletion<Game_Manager>
     private float levelTime;
     private float beginingLevelTime;
 
-    private int killingEnemyAmont;
+    private int earnExp;
+    private int earnGold;
     private int brokeBoxAmont;
     private int useBombAmont;
     private int loseLifeAmont;
     private int activeTrapAmont;
     private int caughtTrapAmont;
-    private int earnGold;
-    private int earnExp;
+    private int killingEnemyAmont;
 
     private GameType gameType;
     private Transform boardLootParent;
@@ -196,6 +196,11 @@ public class Game_Manager : Singletion<Game_Manager>
     {
         earnGold += amount;
     }
+    [ContextMenu("Exp")]
+    private void ExpAdd()
+    {
+        AddExpAmount(33);
+    }
     public void AddExpAmount(int amount)
     {
         earnExp += amount;
@@ -204,23 +209,32 @@ public class Game_Manager : Singletion<Game_Manager>
         int level = Save_Load_Manager.Instance.gameData.allPlayers[Save_Load_Manager.Instance.gameData.playerOrder].playerLevel;
 
         exp += amount;
-        if (exp >= expMax)
+        bool canUpgrade = true;
+        while (canUpgrade)
         {
             if (level_Exp_Holder.CanIncreaseMyLevel(level))
             {
-                level++;
-                exp -= expMax;
+                if (exp >= expMax)
+                {
+                    level++;
+                    exp -= expMax;
+                    expMax = level_Exp_Holder.LearnMyLevelMaxExp(level);
+                    canUpgrade = exp >= expMax;
+                }
+                else
+                {
+                    canUpgrade = false;
+                }
+            }
+            else
+            {
+                canUpgrade = false;
             }
         }
-        expMax = level_Exp_Holder.LearnMyLevelMaxExp(level);
-
         Save_Load_Manager.Instance.gameData.allPlayers[Save_Load_Manager.Instance.gameData.playerOrder].playerExp = exp;
         Save_Load_Manager.Instance.gameData.allPlayers[Save_Load_Manager.Instance.gameData.playerOrder].playerExpMax = expMax;
         Save_Load_Manager.Instance.gameData.allPlayers[Save_Load_Manager.Instance.gameData.playerOrder].playerLevel = level;
-        if (exp >= expMax)
-        {
-            AddExpAmount(0);
-        }
+
         Canvas_Manager.Instance.SetLevel();
     }
     #endregion

@@ -86,7 +86,13 @@ public enum TrapType
 public class Map_Holder : Singletion<Map_Holder>
 {
     [Header("Genel")]
-    //[SerializeField] private bool openParents;
+    [SerializeField] private bool boxParents;
+    [SerializeField] private bool wallParents;
+    [SerializeField] private bool trapParents;
+    [SerializeField] private bool gateParents;
+    [SerializeField] private bool enemyParents;
+    [SerializeField] private bool closerParents;
+    [SerializeField] private bool bossEnemyParents;
     [SerializeField] private All_Item_Holder all_Item_Holder;
 
     [Header("Board")]
@@ -95,6 +101,7 @@ public class Map_Holder : Singletion<Map_Holder>
 
     private Vector2Int boardSize;
     private GameBoard[,] gameBoard;
+    private Board_Gate boardGate;
     private Transform boardBoxParent;
     private Transform boardWallParent;
     private Transform boardTrapParent;
@@ -115,6 +122,7 @@ public class Map_Holder : Singletion<Map_Holder>
 
     public GameBoard[,] GameBoard { get { return gameBoard; } }
     public Vector2Int BoardSize { get { return boardSize; } }
+    public Board_Gate BoardGate { get { return boardGate; } }
     public Transform BoardBoxParent { get { return boardBoxParent; } }
     public Transform BoardWallParent { get { return boardWallParent; } }
     public Transform BoardTrapParent { get { return boardTrapParent; } }
@@ -141,13 +149,13 @@ public class Map_Holder : Singletion<Map_Holder>
         boardCloserParent = Utils.MakeChieldForGameElement("Board_Closer");
         boardBossEnemyParent = Utils.MakeChieldForGameElement("Board_Boss_Enemy");
 
-        //boardBoxParent.gameObject.SetActive(false);
-        //boardWallParent.gameObject.SetActive(false);
-        boardTrapParent.gameObject.SetActive(false);
-        boardGateParent.gameObject.SetActive(false);
-        boardEnemyParent.gameObject.SetActive(false);
-        boardCloserParent.gameObject.SetActive(false);
-        boardBossEnemyParent.gameObject.SetActive(false);
+        boardBoxParent.gameObject.SetActive(boxParents);
+        boardWallParent.gameObject.SetActive(wallParents);
+        boardTrapParent.gameObject.SetActive(trapParents);
+        boardGateParent.gameObject.SetActive(gateParents);
+        boardEnemyParent.gameObject.SetActive(enemyParents);
+        boardCloserParent.gameObject.SetActive(closerParents);
+        boardBossEnemyParent.gameObject.SetActive(bossEnemyParents);
     }
     public void SetBoardSize(Vector2Int boardSize)
     {
@@ -496,7 +504,12 @@ public class Map_Holder : Singletion<Map_Holder>
                 poolObje.GetComponent<Board_Box>().SetHasMagicStone(true);
             }
         }
-        Board_Gate.Instance.SetNeededMagicStone(magicStoneAmount);
+        boardGate.SetNeededMagicStone(magicStoneAmount);
+    }
+    public void SetBoardGate(PoolObje poolObject)
+    {
+        gateObjects.Add(poolObject);
+        boardGate = poolObject.GetComponent<Board_Gate>();
     }
     #endregion
 

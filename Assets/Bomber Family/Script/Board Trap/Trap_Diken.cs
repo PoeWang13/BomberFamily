@@ -9,13 +9,17 @@ public class Trap_Diken : Board_Object
     private bool canTrigged = true;
     private Animator myAnimator;
 
+    private void Awake()
+    {
+        myAnimator = GetComponent<Animator>();
+    }
     public override void OnStart()
     {
         if (Game_Manager.Instance.GameType == GameType.MapCreate)
         {
             Map_Creater_Manager.Instance.OnTriggerTime += Instance_OnTriggerTime;
         }
-        myAnimator = GetComponent<Animator>();
+        Physics.IgnoreCollision(MyCollider, Player_Base.Instance.MyCollider);
     }
     private void Instance_OnTriggerTime(object sender, System.EventArgs e)
     {
@@ -42,14 +46,14 @@ public class Trap_Diken : Board_Object
     {
         activeted = !activeted;
         // Diken görselini aktifleştir
-        myAnimator.SetBool("Diken", activeted);
+        myAnimator.SetBool("Up", activeted);
     }
     public void SetDiken(bool active, Trap_Trigger trigger)
     {
         activeted = active;
         board_Trigger = trigger;
         // Diken görselini aktifleştir
-        myAnimator.SetBool("Diken", active);
+        myAnimator.SetBool("Up", active);
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -59,6 +63,7 @@ public class Trap_Diken : Board_Object
         }
         if (other.CompareTag("Player"))
         {
+            Debug.LogWarning("gameFinish", other.gameObject);
             Game_Manager.Instance.AddCaughtTrapAmount();
             Game_Manager.Instance.AddLoseLifeAmount(damage);
             other.GetComponent<Player_Base>().TakeDamage(damage);

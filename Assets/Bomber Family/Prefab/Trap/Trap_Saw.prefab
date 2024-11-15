@@ -384,7 +384,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   havuzum: {fileID: 11400000, guid: a1812ecde5b446f48b9aba7c8f4cd96c, type: 2}
   myBoardType: 3
-  myCollider: {fileID: 0}
+  myCollider: {fileID: -2294680443124207647}
 --- !u!65 &-2294680443124207647
 BoxCollider:
   m_ObjectHideFlags: 0

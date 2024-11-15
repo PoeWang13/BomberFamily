@@ -4,10 +4,12 @@ using UnityEngine;
 public class Loot_Gold : PoolObje
 {
     private bool isTaked;
+    private GameObject lootEffect;
 
-    private void Start()
+    private void Awake()
     {
         transform.localScale = Vector3.one;
+        lootEffect = transform.Find("Loot_Effect").gameObject;
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -16,6 +18,7 @@ public class Loot_Gold : PoolObje
             if (other.CompareTag("Player"))
             {
                 isTaked = true;
+                lootEffect.SetActive(false);
                 int earnGold = Random.Range(2, 20);
                 Canvas_Manager.Instance.SetGoldSmooth(earnGold);
                 Game_Manager.Instance.AddGoldAmount(earnGold);
@@ -32,6 +35,7 @@ public class Loot_Gold : PoolObje
     public override void ObjeHavuzExit()
     {
         isTaked = false;
+        lootEffect.SetActive(true);
         transform.localScale = Vector3.zero;
         base.ObjeHavuzExit();
     }

@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 7599273510713118971}
   - component: {fileID: 8185839440481633762}
-  - component: {fileID: 7227567888694672969}
+  - component: {fileID: 3879944307253231456}
   - component: {fileID: 2631739532165279382}
-  - component: {fileID: -7030862607131396927}
+  - component: {fileID: 3612155953001388349}
   m_Layer: 3
   m_Name: Player_Magical_1_00_Baraton
   m_TagString: Player
@@ -50,7 +50,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   havuzum: {fileID: 11400000, guid: 4460a477a2afa8449bc521a322579223, type: 2}
   myBoardType: 8
-  myCollider: {fileID: -7030862607131396927}
+  myCollider: {fileID: 3612155953001388349}
   characterStat:
     myLife: 1
     mySpeed: 1
@@ -60,7 +60,7 @@ MonoBehaviour:
     myBombBoxPassing: 1
     myBombPushingTime: 1
   player_Source: {fileID: 11400000, guid: 1410eb6d05c3be744a583665d855f065, type: 2}
---- !u!136 &7227567888694672969
+--- !u!136 &3879944307253231456
 CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -110,7 +110,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 116
   m_CollisionDetection: 0
---- !u!136 &-7030862607131396927
+--- !u!136 &3612155953001388349
 CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

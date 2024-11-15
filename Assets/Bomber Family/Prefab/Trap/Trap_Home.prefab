@@ -50,7 +50,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   havuzum: {fileID: 11400000, guid: 413d9898475a9284b87164d890ac5f94, type: 2}
   myBoardType: 3
-  myCollider: {fileID: 0}
+  myCollider: {fileID: 8543083660465809263}
   spawnTime: 5
   enemies:
   - {fileID: 11400000, guid: e501449102ea68143b47161cfedfce5c, type: 2}
@@ -138,7 +138,7 @@ PrefabInstance:
     - target: {fileID: 4365843384020978552, guid: 8c3b39392ed71fc4d995d1516fbbcd91,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.15
       objectReference: {fileID: 0}
     - target: {fileID: 4365843384020978552, guid: 8c3b39392ed71fc4d995d1516fbbcd91,
         type: 3}
@@ -246,6 +246,30 @@ PrefabInstance:
     - target: {fileID: 19811404, guid: 6de611fac7985cc4ead881f40862cb4e, type: 3}
       propertyPath: looping
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 19811404, guid: 6de611fac7985cc4ead881f40862cb4e, type: 3}
+      propertyPath: ColorModule.gradient.maxGradient.atime0
+      value: 301
+      objectReference: {fileID: 0}
+    - target: {fileID: 19811404, guid: 6de611fac7985cc4ead881f40862cb4e, type: 3}
+      propertyPath: ColorModule.gradient.maxGradient.atime1
+      value: 26214
+      objectReference: {fileID: 0}
+    - target: {fileID: 19811404, guid: 6de611fac7985cc4ead881f40862cb4e, type: 3}
+      propertyPath: ColorModule.gradient.maxGradient.atime2
+      value: 65535
+      objectReference: {fileID: 0}
+    - target: {fileID: 19811404, guid: 6de611fac7985cc4ead881f40862cb4e, type: 3}
+      propertyPath: ColorModule.gradient.maxGradient.ctime0
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 19811404, guid: 6de611fac7985cc4ead881f40862cb4e, type: 3}
+      propertyPath: ColorModule.gradient.maxGradient.ctime1
+      value: 65535
+      objectReference: {fileID: 0}
+    - target: {fileID: 19811404, guid: 6de611fac7985cc4ead881f40862cb4e, type: 3}
+      propertyPath: ColorModule.gradient.maxGradient.m_NumAlphaKeys
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 19897474, guid: 6de611fac7985cc4ead881f40862cb4e, type: 3}
       propertyPath: looping

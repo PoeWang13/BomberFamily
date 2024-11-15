@@ -6,9 +6,10 @@ public class Trap_Trigger : Board_Object
     private Animator myAnimator;
     private List<Trap_Diken> myDikens = new List<Trap_Diken>();
 
-    private void Awake()
+    public override void OnStart()
     {
         myAnimator = GetComponent<Animator>();
+        Physics.IgnoreCollision(MyCollider, Player_Base.Instance.MyCollider);
     }
     public override void SetMouseButton()
     {
@@ -32,6 +33,12 @@ public class Trap_Trigger : Board_Object
         {
             myDikens.ForEach(d => d.SetDiken());
             Game_Manager.Instance.AddActiveTrapAmount();
+            myAnimator.SetBool("IsActive", !myAnimator.GetBool("IsActive"));
+        }
+        if (other.CompareTag("Enemy"))
+        {
+            myDikens.ForEach(d => d.SetDiken());
+            myAnimator.SetBool("IsActive", !myAnimator.GetBool("IsActive"));
         }
     }
 }

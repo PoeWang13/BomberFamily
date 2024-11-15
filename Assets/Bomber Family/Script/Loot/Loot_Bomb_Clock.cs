@@ -6,7 +6,12 @@ public class Loot_Bomb_Clock : PoolObje
     [SerializeField] private BombType myBombType;
 
     private bool isTaked;
+    private GameObject lootEffect;
 
+    private void Awake()
+    {
+        lootEffect = transform.Find("Loot_Effect").gameObject;
+    }
     private void OnTriggerEnter(Collider other)
     {
         if (!isTaked)
@@ -14,6 +19,7 @@ public class Loot_Bomb_Clock : PoolObje
             if (other.TryGetComponent(out Player_Base player_Base))
             {
                 isTaked = true;
+                lootEffect.SetActive(false);
                 player_Base.IncreaseBombAmount(myBombType);
                 transform.DOLocalRotate(Vector3.forward * 30, 0.1f).OnComplete(() =>
                 {
@@ -37,7 +43,8 @@ public class Loot_Bomb_Clock : PoolObje
     public override void ObjeHavuzExit()
     {
         isTaked = false;
-        transform.eulerAngles = Vector3.zero;
+        lootEffect.SetActive(true);
+        transform.localScale = Vector3.zero;
         base.ObjeHavuzExit();
     }
 }

@@ -3,6 +3,11 @@
 public class Trap_Slower : Board_Object
 {
     [SerializeField, Range(0, 1)] private float slowerPercent;
+
+    public override void OnStart()
+    {
+        Physics.IgnoreCollision(MyCollider, Player_Base.Instance.MyCollider);
+    }
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))

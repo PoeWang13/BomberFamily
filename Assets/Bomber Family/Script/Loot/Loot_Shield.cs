@@ -4,10 +4,12 @@ using UnityEngine;
 public class Loot_Shield : PoolObje
 {
     private bool isTaked;
+    private GameObject lootEffect;
 
-    private void Start()
+    private void Awake()
     {
         transform.localScale = Vector3.one;
+        lootEffect = transform.Find("Loot_Effect").gameObject;
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -16,6 +18,7 @@ public class Loot_Shield : PoolObje
             if (other.TryGetComponent(out Player_Base player_Base))
             {
                 isTaked = true;
+                lootEffect.SetActive(false);
                 player_Base.IncreaseShieldTime();
                 transform.DOScale(Vector3.one * 1.5f, 0.1f).OnComplete(() =>
                 {
@@ -30,6 +33,7 @@ public class Loot_Shield : PoolObje
     public override void ObjeHavuzExit()
     {
         isTaked = false;
+        lootEffect.SetActive(true);
         transform.localScale = Vector3.zero;
         base.ObjeHavuzExit();
     }

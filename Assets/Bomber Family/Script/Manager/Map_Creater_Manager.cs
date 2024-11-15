@@ -507,7 +507,7 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
         }
         if (!addMagicStone)
         {
-            Board_Gate.Instance.SetNeededMagicStone(boardMagicStoneAmount);
+            Map_Holder.Instance.BoardGate.SetNeededMagicStone(boardMagicStoneAmount);
             Map_Holder.Instance.SetMagicStone(boardMagicStoneAmount);
             addMagicStone = true;
         }
@@ -589,7 +589,7 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
                 }
                 Map_Holder.Instance.SetBoardForNonUseable();
                 Canvas_Manager.Instance.SetButtonChangeMap(true);
-                Board_Gate.Instance.SetNeededMagicStone(boardMagicStoneAmount);
+                Map_Holder.Instance.BoardGate.SetNeededMagicStone(boardMagicStoneAmount);
                 addMagicStone = false;
                 FixBoardCoorList();
                 Warning_Manager.Instance.ShowMessage("Map is good so You can save it or change it", 3);
@@ -624,7 +624,7 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
                 Canvas_Manager.Instance.CanNotSaveMap();
                 Map_Holder.Instance.SetBoardForNonUseable();
                 Canvas_Manager.Instance.SetButtonChangeMap(true);
-                Board_Gate.Instance.SetNeededMagicStone(boardMagicStoneAmount);
+                Map_Holder.Instance.BoardGate.SetNeededMagicStone(boardMagicStoneAmount);
                 addMagicStone = false;
                 FixBoardCoorList();
                 Warning_Manager.Instance.ShowMessage("Player can not move some area. Fixed pls.", 3);

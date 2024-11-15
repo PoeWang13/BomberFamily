@@ -13,8 +13,9 @@ public class Trap_Home : Board_Object
     private Transform boardEnemyParent;
     private List<BoardCoor> boardCoors = new List<BoardCoor>();
 
-    private void Start()
+    public override void OnStart()
     {
+        Physics.IgnoreCollision(MyCollider, Player_Base.Instance.MyCollider);
         boardEnemyParent = Utils.MakeChieldForGameElement("Board_Enemy");
         for (int x = -1; x < 2; x++)
         {

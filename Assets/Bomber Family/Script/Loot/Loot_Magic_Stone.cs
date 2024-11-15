@@ -4,7 +4,12 @@ using UnityEngine;
 public class Loot_Magic_Stone : PoolObje
 {
     private bool isTaked;
+    private GameObject lootEffect;
 
+    private void Awake()
+    {
+        lootEffect = transform.Find("Loot_Effect").gameObject;
+    }
     private void OnTriggerEnter(Collider other)
     {
         if (!isTaked)
@@ -12,6 +17,7 @@ public class Loot_Magic_Stone : PoolObje
             if (other.CompareTag("Player"))
             {
                 isTaked = true;
+                lootEffect.SetActive(false);
                 // Biraz yukarı çıkar
                 transform.DOMoveY(1, 0.1f).OnComplete(() =>
                 {
@@ -21,7 +27,7 @@ public class Loot_Magic_Stone : PoolObje
                         transform.DOLocalRotate(Vector3.down * 90, 0.1f).OnComplete(() =>
                         {
                             // Playera uçar
-                            Board_Gate.Instance.FoundMagicStone(this);
+                            Map_Holder.Instance.BoardGate.FoundMagicStone(this);
                         });
                     });
                 });
@@ -31,6 +37,7 @@ public class Loot_Magic_Stone : PoolObje
     public override void ObjeHavuzExit()
     {
         isTaked = false;
+        lootEffect.SetActive(true);
         transform.eulerAngles = Vector3.zero;
         transform.localPosition = Vector3.zero;
         base.ObjeHavuzExit();

@@ -6,11 +6,12 @@ public class Loot_Bomb_Anti : PoolObje
     [SerializeField] private BombType myBombType;
 
     private bool isTaked;
+    private GameObject lootEffect;
     private ParticleSystem bombTrail;
 
-    private void Start()
+    private void Awake()
     {
-        bombTrail = transform.Find("Bomb_Anti_Trail").GetComponent<ParticleSystem>();
+        lootEffect = transform.Find("Loot_Effect").gameObject;
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -20,6 +21,7 @@ public class Loot_Bomb_Anti : PoolObje
             {
                 isTaked = true;
                 bombTrail.Play();
+                lootEffect.SetActive(false);
                 player_Base.IncreaseBombAmount(myBombType);
                 transform.DOLocalMoveY(10, 1).OnComplete(() =>
                 {
@@ -32,7 +34,8 @@ public class Loot_Bomb_Anti : PoolObje
     public override void ObjeHavuzExit()
     {
         isTaked = false;
-        transform.localPosition = Vector3.zero;
+        lootEffect.SetActive(true);
+        transform.localScale = Vector3.zero;
         base.ObjeHavuzExit();
     }
 }

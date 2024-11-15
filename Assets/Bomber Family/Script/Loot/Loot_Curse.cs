@@ -4,10 +4,12 @@ using UnityEngine;
 public class Loot_Curse : PoolObje
 {
     private bool isTaked;
+    private GameObject lootEffect;
     private ParticleSystem curseParticle;
 
-    private void Start()
+    private void Awake()
     {
+        lootEffect = transform.Find("Loot_Effect").gameObject;
         curseParticle = transform.Find("Curse_Particle").GetComponent<ParticleSystem>();
     }
     private void OnTriggerEnter(Collider other)
@@ -17,8 +19,9 @@ public class Loot_Curse : PoolObje
             if (other.TryGetComponent(out Player_Base player_Base))
             {
                 isTaked = true;
-                player_Base.GiveCurse();
                 curseParticle.Play();
+                player_Base.GiveCurse();
+                lootEffect.SetActive(false);
                 // Sağa döner
                 transform.DOLocalRotate(Vector3.up * 30, 0.15f).OnComplete(() =>
                 {
@@ -42,7 +45,8 @@ public class Loot_Curse : PoolObje
     public override void ObjeHavuzExit()
     {
         isTaked = false;
-        transform.eulerAngles = Vector3.zero;
+        lootEffect.SetActive(true);
+        transform.localScale = Vector3.zero;
         base.ObjeHavuzExit();
     }
 }

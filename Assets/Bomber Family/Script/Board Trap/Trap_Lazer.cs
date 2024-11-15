@@ -11,6 +11,13 @@ public class Trap_Lazer : Board_Object
     private bool isActive;
     private float activeTimeNext;
 
+    public override void OnStart()
+    {
+        for (int e = 0; e < allLazerCollider.Count; e++)
+        {
+            Physics.IgnoreCollision(allLazerCollider[e], Player_Base.Instance.MyCollider);
+        }
+    }
     private void Update()
     {
         if (!Game_Manager.Instance.LevelStart)

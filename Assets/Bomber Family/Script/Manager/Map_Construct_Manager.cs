@@ -81,7 +81,7 @@ public class Map_Construct_Manager : Singletion<Map_Construct_Manager>
                     boardType = BoardType.Gate;
                     poolObject = all_Item_Holder.GateList[Map_Holder.Instance.GameBoard[x, y].board_Game.boardOrder].MyPool.HavuzdanObjeIste(new Vector3(x, 0, y));
                     poolObject.transform.SetParent(Map_Holder.Instance.BoardGateParent);
-                    Map_Holder.Instance.GateObjects.Add(poolObject);
+                    Map_Holder.Instance.SetBoardGate(poolObject);
                 }
                 else if (Map_Holder.Instance.GameBoard[x, y].board_Game.boardType == BoardType.Enemy)
                 {

@@ -5,13 +5,14 @@ public class Trap_Killer : Board_Object
 {
     [SerializeField] private float sleepTime = 5;
 
-    private bool sleeping;
+    private bool isActive;
     private Animator myAnimator;
     private float sleepTimeNext;
 
     public override void OnStart()
     {
         myAnimator = GetComponent<Animator>();
+        Physics.IgnoreCollision(MyCollider, Player_Base.Instance.MyCollider);
     }
     private void Update()
     {
@@ -19,7 +20,7 @@ public class Trap_Killer : Board_Object
         {
             return;
         }
-        if (!sleeping)
+        if (!isActive)
         {
             return;
         }
@@ -27,33 +28,37 @@ public class Trap_Killer : Board_Object
         if (sleepTimeNext > sleepTime)
         {
             sleepTimeNext = 0;
-            sleeping = false;
+            isActive = false;
         }
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (sleeping)
+        if (isActive)
         {
             return;
         }
         if (other.CompareTag("Player"))
         {
             KillerActivited();
-            Game_Manager.Instance.AddCaughtTrapAmount();
             Character_Base character_Base = other.GetComponent<Character_Base>();
             Game_Manager.Instance.AddLoseLifeAmount(character_Base.MyLife);
-            SendBossOutSide(character_Base);
+            Game_Manager.Instance.AddCaughtTrapAmount();
+            Canvas_Manager.Instance.GameLost();
+
+            //SendBossOutSide(character_Base);
         }
         else if (other.CompareTag("Enemy"))
         {
             KillerActivited();
-            SendBossOutSide(other.GetComponent<Character_Base>());
+            Character_Base character_Base = other.GetComponent<Character_Base>();
+            character_Base.TakeDamage(character_Base.MyLife);
+            //SendBossOutSide(other.GetComponent<Character_Base>());
         }
     }
     private void KillerActivited()
     {
-        sleeping = true;
-        //myAnimator.SetTrigger("Killer");
+        isActive = true;
+        myAnimator.SetBool("Kill", true);
     }
     private void SendBossOutSide(Character_Base character_Base)
     {

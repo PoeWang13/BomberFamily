@@ -26,7 +26,6 @@ public class Player_Base : Character_Base
     public override void OnStart()
     {
         // Görünmez ve etkisiz yap
-        //SetEffectivePlayer(false);
         boardBombParent = Utils.MakeChieldForGameElement("Board_Bomb");
         Game_Manager.Instance.OnGameStart += Instance_OnGameStart;
     }

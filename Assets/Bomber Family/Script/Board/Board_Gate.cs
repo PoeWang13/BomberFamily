@@ -3,25 +3,15 @@ using System.Collections;
 
 public class Board_Gate : Board_Object
 {
-    private static Board_Gate instance;
-    public static Board_Gate Instance { get { return instance; } }
-
     [SerializeField] private GameObject effect1;
     [SerializeField] private GameObject effect2;
-    private int magicStoneAmount;
+    [SerializeField] private int magicStoneAmount;
+
+    private bool gameFinish;
 
     private void Awake()
     {
-        if (instance == null)
-        {
-            instance = this;
-        }
-        else if (instance != this)
-        {
-            Destroy(gameObject);
-        }
-        effect1.SetActive(false);
-        effect2.SetActive(false);
+        Physics.IgnoreCollision(MyCollider, Player_Base.Instance.MyCollider);
     }
     public void SetNeededMagicStone(int amount)
     {
@@ -80,16 +70,14 @@ public class Board_Gate : Board_Object
         }
         magicStone.EnterHavuz();
     }
-    private bool gameFinish;
     private void OnTriggerEnter(Collider other)
     {
-        Debug.LogWarning(gameObject, gameObject);
-        Debug.LogWarning(other.gameObject, other.gameObject);
         if (other.CompareTag("Player"))
         {
             // Oyun bitti.
             if (Game_Manager.Instance.GameType == GameType.Game)
             {
+                Debug.LogWarning("gameFinish", other.gameObject);
                 if (magicStoneAmount > 0)
                 {
                     Warning_Manager.Instance.ShowMessage("You need " + magicStoneAmount + " more Magic Stones.", 1.5f);
@@ -127,5 +115,6 @@ public class Board_Gate : Board_Object
     {
         effect1.SetActive(false);
         effect2.SetActive(false);
+        gameFinish = false;
     }
 }

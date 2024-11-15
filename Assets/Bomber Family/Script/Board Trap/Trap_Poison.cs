@@ -9,6 +9,10 @@ public class Trap_Poison : Board_Object
     private float posionTimeNext;
     private List<Character_Base> allCharacterBase = new List<Character_Base>();
 
+    public override void OnStart()
+    {
+        Physics.IgnoreCollision(MyCollider, Player_Base.Instance.MyCollider);
+    }
     private void Update()
     {
         if (!Game_Manager.Instance.LevelStart)

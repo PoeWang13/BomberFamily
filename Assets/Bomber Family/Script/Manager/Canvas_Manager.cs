@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using System.Diagnostics;
 
 [Serializable]
 public class BombRect
@@ -486,7 +487,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
 
         textPlayerExp.text = "Exp : " + exp.ToString();
         float percent = 1.0f * exp / expMax;
-        textPlayerLevel.text = "Level : " + level + " - %" + (percent * 100);
+        textPlayerLevel.text = "Level : " + level + " - %" + (percent * 100).ToString();
         imagePlayerLevelPercent.fillAmount = percent;
     }
     public void SetPlayerSettingPanel(bool isActive)
@@ -1122,11 +1123,13 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     // Canvas -> Panel-Creator -> Panel-Creator-Buttons -> Button-Map-Release'a atandı
     public void ReleaseMap()
     {
+        Map_Creater_Manager.Instance.DestroyObject();
         Map_Holder.Instance.ReleaseMap();
     }
     // Canvas -> Panel-Creator -> Button-Close'a atandı
     public void CloseMap()
     {
+        Map_Creater_Manager.Instance.DestroyObject();
         Map_Holder.Instance.CloseMap();
     }
     public void SetCreatorPanel(bool isActive)
