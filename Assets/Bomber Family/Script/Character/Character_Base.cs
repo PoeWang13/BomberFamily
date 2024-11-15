@@ -34,8 +34,9 @@ public class Character_Base : Board_Object, IDamegable
     private int myBombFirePower = 1;
     private int myBombFireLimit = 1;
     private float shieldTime;
+    private float shieldAngle;
     private bool canMove;
-    private bool canHurt;
+    private bool canProtect;
     private bool canCurse;
     private bool isDead;
     private bool isFreeze;
@@ -43,6 +44,7 @@ public class Character_Base : Board_Object, IDamegable
     private GameObject objFreeze;
     private Animator myAnimator;
     private Rigidbody myRigidbody;
+    private Transform objShield;
     private Transform characterView;
     private List<CurseClass> allCurses = new List<CurseClass>();
 
@@ -66,6 +68,7 @@ public class Character_Base : Board_Object, IDamegable
         myAnimator = GetComponentInChildren<Animator>();
         characterView = transform.Find("CharacterView");
         objFreeze = characterView.Find("Freeze").gameObject;
+        objShield = characterView.Find("Shield");
         Game_Manager.Instance.OnGameStart += Instance_OnGameStart;
         OnAwake();
     }
@@ -115,6 +118,11 @@ public class Character_Base : Board_Object, IDamegable
         if (canMove)
         {
             Move();
+        }
+        if (canProtect)
+        {
+            shieldAngle += Time.deltaTime;
+            objShield.eulerAngles = new Vector3(0, shieldAngle, 0);
         }
         UseShield();
         UseCurseTime();
@@ -293,8 +301,13 @@ public class Character_Base : Board_Object, IDamegable
         canCurse = false;
         canMove = true;
         isDead = false;
+        isFreeze = false;
+        Freeze(false);
         ResetLife();
         ResetSpeed();
+        ResetAmount();
+        ResetPower();
+        ResetLimit();
         allCurses.Clear();
         myAnimator.SetBool("Dead", false);
     }
@@ -317,7 +330,7 @@ public class Character_Base : Board_Object, IDamegable
         {
             return;
         }
-        if (canHurt)
+        if (canProtect)
         {
             return;
         }
@@ -373,12 +386,13 @@ public class Character_Base : Board_Object, IDamegable
     #region Shield
     public void UseShield()
     {
-        if (canHurt)
+        if (canProtect)
         {
             shieldTime -= Time.deltaTime;
             if (shieldTime < 0)
             {
-                canHurt = false;
+                shieldAngle = 0;
+                canProtect = false;
             }
         }
     }
@@ -388,7 +402,7 @@ public class Character_Base : Board_Object, IDamegable
     public void IncreaseShieldTime()
     {
         shieldTime += 3;
-        canHurt = true;
+        canProtect = true;
     }
     public void UseSimpleBomb()
     {

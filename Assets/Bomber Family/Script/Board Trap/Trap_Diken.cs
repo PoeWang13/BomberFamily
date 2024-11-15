@@ -63,7 +63,6 @@ public class Trap_Diken : Board_Object
         }
         if (other.CompareTag("Player"))
         {
-            Debug.LogWarning("gameFinish", other.gameObject);
             Game_Manager.Instance.AddCaughtTrapAmount();
             Game_Manager.Instance.AddLoseLifeAmount(damage);
             other.GetComponent<Player_Base>().TakeDamage(damage);

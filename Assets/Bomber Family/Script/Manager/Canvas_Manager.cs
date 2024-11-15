@@ -5,22 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
-using System.Diagnostics;
 
-[Serializable]
-public class BombRect
-{
-    public BombType bombType;
-    public Button buttonBomb;
-    public RectTransform rectBomb;
-
-    public BombRect(BombRect bombRect)
-    {
-        bombType = bombRect.bombType;
-        rectBomb = bombRect.rectBomb;
-        buttonBomb = bombRect.buttonBomb;
-    }
-}
 public class Canvas_Manager : Singletion<Canvas_Manager>
 {
     public event EventHandler OnGameWin;
@@ -1285,6 +1270,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         panelMenu.SetActive(true);
         panelGame.SetActive(false);
         panelGameFinish.SetActive(false);
+        Map_Holder.Instance.CloseBoardGround();
         Map_Holder.Instance.SendToPoolAllObjects();
     }
     public void Reload()

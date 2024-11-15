@@ -249,6 +249,10 @@ public class Map_Holder : Singletion<Map_Holder>
             }
         }
     }
+    public void CloseBoardGround()
+    {
+        boardGround.gameObject.SetActive(false);
+    }
     public void CreateOutsideWall()
     {
         int wallOrder = Random.Range(Mathf.RoundToInt(all_Item_Holder.WallList.Count * 0.5f), all_Item_Holder.WallList.Count - 1);

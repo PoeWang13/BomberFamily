@@ -127,6 +127,7 @@ public class Game_Manager : Singletion<Game_Manager>
     {
         levelStart = true;
         SetLevelStats();
+        beginingLevelTime = Time.time;
         OnGameStart?.Invoke(this, EventArgs.Empty);
     }
     public void CreateMagicStone(Vector3 pos)
@@ -153,12 +154,11 @@ public class Game_Manager : Singletion<Game_Manager>
     public void SetGameType(GameType type)
     {
         gameType = type;
-        beginingLevelTime = Time.time;
     }
     #endregion
 
     #region Stats
-    public void SetLevelStats()
+    private void SetLevelStats()
     {
         killingEnemyAmont = 0;
         brokeBoxAmont = 0;

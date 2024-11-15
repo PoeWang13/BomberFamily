@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8288090931668861092}
   - component: {fileID: 3609066291198605602}
   - component: {fileID: 8364483139777017824}
+  - component: {fileID: 8979968716599874942}
   m_Layer: 7
   m_Name: Trap_Cutter
   m_TagString: Board
@@ -51,6 +52,7 @@ MonoBehaviour:
   havuzum: {fileID: 11400000, guid: c7fe2b0064b428d4ea36ae73acd0d84c, type: 2}
   myBoardType: 3
   myCollider: {fileID: 3609066291198605602}
+  damage: 5
 --- !u!65 &3609066291198605602
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -70,7 +72,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 0.75, y: 1, z: 0.75}
   m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!54 &8364483139777017824
 Rigidbody:
@@ -99,6 +101,27 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!95 &8979968716599874942
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 154860}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 9e746994af0fac749b28c5b4223ca39a, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &154862
 GameObject:
   m_ObjectHideFlags: 0
@@ -110,7 +133,6 @@ GameObject:
   - component: {fileID: 454862}
   - component: {fileID: 3354862}
   - component: {fileID: 2354862}
-  - component: {fileID: 6554864}
   m_Layer: 0
   m_Name: Cutter
   m_TagString: Untagged
@@ -126,8 +148,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 154862}
   serializedVersion: 2
-  m_LocalRotation: {x: 1.7112914e-15, y: 1, z: -0.000000021855694, w: 0.0000000754979}
-  m_LocalPosition: {x: 0, y: -0.000000038146972, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -183,27 +205,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &6554864
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 154862}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 0.2, z: 1}
-  m_Center: {x: 0, y: 0.4, z: 0}
 --- !u!1 &154864
 GameObject:
   m_ObjectHideFlags: 0

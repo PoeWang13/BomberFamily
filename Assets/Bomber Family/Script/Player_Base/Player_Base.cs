@@ -34,6 +34,7 @@ public class Player_Base : Character_Base
         SetMove(true);
         SetEffectivePlayer(true);
         SetPosition(Vector3.zero);
+
     }
     public void SetPlayerStat(Joystick joystick)
     {
@@ -82,10 +83,6 @@ public class Player_Base : Character_Base
     {
         SetCharacterView(isEffective);
         MyRigidbody.isKinematic = !isEffective;
-    }
-    public override void ResetBase()
-    {
-
     }
     #endregion
 
