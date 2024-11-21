@@ -1,11 +1,17 @@
 ﻿using DG.Tweening;
 using UnityEngine;
 
-public class Trap_Black_Hole : Board_Object
+public class Trap_Black_Hole : Trap_Base
 {
     public override void OnStart()
     {
         Physics.IgnoreCollision(MyCollider, Player_Base.Instance.MyCollider);
+    }
+    public override void SetMouseButton()
+    {
+        Canvas_Manager.Instance.OpenBaseSetting(true);
+        Canvas_Manager.Instance.CloseSettingPanels();
+        Map_Creater_Manager.Instance.ChooseStuckObject(this);
     }
     private void OnTriggerEnter(Collider other)
     {

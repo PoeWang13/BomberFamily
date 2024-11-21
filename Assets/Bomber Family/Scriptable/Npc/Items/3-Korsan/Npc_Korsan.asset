@@ -16,5 +16,5 @@ MonoBehaviour:
   myPrice: 15000
   boardType: 9
   myPool: {fileID: 11400000, guid: 3b9c975084df10b4db41c9f058a2b329, type: 2}
-  myBombType: 0
+  myWorldType: 3
   myName: Korsan

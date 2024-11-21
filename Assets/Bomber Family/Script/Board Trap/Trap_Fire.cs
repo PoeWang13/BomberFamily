@@ -1,33 +1,22 @@
 ﻿using UnityEngine;
 
-public class Trap_Fire : Board_Object
+public class Trap_Fire : Trap_Has_Time_2
 {
     [SerializeField] private int damage = 5;
-    [SerializeField] private float fireTime = 5;
 
-    private bool isActive;
-    private float fireTimeNext;
     private ParticleSystem fireTrail;
 
     public override void OnStart()
     {
+        base.OnStart();
         fireTrail = GetComponentInChildren<ParticleSystem>();
-        Physics.IgnoreCollision(MyCollider, Player_Base.Instance.MyCollider);
     }
-    private void Update()
+    public override void BehaviourChange(bool giveDamage)
     {
-        fireTimeNext += Time.deltaTime;
-        if (fireTimeNext > fireTime)
+        base.BehaviourChange(giveDamage);
+        if (giveDamage)
         {
-            SetFire();
-            fireTimeNext = 0;
-        }
-    }
-    private void SetFire()
-    {
-        isActive = !isActive;
-        if (isActive)
-        {
+            GiveDamage();
             fireTrail.Play();
         }
         else
@@ -35,24 +24,27 @@ public class Trap_Fire : Board_Object
             fireTrail.Stop();
         }
     }
-    private void OnTriggerEnter(Collider other)
+    public override void SetTrapForSpecial()
     {
-        if (!Game_Manager.Instance.LevelStart)
+        if (alwaysActivated || activeted)
         {
-            return;
+            fireTrail.Play();
         }
-        if (isActive)
+    }
+    private void GiveDamage()
+    {
+        for (int e = 0; e < myCharacterList.Count; e++)
         {
-            if (other.CompareTag("Player"))
-            {
-                Game_Manager.Instance.AddCaughtTrapAmount();
-                Game_Manager.Instance.AddLoseLifeAmount(damage);
-                other.GetComponent<Player_Base>().TakeDamage(damage);
-            }
-            else if (other.CompareTag("Enemy"))
-            {
-                other.GetComponent<Enemy_Base>().TakeDamage(damage);
-            }
+            CharacterEntered(myCharacterList[e]);
         }
+    }
+    public override void CharacterEntered(Character_Base charBase)
+    {
+        if (charBase.CompareTag("Player"))
+        {
+            Game_Manager.Instance.AddCaughtTrapAmount();
+            Game_Manager.Instance.AddLoseLifeAmount(damage);
+        }
+        charBase.TakeDamage(damage);
     }
 }

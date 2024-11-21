@@ -5,6 +5,16 @@ public class Enemy_Base : Character_Base
 {
     [SerializeField] private Item_Enemy myItem;
 
+    private int clockBombAmount;
+    private int areaBombAmount;
+    private int antiBombAmount;
+    private int nucleerBombAmount;
+    private int searcherBombAmount;
+    private int elektroBombAmount;
+    private int lavBombAmount;
+    private int buzBombAmount;
+    private int sisBombAmount;
+    private int zehirBombAmount;
     private List<Vector2Int> possibleLootPos = new List<Vector2Int>();
 
     public Item_Enemy MyItem { get { return myItem; } }
@@ -16,12 +26,15 @@ public class Enemy_Base : Character_Base
         SetMySpeed(CharacterStat.mySpeed);
         SetCharacterStat(myItem.MyStartingStat);
     }
-    public override void IncreaseBombAmount(BombType bombType)
+    public override void IncreaseBombAmount()
     {
-        if (myItem.MyBombType == bombType)
-        {
-            IncreaseBomb();
-        }
+        IncreaseBomb();
+    }
+    public override void SetMouseButton()
+    {
+        Map_Creater_Manager.Instance.ChooseStuckObject(this);
+        Canvas_Manager.Instance.OpenBaseSetting(true);
+        Canvas_Manager.Instance.CloseSettingPanels();
     }
 
     #region Taked Damage
@@ -98,6 +111,89 @@ public class Enemy_Base : Character_Base
                     possibleLootPos.Add(new Vector2Int(x, y));
                 }
             }
+        }
+    }
+    #endregion
+
+    #region Use Special Bomb
+    public override void UseAntiBomb()
+    {
+        if (antiBombAmount > 0)
+        {
+            antiBombAmount--;
+            base.UseAntiBomb();
+        }
+    }
+    public override void UseAreaBomb()
+    {
+        if (areaBombAmount > 0)
+        {
+            areaBombAmount--;
+            base.UseAntiBomb();
+        }
+    }
+    public override void UseClockBomb()
+    {
+        if (clockBombAmount > 0)
+        {
+            clockBombAmount--;
+            base.UseClockBomb();
+        }
+    }
+    public override void UseNucleerBomb()
+    {
+        if (nucleerBombAmount > 0)
+        {
+            nucleerBombAmount--;
+            base.UseNucleerBomb();
+        }
+    }
+    public override void UseSearcherBomb()
+    {
+        if (searcherBombAmount > 0)
+        {
+            searcherBombAmount--;
+            base.UseSearcherBomb();
+        }
+    }
+    public override void UseElektroBomb()
+    {
+        if (elektroBombAmount > 0)
+        {
+            elektroBombAmount--;
+            base.UseElektroBomb();
+        }
+    }
+    public override void UseLavBomb()
+    {
+        if (lavBombAmount > 0)
+        {
+            lavBombAmount--;
+            base.UseLavBomb();
+        }
+    }
+    public override void UseBuzBomb()
+    {
+        if (buzBombAmount > 0)
+        {
+            buzBombAmount--;
+            base.UseBuzBomb();
+        }
+    }
+    public override void UseSisBomb()
+    {
+        if (sisBombAmount > 0)
+        {
+            sisBombAmount--;
+            base.UseSisBomb();
+        }
+    }
+    public override void UseZehirBomb()
+    {
+        if (zehirBombAmount > 0)
+        {
+            zehirBombAmount--;
+            base.UseZehirBomb();
         }
     }
     #endregion

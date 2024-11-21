@@ -13,6 +13,12 @@ public class Board_Gate : Board_Object
     {
         Physics.IgnoreCollision(MyCollider, Player_Base.Instance.MyCollider);
     }
+    public override void SetMouseButton()
+    {
+        Canvas_Manager.Instance.OpenBaseSetting(true);
+        Canvas_Manager.Instance.CloseSettingPanels();
+        Map_Creater_Manager.Instance.ChooseStuckObject(this);
+    }
     public void SetNeededMagicStone(int amount)
     {
         magicStoneAmount = amount;
@@ -86,9 +92,7 @@ public class Board_Gate : Board_Object
                 {
                     if (!gameFinish)
                     {
-                        Canvas_Manager.Instance.GameWin();
-                        Game_Manager.Instance.GameWin();
-                        gameFinish = true;
+                        GameFinish();
                     }
                 }
             }
@@ -104,6 +108,13 @@ public class Board_Gate : Board_Object
                 }
             }
         }
+    }
+    [ContextMenu("Game Finish")]
+    private void GameFinish()
+    {
+        Canvas_Manager.Instance.GameWin();
+        Game_Manager.Instance.GameWin();
+        gameFinish = true;
     }
     public override void ObjeHavuzEnter()
     {

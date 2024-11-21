@@ -1,67 +1,44 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class Trap_Lazer : Board_Object
+public class Trap_Lazer : Trap_Has_Time_2
 {
     [SerializeField] private int damage;
-    [SerializeField] private float activeTime = 5;
     [SerializeField] private List<GameObject> allLazerGameObject = new List<GameObject>();
     [SerializeField] private List<Collider> allLazerCollider = new List<Collider>();
 
-    private bool isActive;
-    private float activeTimeNext;
-
-    public override void OnStart()
+    public override void BehaviourChange(bool giveDamage)
     {
-        for (int e = 0; e < allLazerCollider.Count; e++)
+        base.BehaviourChange(giveDamage);
+        allLazerCollider.ForEach(l => l.enabled = giveDamage);
+        allLazerGameObject.ForEach(l => l.SetActive(giveDamage));
+        if (giveDamage)
         {
-            Physics.IgnoreCollision(allLazerCollider[e], Player_Base.Instance.MyCollider);
+            GiveDamage();
         }
     }
-    private void Update()
+    public override void SetTrapForSpecial()
     {
-        if (!Game_Manager.Instance.LevelStart)
+        if (alwaysActivated || activeted)
         {
-            return;
-        }
-        activeTimeNext += Time.deltaTime;
-        if (isActive)
-        {
-            if (activeTimeNext > activeTime)
-            {
-                activeTimeNext = 0;
-                isActive = false;
-                allLazerCollider.ForEach(l => l.enabled = false);
-                allLazerGameObject.ForEach(l => l.SetActive(false));
-            }
-        }
-        else
-        {
-            if (activeTimeNext > activeTime)
-            {
-                activeTimeNext = 0;
-                isActive = true;
-                allLazerCollider.ForEach(l => l.enabled = true);
-                allLazerGameObject.ForEach(l => l.SetActive(true));
-            }
-
+            allLazerCollider.ForEach(l => l.enabled = true);
+            allLazerGameObject.ForEach(l => l.SetActive(true));
         }
     }
-    private void OnTriggerEnter(Collider other)
+    private void GiveDamage()
     {
-        if (!isActive)
+        for (int e = 0; e < myCharacterList.Count; e++)
         {
-            return;
+            CharacterEntered(myCharacterList[e]);
         }
-        if (other.CompareTag("Player"))
+    }
+    public override void CharacterEntered(Character_Base charBase)
+    {
+        if (charBase.CompareTag("Player"))
         {
             Game_Manager.Instance.AddCaughtTrapAmount();
             Game_Manager.Instance.AddLoseLifeAmount(damage);
-            other.GetComponent<Character_Base>().TakeDamage(damage);
         }
-        else if (other.CompareTag("Enemy"))
-        {
-            other.GetComponent<Character_Base>().TakeDamage(damage);
-        }
+        charBase.TakeDamage(damage);
     }
 }

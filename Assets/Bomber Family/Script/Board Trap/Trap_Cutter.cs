@@ -1,28 +1,45 @@
 ﻿using UnityEngine;
 
-public class Trap_Cutter : Board_Object
+public class Trap_Cutter : Trap_Has_Time_2
 {
+
     [SerializeField] private int damage = 5;
 
-    public override void OnStart()
+    private Animator myAnimator;
+
+    private void Awake()
     {
-        Physics.IgnoreCollision(MyCollider, Player_Base.Instance.MyCollider);
+        myAnimator = GetComponent<Animator>();
     }
-    private void OnTriggerEnter(Collider other)
+    public override void BehaviourChange(bool giveDamage)
     {
-        if (!Game_Manager.Instance.LevelStart)
+        base.BehaviourChange(giveDamage);
+        myAnimator.SetBool("Activate", activeted);
+        if (giveDamage)
         {
-            return;
+            GiveDamage();
         }
-        if (other.CompareTag("Player"))
+    }
+    private void GiveDamage()
+    {
+        for (int e = 0; e < myCharacterList.Count; e++)
+        {
+            CharacterEntered(myCharacterList[e]);
+        }
+    }
+    public override void SetTrap()
+    {
+        base.SetTrap();
+        myAnimator.SetBool("Activate", activeted);
+        myAnimator.SetBool("AlwaysActivate", alwaysActivated);
+    }
+    public override void CharacterEntered(Character_Base charBase)
+    {
+        if (charBase.CompareTag("Player"))
         {
             Game_Manager.Instance.AddCaughtTrapAmount();
             Game_Manager.Instance.AddLoseLifeAmount(damage);
-            other.GetComponent<Player_Base>().TakeDamage(damage);
         }
-        else if (other.CompareTag("Enemy"))
-        {
-            other.GetComponent<Enemy_Base>().TakeDamage(damage);
-        }
+        charBase.TakeDamage(damage);
     }
 }

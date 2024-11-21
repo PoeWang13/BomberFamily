@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using static UnityEditor.Progress;
 
 [CreateAssetMenu(menuName = "Genel/All Item Holder")]
 public class All_Item_Holder : ScriptableObject
@@ -22,6 +23,17 @@ public class All_Item_Holder : ScriptableObject
     public List<Item> GateList { get { return gateList; } }
     public List<Player_Source> PlayerSourceList { get { return playerSourceList; } }
 
+    public int LearnPlayerOrder(Player_Source source)
+    {
+        for (int e = 0; e < PlayerSourceList.Count; e++)
+        {
+            if (source == PlayerSourceList[e])
+            {
+                return e;
+            }
+        }
+        return -1;
+    }
     public int LearnOrder(Item item)
     {
         if (item.MyBoardType == BoardType.Wall)
@@ -64,7 +76,7 @@ public class All_Item_Holder : ScriptableObject
                 }
             }
         }
-        else if(item.MyBoardType == BoardType.Enemy)
+        else if (item.MyBoardType == BoardType.Enemy)
         {
             for (int e = 0; e < enemyList.Count; e++)
             {

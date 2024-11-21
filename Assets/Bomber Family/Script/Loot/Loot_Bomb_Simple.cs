@@ -21,7 +21,7 @@ public class Loot_Bomb_Simple : PoolObje
             {
                 isTaked = true;
                 lootEffect.SetActive(false);
-                player_Base.IncreaseBombAmount(myBombType);
+                player_Base.IncreaseBombAmount();
                 transform.DOScale(Vector3.one * 1.5f, 0.1f).OnComplete(() =>
                 {
                     transform.DOScale(Vector3.one * 0.5f, 0.1f).OnComplete(() =>

@@ -13,6 +13,12 @@ public class Board_Box : Board_Object, IDamegable
     {
         hasMagicStone = magicStone;
     }
+    public override void SetMouseButton()
+    {
+        Canvas_Manager.Instance.OpenBaseSetting(true);
+        Canvas_Manager.Instance.CloseSettingPanels();
+        Map_Creater_Manager.Instance.ChooseStuckObject(this);
+    }
     public void TakeDamage(int damage)
     {
         myLife -= damage;
@@ -32,10 +38,10 @@ public class Board_Box : Board_Object, IDamegable
                     Pooler loot = loot_Controller.GetLootItem();
                     if (loot != null)
                     {
-                        Audio_Manager.Instance.PlayGameDrop();
                         PoolObje poolObje = loot.HavuzdanObjeIste(transform.position);
-                        Map_Holder.Instance.LootObjects.Add(poolObje);
                         Game_Manager.Instance.AddLootObhjectList(poolObje);
+                        Map_Holder.Instance.LootObjects.Add(poolObje);
+                        Audio_Manager.Instance.PlayGameDrop();
                     }
                 }
             }

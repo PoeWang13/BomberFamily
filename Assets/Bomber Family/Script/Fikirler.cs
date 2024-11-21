@@ -3,12 +3,73 @@
 
 public class Fikirler : MonoBehaviour
 {
-    /// Viking
-    /// Normal
-    /// Cowboy
-    /// Büyü
-    /// Korsan
-    /// Samuray
+    /// Günlük giriş
+    /// Kaçırılan günlük giriş
+    /// +Levele başlama desteği
+    /// +2 Kat ödül
+    /// Özel level oynama
+    /// Özel giysiler
+    /// Özel büyü
+    /// Levellerden bazen vakitle açılan sandık düşer, bu sandıkları upgrade etmek isteriz.
+
+    /// Craft System
+    /// Her bomba 5 çeşit alet kullanılarak yapılır. Bu aletlerde hammadde kullanılarak yapılır.
+    /// Her alet için sabit 3 eşya gerekli
+    /// - Çerçeve : Demir + Plastik + Tahta
+    /// - Barut : Güherçile + Kükürt + Kömür tozu
+    /// - Fitil : Pamuk + Makara + Parmağa takılan yüzük
+    /// 1-Clock Bomb
+    /// - Uzaktan kumanda : Elektronik kart + Plastik kap + pil
+    /// - Alıcı : Alıcı radar iğnesi + Bobin + 
+    /// 2-Area Bomb
+    /// - Sıvı solüsyon : Sıvı X + Sıvı Y + Sıvı Z
+    /// - Cam beher : Kum + Ocak + Beher için kalıp
+    /// 3-Anti Bomb
+    /// - Bilye : Demir + Çelik + Bakır
+    /// - Muşamba : Petrol + Damıtma aleti + Betondan kalıp -> Bilyeleri sarmak için 
+    /// 4-Nucleer Bomb
+    /// - Atom kabı : Uranyum + Özel alışım kap + Kurşun
+    /// - Basınçla açılan kap : Dişli + Demir + Barometre
+    /// 5-Searcher
+    /// - Radar : Cam ekran + Lamba + Hassasiyet ölçer
+    /// - Batarya : Lityum + Su + Bakır
+    /// 6-Elektro -> Öldürmez ama düşmanları felç eder
+    /// - Cam küre : Kum + Plastik + Tahta
+    /// - Elektrik kablosu : Plastik + Bakır + Beton kalıp
+    /// 7-Lav Bombası -> 10 birim ilerleyene kadar tüm boş yollarda ilerler, kutu veya düşman bulursa onu ortadan kaldırır ve biter.
+    /// - 1 toprak delici : Matkap + Kol + Gözlük
+    /// - 1 lav küresi : Lav cam küresi + akışkan lav + Taş Z
+    /// 8-Buz Bombası -> 10 birim ilerleyene kadar tüm boş yollarda ilerler, düşman bulursa onu dondurur ve biter.
+    ///                 -> Donma süresi 30 saniyedir, birisi deyerse yok olurlar.
+    /// - 1 Torba X : Buz taşı + Taş I + Taş B
+    /// - 1 buz küresi : Buz cam küresi + Sıvı L + Taş M
+    /// 9-Sis Bombası -> 20 birim çevreyi görmeyi engelleyen bir sis oluşturur.
+    /// - 1 hava küresi : Sis cam küresi + hava pompası + hava vanası
+    /// - 1 toz küresi : Taş K + Taş L + Taş M
+    /// 10-Zehir bombası -> 20 birim çevredeki tüm canlıları zehirler.
+    /// - 1 zehir tozu : Kırma kovası + Kırma taşı + Zehir taşı
+    /// - 1 zehir küresi : Sıvı Z + Zehir cam küresi + Zehir kumaşı
+    ///
+
+    //[SerializeField] private GameObject panelObjectToogleActivite; // Başkasına mı bağlı yoksa zamansal olay mı
+    //[SerializeField] private GameObject panelObjectToogleActivite; // Zamansal olaysa, sürekli mi dönecek yoksa arada birmi duracak
+    //[SerializeField] private GameObject panelObjectTimer; // Sürekli dönmeyecekse, dönmek ve durmak için zaman
+
+
+
+    /// Level oluştururken çıkacak ek menu : Move, Turn ve destory harici
+    /// Cutter : Sürekli dön veya belli bir saniye dönsün ve belli bir saniye dursun
+    /// Diken : Sürekli başkasına bağlı veya belli bir saniye aktif ve belli bir saniye kapalı olsun
+    /// Fire : Sürekli aktif veya belli bir saniye aktif ve belli bir saniye kapalı olsun
+    /// Freezer : Sürekli aktif veya belli bir saniye aktif ve belli bir saniye kapalı olsun
+    /// Home : Kimleri çıkartacak, kaç saniyede bir çıkartacak
+    /// Killer : Ne kadar kapalı kalacak
+    /// Lazer : Her lazer sürekli aktif veya belli bir saniye aktif ve belli bir saniye kapalı olsun
+    /// Poison : Sürekli aktif veya belli bir saniye aktif ve belli bir saniye kapalı olsun
+    /// Saw : Sürekli aktif veya belli bir saniye aktif ve belli bir saniye kapalı olsun
+    /// Slower : Sürekli aktif veya belli bir saniye aktif ve belli bir saniye kapalı olsun
+    /// Trigger : Kimler buna bağlı olacak.
+    /// 
 
     //public List<Transform> transforms = new List<Transform>();
     //[ContextMenu("Deneme")]

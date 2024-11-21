@@ -9,10 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1abd654804b47d4468e2c0f44b7e3701, type: 3}
+  m_Script: {fileID: 11500000, guid: f84eb45377f944b45a60323b034df5de, type: 3}
   m_Name: Item_Trap_Lazer
   m_EditorClassIdentifier: 
   myIcon: {fileID: 21300000, guid: 7c1b08e5970534e4fa7f8541ef49b786, type: 3}
   myPrice: 250
   boardType: 3
   myPool: {fileID: 11400000, guid: 054f61d113e2cd541991f66ac48aad36, type: 2}
+  myTrapType: 1004

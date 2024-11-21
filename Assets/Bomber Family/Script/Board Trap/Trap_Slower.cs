@@ -1,33 +1,45 @@
 ﻿using UnityEngine;
 
-public class Trap_Slower : Board_Object
+public class Trap_Slower : Trap_Has_Time_2
 {
     [SerializeField, Range(0, 1)] private float slowerPercent;
 
-    public override void OnStart()
+    public override void BehaviourChange(bool giveDamage)
     {
-        Physics.IgnoreCollision(MyCollider, Player_Base.Instance.MyCollider);
+        base.BehaviourChange(giveDamage);
+        if (giveDamage)
+        {
+            GiveDebuff();
+        }
     }
-    private void OnTriggerEnter(Collider other)
+    private void GiveDebuff()
     {
-        if (other.CompareTag("Player"))
+        for (int e = 0; e < myCharacterList.Count; e++)
         {
-            other.GetComponent<Character_Base>().DebuffMySpeed(slowerPercent);
+            myCharacterList[e].DebuffMySpeed(slowerPercent);
         }
-        else if (other.CompareTag("Enemy"))
-        {
-            other.GetComponent<Character_Base>().DebuffMySpeed(slowerPercent);
-        }
+    }
+    public override void SetTrapForSpecial()
+    {
+
+    }
+    public override void CharacterEntered(Character_Base charBase)
+    {
+        charBase.DebuffMySpeed(slowerPercent);
     }
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (!Game_Manager.Instance.LevelStart)
         {
-            other.GetComponent<Character_Base>().ResetSpeed();
+            return;
         }
-        else if (other.CompareTag("Enemy"))
+        if (other.transform.TryGetComponent(out Character_Base charBase))
         {
-            other.GetComponent<Character_Base>().ResetSpeed();
+            if (myCharacterList.Contains(charBase))
+            {
+                charBase.ResetSpeed();
+                myCharacterList.Remove(charBase);
+            }
         }
     }
 }

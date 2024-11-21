@@ -15,7 +15,6 @@ public class Bomb_Simple : Bomb_Base
             return;
         }
         SetExploded();
-        MyOwner.IncreaseBombAmount(BombType.Simple);
         canGoRight = canGoLeft = canGoForward = canGoBack = true;
         BombFirePool.HavuzdanObjeIste(new Vector3Int(MyCoor.x, 0, MyCoor.y)).GetComponent<Bomb_Fire>().SetFire(MyOwner.CharacterStat.myBombPower);
         while (movingStep < MyOwner.CharacterStat.myBombFireLimit)

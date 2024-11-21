@@ -1,16 +1,43 @@
 ﻿using UnityEngine;
 
-public class Trap_Freezer : Board_Object
+public class Trap_Freezer : Trap_Has_Time_2
 {
+    private ParticleSystem freezeTrail;
+
     public override void OnStart()
     {
-        Physics.IgnoreCollision(MyCollider, Player_Base.Instance.MyCollider);
+        base.OnStart();
+        freezeTrail = GetComponentInChildren<ParticleSystem>();
     }
-    private void OnTriggerEnter(Collider other)
+    public override void BehaviourChange(bool giveDamage)
     {
-        if (other.TryGetComponent(out Character_Base character_Base))
+        base.BehaviourChange(giveDamage);
+        if (giveDamage)
         {
-            character_Base.Freeze(true);
+            GiveDeBuff();
+            freezeTrail.Play();
         }
+        else
+        {
+            freezeTrail.Stop();
+        }
+    }
+    private void GiveDeBuff()
+    {
+        for (int e = 0; e < myCharacterList.Count; e++)
+        {
+            myCharacterList[e].Freeze(true);
+        }
+    }
+    public override void SetTrapForSpecial()
+    {
+        if (alwaysActivated || activeted)
+        {
+            freezeTrail.Play();
+        }
+    }
+    public override void CharacterEntered(Character_Base charBase)
+    {
+        charBase.Freeze(true);
     }
 }

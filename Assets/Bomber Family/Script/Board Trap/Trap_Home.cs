@@ -2,17 +2,12 @@
 using DG.Tweening;
 using System.Collections.Generic;
 
-public class Trap_Home : Board_Object
+public class Trap_Home : Trap_Has_Time_1
 {
-    // Boarddaki herhangi bir enemyden üretir.
-    [SerializeField] private float spawnTime = 5;
-    [SerializeField] private List<Pooler> enemies = new List<Pooler>();
-
-    private float spawnTimeNext;
     private PoolObje poolObje;
     private Transform boardEnemyParent;
+    private List<Pooler> enemies = new List<Pooler>();
     private List<BoardCoor> boardCoors = new List<BoardCoor>();
-
     public override void OnStart()
     {
         Physics.IgnoreCollision(MyCollider, Player_Base.Instance.MyCollider);
@@ -44,10 +39,10 @@ public class Trap_Home : Board_Object
         {
             return;
         }
-        spawnTimeNext += Time.deltaTime;
-        if (spawnTimeNext > spawnTime)
+        waitingTimeNext += Time.deltaTime;
+        if (waitingTimeNext > waitingTime)
         {
-            spawnTimeNext = 0;
+            waitingTimeNext = 0;
             poolObje = enemies[Random.Range(0, enemies.Count)].HavuzdanObjeIste(transform.position + Vector3.down * 5);
             Enemy_Base enemy_Base = poolObje.GetComponent<Enemy_Base>();
             enemy_Base.GetComponent<Character_Base>().DebuffMySpeed(0.0f);

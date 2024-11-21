@@ -16,7 +16,7 @@ MonoBehaviour:
   myPrice: 250
   boardType: 4
   myPool: {fileID: 11400000, guid: 30dc68e5bfcbefa4e8ff2ac2eee4665e, type: 2}
-  myBombType: 0
+  myWorldType: 4
   myName: Female Samurai
   myStartingStat:
     myLife: 1

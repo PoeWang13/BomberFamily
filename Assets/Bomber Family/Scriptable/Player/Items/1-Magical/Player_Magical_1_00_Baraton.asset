@@ -16,7 +16,7 @@ MonoBehaviour:
   myPrice: 250
   boardType: 8
   myPool: {fileID: 11400000, guid: 4460a477a2afa8449bc521a322579223, type: 2}
-  myBombType: 0
+  myCharacterType: 1
   myName: Baraton
   myBombPooler: {fileID: 11400000, guid: 799287bb672f95a47a4697866c0ae97d, type: 2}
   myUpgrade:
@@ -26,6 +26,14 @@ MonoBehaviour:
     myBombPower: 1
     myBombFireLimit: 1
     myBombBoxPassing: 1
+    myBombPushingTime: 0.1
+  myMaxUpgrade:
+    myLife: 50
+    mySpeed: 500
+    myBombAmount: 3
+    myBombPower: 3
+    myBombFireLimit: 3
+    myBombBoxPassing: 3
     myBombPushingTime: 1
   myBombFire:
   - {fileID: 21300000, guid: da9e67cfa96d2594d807258f0ccf5b8f, type: 3}

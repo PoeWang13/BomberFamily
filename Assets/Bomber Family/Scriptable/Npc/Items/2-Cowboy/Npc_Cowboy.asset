@@ -16,5 +16,5 @@ MonoBehaviour:
   myPrice: 15000
   boardType: 9
   myPool: {fileID: 11400000, guid: 65398af8164b45a4d81652d97558d847, type: 2}
-  myBombType: 0
+  myWorldType: 2
   myName: Cowboy

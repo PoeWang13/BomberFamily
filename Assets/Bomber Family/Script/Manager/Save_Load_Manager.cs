@@ -31,7 +31,7 @@ public class CharacterStat
     public int myBombPower = 1;
     public int myBombFireLimit = 1;
     public int myBombBoxPassing = 1;
-    public int myBombPushingTime = 1;
+    public float myBombPushingTime = 1;
 }
 [Serializable]
 public class PlayerData
@@ -58,7 +58,7 @@ public class PlayerData
 
     [Header("Player")]
     public bool playerBuyed;
-
+    public int playerStatAmount;
     public int playerLevel;
     public int playerExp;
     public int playerExpMax = 100;
@@ -89,6 +89,7 @@ public class GameData
     [Header("Player Account")]
     public int playerOrder;
     public string accountName;
+    public List<int> allBombAmount = new List<int>();
     public List<PlayerData> allPlayers = new List<PlayerData>();
     public GameData()
     {

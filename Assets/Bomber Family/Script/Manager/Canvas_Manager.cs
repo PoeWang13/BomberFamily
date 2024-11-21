@@ -5,23 +5,32 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using Unity.VisualScripting;
+using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 
+[Serializable]
+public class BombList
+{
+    public RectTransform rectBombParent;
+    public TextMeshProUGUI textBombAmount;
+}
 public class Canvas_Manager : Singletion<Canvas_Manager>
 {
+    public Sprite emptySlotIcon;
     public event EventHandler OnGameWin;
     public event EventHandler OnGameLost;
 
-    [Header("Genel")]
+    // Genel
     [SerializeField] private Transform sceneMaskedImage;
     [SerializeField] private All_Item_Holder all_Item_Holder;
     [SerializeField] private TextMeshProUGUI textMenuGoldAmount;
     [SerializeField] private TextMeshProUGUI textCreatorGoldAmount;
 
-    [Header("Name")]
+    // Name
     [SerializeField] private GameObject panelName;
     [SerializeField] private TMP_InputField inputName;
 
-    [Header("Game Finish")]
+    // Game Finish
     [SerializeField] private GameObject panelGameFinish;
     [SerializeField] private GameObject objNextLevelButton;
     [SerializeField] private GameObject objReloadButton;
@@ -35,17 +44,19 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     [SerializeField] private TextMeshProUGUI textCaughtTrapAmont;
     [SerializeField] private TextMeshProUGUI textEarnGold;
     [SerializeField] private TextMeshProUGUI textEarnExp;
+    [SerializeField] private Button buttonDoubleReward;
+    [SerializeField] private Button buttonOffer1;
+    [SerializeField] private Button buttonOffer2;
+    [SerializeField] private Button buttonOffer3;
 
-    [Header("Menu")]
+    // Menu
     [SerializeField] private GameObject panelMenu;
     [SerializeField] private GameObject panelShop;
-    [SerializeField] private GameObject panelMap;
     [SerializeField] private Button buttonMyLevel;
     [SerializeField] private Transform mapButtonsParent;
     [SerializeField] private Transform myLevelButtonParent;
-    [SerializeField] private List<GameObject> maps = new List<GameObject>();
 
-    [Header("Creator")]
+    // Creator
     [SerializeField] private GameObject panelCreator;
     [SerializeField] private GameObject panelBoardSize;
     [SerializeField] private GameObject panelProcess;
@@ -59,18 +70,31 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     [SerializeField] private Transform enemyParent;
     [SerializeField] private Transform bossEnemyParent;
     [SerializeField] private Button buttonSaveMap;
+    [SerializeField] private GameObject panelCreatorProcessParent;
     [SerializeField] private Image imageProcess;
     [SerializeField] private TextMeshProUGUI textProcess;
     [SerializeField] private GameObject objCheckingMapButton;
-    [SerializeField] private GameObject panelObjectBehaviour;
-    [SerializeField] private GameObject panelObjectMove;
-    [SerializeField] private GameObject panelObjectDestroy;
     [SerializeField] private GameObject objSaveMapButtonsParent;
     [SerializeField] private GameObject objCreatorButtonTypeList;
     [SerializeField] private GameObject objCreatorTypeList;
     [SerializeField] private GameObject objChangeMapButton;
 
-    [Header("Dungeon Create Setting")]
+    // Creator Object Setting
+    [SerializeField] private GameObject panelSettingBase;
+    [SerializeField] private GameObject objButtonMove;
+    [SerializeField] private Toggle toggleSettingTrigger;
+    [SerializeField] private Toggle toggleSettingAlwaysActive;
+    [SerializeField] private Toggle toggleSettingTimer;
+    [SerializeField] private Trigger_Slot triggerSlot;
+    [SerializeField] private GameObject panelTriggerList;
+    [SerializeField] private Transform panelTriggerListParent;
+    [SerializeField] private GameObject panelSettingForObjectTimer1;
+    [SerializeField] private Toggle toggleStartingWithActivated;
+    [SerializeField] private GameObject panelSettingForObjectTimer2;
+    [SerializeField] private GameObject panelSettingForObjectEffect;
+    [SerializeField] private TextMeshProUGUI textSettingInfo;
+
+    // Dungeon Create Setting
     [SerializeField] private Toggle toggleDungeonSetting;
     [SerializeField] private Button buttonDungeonCreate;
     [SerializeField] private Button buttonChooser;
@@ -90,7 +114,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     [SerializeField] private TMP_InputField inputBossEnemyAmount;
     [SerializeField] private TMP_InputField inputMagicStoneAmount;
 
-    [Header("Player")]
+    // Player
     [SerializeField] private GameObject panelGame;
     [SerializeField] private Transform panelHelp;
     [SerializeField] private Button buttonHelpCloser;
@@ -102,29 +126,33 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     [SerializeField] private TextMeshProUGUI textPlayerName;
     [SerializeField] private RectTransform rectPlayerLife;
     [SerializeField] private TextMeshProUGUI textPlayerLife;
-    [SerializeField] private RectTransform rectPlayerPower;
-    [SerializeField] private TextMeshProUGUI textPlayerPower;
     [SerializeField] private RectTransform rectPlayerSpeed;
     [SerializeField] private TextMeshProUGUI textPlayerSpeed;
-    [SerializeField] private RectTransform rectPlayerBombFireLimit;
-    [SerializeField] private TextMeshProUGUI textPlayerBombFireLimit;
     [SerializeField] private RectTransform rectPlayerBombAmount;
     [SerializeField] private TextMeshProUGUI textPlayerBombAmount;
+    [SerializeField] private RectTransform rectPlayerPower;
+    [SerializeField] private TextMeshProUGUI textPlayerPower;
+    [SerializeField] private RectTransform rectPlayerBombFireLimit;
+    [SerializeField] private TextMeshProUGUI textPlayerBombFireLimit;
+    [SerializeField] private RectTransform rectPlayerBoxPassing;
+    [SerializeField] private TextMeshProUGUI textPlayerBoxPassing;
+    [SerializeField] private RectTransform rectPlayerBoxPushingTime;
+    [SerializeField] private TextMeshProUGUI textPlayerBoxPushingTime;
 
-    [Header("Bomb Button")]
+    // Bomb
     [SerializeField] private GameObject bombClockActiviter;
+    [SerializeField] private List<BombList> allBombs = new List<BombList>();
 
-    [Header("Player Choose")]
+    // Player Choose
     [SerializeField] private Joystick joystickMove;
     [SerializeField] private Button buttonPlayerBuy;
     [SerializeField] private Button buttonPlayerChoose;
     [SerializeField] private Image imageBombFire;
-    [Space]
     [SerializeField] private TextMeshProUGUI textShopPlayerName;
     [SerializeField] private TextMeshProUGUI textShopPlayerPrice;
     [SerializeField] private TextMeshProUGUI textShopPlayerLevel;
+    [SerializeField] private TextMeshProUGUI textShopPlayerUpgrade;
     [SerializeField] private TextMeshProUGUI textShopPlayerBombType;
-    [Space]
     [SerializeField] private TextMeshProUGUI textShopPlayerLife;
     [SerializeField] private TextMeshProUGUI textShopPlayerSpeed;
     [SerializeField] private TextMeshProUGUI textShopPlayerBombAmount;
@@ -132,7 +160,6 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     [SerializeField] private TextMeshProUGUI textShopPlayerBombFireLimit;
     [SerializeField] private TextMeshProUGUI textShopPlayerBoxPassing;
     [SerializeField] private TextMeshProUGUI textShopPlayerBoxPushingTime;
-    [Space]
     [SerializeField] private TextMeshProUGUI textShopPlayerUpgradeLife;
     [SerializeField] private TextMeshProUGUI textShopPlayerUpgradeSpeed;
     [SerializeField] private TextMeshProUGUI textShopPlayerUpgradeBombAmount;
@@ -140,6 +167,19 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     [SerializeField] private TextMeshProUGUI textShopPlayerUpgradeBombFireLimit;
     [SerializeField] private TextMeshProUGUI textShopPlayerUpgradeBoxPassing;
     [SerializeField] private TextMeshProUGUI textShopPlayerUpgradeBoxPushingTime;
+    [SerializeField] private Button buttonShopPlayerLife;
+    [SerializeField] private Button buttonShopPlayerSpeed;
+    [SerializeField] private Button buttonShopPlayerBombAmount;
+    [SerializeField] private Button buttonShopPlayerBombPower;
+    [SerializeField] private Button buttonShopPlayerBombFireLimit;
+    [SerializeField] private Button buttonShopPlayerBoxPassing;
+    [SerializeField] private Button buttonShopPlayerBoxPushingTime;
+
+    // Level Start Help
+    [SerializeField] private RectTransform rectLevelHelp;
+    [SerializeField] private Button buttonLevelHelpLife;
+    [SerializeField] private Button buttonLevelHelpAmount;
+    [SerializeField] private Button buttonLevelHelpPower;
 
     private bool isBuyed;
     private bool correctWallAmount;
@@ -150,6 +190,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     private bool correctMagicStoneAmount;
     private bool correctDungeonSize;
 
+    private int bombOrder;
     private int playerOrder;
     private int goldChangedAmount;
     private int goldChangedStaertedAmount;
@@ -167,11 +208,11 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     #region Menu
     private void Start()
     {
+        sceneMaskedImage.gameObject.SetActive(true);
         Game_Manager.Instance.OnGameStart += Instance_OnGameStart;
     }
     public void GameStart()
     {
-        sceneMaskedImage.gameObject.SetActive(true);
         CloseMask(0.1f, () => {
             if (string.IsNullOrEmpty(Save_Load_Manager.Instance.gameData.accountName))
             {
@@ -207,53 +248,13 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     }
     private void OpenMyLevel(int order)
     {
-        Audio_Manager.Instance.PlayGameStart();
-        Warning_Manager.Instance.ShowMessage("Please wait. Level loading...", 3);
-        // Panel kapanacak
-        panelMenu.SetActive(false);
-        myLevelButtonParent.parent.parent.gameObject.SetActive(false);
-        Game_Manager.Instance.SetGameType(GameType.Game);
-        Map_Construct_Manager.Instance.ConstructMap(Save_Load_Manager.Instance.LoadBoard(BoardSaveType.MyLevel, order));
-    }
-    private void SetGameLevelButtons()
-    {
-        //for (int e = 0; e < Save_Load_Manager.Instance.gameData.maxGameLevel; e++)
-        //{
-        //    Button but = Instantiate(buttonMyLevel, myLevelButtonParent);
-        //    but.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Level\n" + e;
-        //    int order = e;
-        //    but.onClick.AddListener(() => OpenGameLevel(order));
-        //}
-    }
-    private void OpenGameLevel(int order)
-    {
-        Audio_Manager.Instance.PlayGameStart();
-        // Panel kapanacak
-        panelMenu.SetActive(false);
-        myLevelButtonParent.parent.parent.gameObject.SetActive(false);
-        Game_Manager.Instance.SetGameType(GameType.Game);
-        Map_Construct_Manager.Instance.ConstructMap(Save_Load_Manager.Instance.LoadBoard(BoardSaveType.GameLevel, order));
-    }
-    private void SetMapButtons()
-    {
-        Transform butTr = mapButtonsParent.GetChild(0);
-        butTr.gameObject.SetActive(true);
-        Button buton = butTr.GetComponent<Button>();
-        for (int e = 0; e < maps.Count; e++)
-        {
-            Button but = Instantiate(buton, mapButtonsParent);
-            but.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "World - " + e;
-            int order = e;
-            but.onClick.AddListener(() => SetActiveMapPanel(order));
-        }
-        butTr.gameObject.SetActive(false);
-    }
-    private void SetActiveMapPanel(int order)
-    {
-        for (int e = 0; e < maps.Count; e++)
-        {
-            maps[e].SetActive(order == e);
-        }
+        //Audio_Manager.Instance.PlayGameStart();
+        //Warning_Manager.Instance.ShowMessage("Please wait. Level loading...", 3);
+        //// Panel kapanacak
+        //panelMenu.SetActive(false);
+        //myLevelButtonParent.parent.parent.gameObject.SetActive(false);
+        //Game_Manager.Instance.SetGameType(GameType.Game);
+        //Map_Construct_Manager.Instance.ConstructMap(Save_Load_Manager.Instance.LoadBoard(BoardSaveType.MyLevel, order));
     }
     // Canvas -> Panel-Menu -> Button-Create-Map'a atandı
     public void OpenCreateMapPanel()
@@ -265,8 +266,28 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     // Canvas -> Panel-Menu -> Button-Map'a atandı
     public void OpenMap()
     {
-        panelMenu.SetActive(false);
-        panelMap.SetActive(true);
+        OpenMask(0, () =>
+        {
+            panelMenu.SetActive(false);
+            Camera_Manager.Instance.transform.position = new Vector3(0, -55, 0);
+            CloseMask(0.5f, null);
+        });
+    }
+    public void OpenLevel(int levelOrder)
+    {
+        Audio_Manager.Instance.PlayGameStart();
+        OpenMask(0, () =>
+        {
+            // Ekran kapatıldı.
+            Warning_Manager.Instance.ShowMessage("Please wait. Level loading...", 3);
+            Game_Manager.Instance.SetGameType(GameType.Game);
+            Camera_Manager.Instance.transform.position = Vector3.zero;
+            CloseMask(0.5f, () =>
+            {
+                // Ekran açıldı.
+                Map_Construct_Manager.Instance.ConstructMap(Save_Load_Manager.Instance.LoadBoard(BoardSaveType.GameLevel, levelOrder));
+            });
+        });
     }
     // Canvas -> Panel-Menu -> Button-Shop'a atandı
     public void OpenShop()
@@ -289,10 +310,59 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     }
     #endregion
 
+    #region Level Start Help
+    // Canvas -> Panel-Game -> Panel-Level-Help -> Button-Close'a atandı
+    public void LevelStartHelp(bool isOpen)
+    {
+        rectLevelHelp.DOAnchorPos(new Vector2(0, isOpen ? 25 : -325), 0.5f).OnComplete(() =>
+        {
+            if (!isOpen)
+            {
+                Game_Manager.Instance.StartLevel();
+                buttonLevelHelpLife.interactable = true;
+                buttonLevelHelpAmount.interactable = true;
+                buttonLevelHelpPower.interactable = true;
+            }
+        });
+    }
+    // Canvas -> Panel-Game -> Panel-Level-Help -> Button-Help-Life-Speed'a atandı
+    public void LevelStartHelpLife()
+    {
+        // Life ve speed artacak
+        Reklam_Manager.Instance.RewardShowAd(() =>
+        {
+            player_Base.Increaselife();
+            player_Base.IncreaseSpeed();
+            buttonLevelHelpLife.interactable = false;
+        });
+    }
+    // Canvas -> Panel-Game -> Panel-Level-Help -> Button-Help-Bomb-Amount'a atandı
+    public void LevelStartHelpAmount()
+    {
+        // Bomb Amount
+        Reklam_Manager.Instance.RewardShowAd(() =>
+        {
+            player_Base.IncreaseBombAmount();
+            buttonLevelHelpAmount.interactable = false;
+        });
+    }
+    // Canvas -> Panel-Game -> Panel-Level-Help -> Button-Help-Bomb-Power-Fire-Limit'a atandı
+    public void LevelStartHelpPower()
+    {
+        // Power, Fire limit
+        Reklam_Manager.Instance.RewardShowAd(() =>
+        {
+            player_Base.IncreaseBombFirePower();
+            player_Base.IncreaseBombFireLimit();
+            buttonLevelHelpPower.interactable = false;
+        });
+    }
+    #endregion
+
     #region Player Choose
     public void SetPlayerInfo()
     {
-        bombClockActiviter.SetActive(all_Item_Holder.PlayerSourceList[Save_Load_Manager.Instance.gameData.playerOrder].MyBombType == BombType.Clock);
+        //bombClockActiviter.SetActive(all_Item_Holder.PlayerSourceList[Save_Load_Manager.Instance.gameData.playerOrder].MyBombType == BombType.Clock);
         player_Base.SetPlayerStat(joystickMove);
         isBuyed = Save_Load_Manager.Instance.gameData.allPlayers[playerOrder].playerBuyed;
         buttonPlayerBuy.gameObject.SetActive(!isBuyed);
@@ -303,8 +373,9 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         textShopPlayerName.text = all_Item_Holder.PlayerSourceList[playerOrder].MyName;
         textShopPlayerPrice.text = isBuyed ? "Buyed" : all_Item_Holder.PlayerSourceList[playerOrder].MyPrice.ToString();
 
-        textShopPlayerBombType.text = all_Item_Holder.PlayerSourceList[playerOrder].MyBombingType;
+        //textShopPlayerBombType.text = all_Item_Holder.PlayerSourceList[playerOrder].MyBombingType;
         textShopPlayerLevel.text = Save_Load_Manager.Instance.gameData.allPlayers[playerOrder].playerLevel.ToString();
+        textShopPlayerUpgrade.text = Save_Load_Manager.Instance.gameData.allPlayers[playerOrder].playerStatAmount.ToString();
 
         textShopPlayerLife.text = Save_Load_Manager.Instance.gameData.allPlayers[playerOrder].playerStat.myLife.ToString();
         textShopPlayerSpeed.text = (Save_Load_Manager.Instance.gameData.allPlayers[playerOrder].playerStat.mySpeed * 0.01f).ToString();
@@ -321,7 +392,109 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         textShopPlayerUpgradeBombFireLimit.text = all_Item_Holder.PlayerSourceList[playerOrder].MyUpgrade.myBombFireLimit.ToString();
         textShopPlayerUpgradeBoxPassing.text = all_Item_Holder.PlayerSourceList[playerOrder].MyUpgrade.myBombBoxPassing.ToString();
         textShopPlayerUpgradeBoxPushingTime.text = all_Item_Holder.PlayerSourceList[playerOrder].MyUpgrade.myBombPushingTime.ToString();
+
+        CheckUpgradeButton();
     }
+    private void CheckUpgradeButton()
+    {
+        if (Save_Load_Manager.Instance.gameData.allPlayers[playerOrder].playerStatAmount > 0)
+        {
+            if (all_Item_Holder.LearnPlayerOrder(player_Base.Player_Source) == playerOrder && player_Base.HasCurse)
+            {
+                // Oynanan playerda curse var
+                Warning_Manager.Instance.ShowMessage("You have some curse so you can not upgrade your stats.");
+                CloseUpgradeButton();
+            }
+            else
+            {
+                buttonShopPlayerLife.gameObject.SetActive(all_Item_Holder.PlayerSourceList[playerOrder].CanUpgradeLife(Save_Load_Manager.Instance.gameData.allPlayers[playerOrder].playerStat.myLife));
+                buttonShopPlayerSpeed.gameObject.SetActive(all_Item_Holder.PlayerSourceList[playerOrder].CanUpgradeSpeed(Save_Load_Manager.Instance.gameData.allPlayers[playerOrder].playerStat.mySpeed));
+                buttonShopPlayerBombAmount.gameObject.SetActive(all_Item_Holder.PlayerSourceList[playerOrder].CanUpgradeBombAmount(Save_Load_Manager.Instance.gameData.allPlayers[playerOrder].playerStat.myBombAmount));
+                buttonShopPlayerBombPower.gameObject.SetActive(all_Item_Holder.PlayerSourceList[playerOrder].CanUpgradeBombPower(Save_Load_Manager.Instance.gameData.allPlayers[playerOrder].playerStat.myBombPower));
+                buttonShopPlayerBombFireLimit.gameObject.SetActive(all_Item_Holder.PlayerSourceList[playerOrder].CanUpgradeBombFireLimit(Save_Load_Manager.Instance.gameData.allPlayers[playerOrder].playerStat.myBombFireLimit));
+                buttonShopPlayerBoxPassing.gameObject.SetActive(all_Item_Holder.PlayerSourceList[playerOrder].CanUpgradeBoxPassing(Save_Load_Manager.Instance.gameData.allPlayers[playerOrder].playerStat.myBombBoxPassing));
+                buttonShopPlayerBoxPushingTime.gameObject.SetActive(all_Item_Holder.PlayerSourceList[playerOrder].CanUpgradeBoxPushingTime(Save_Load_Manager.Instance.gameData.allPlayers[playerOrder].playerStat.myBombPushingTime));
+            }
+        }
+        else
+        {
+            CloseUpgradeButton();
+        }
+    }
+    private void CloseUpgradeButton()
+    {
+        buttonShopPlayerLife.gameObject.SetActive(false);
+        buttonShopPlayerSpeed.gameObject.SetActive(false);
+        buttonShopPlayerBombAmount.gameObject.SetActive(false);
+        buttonShopPlayerBombPower.gameObject.SetActive(false);
+        buttonShopPlayerBombFireLimit.gameObject.SetActive(false);
+        buttonShopPlayerBoxPassing.gameObject.SetActive(false);
+        buttonShopPlayerBoxPushingTime.gameObject.SetActive(false);
+    }
+    // Canvas -> Panel-Menu -> Panel-Shop -> Panel-Shop-Player-Container -> Panel-Player-Stats -> Button-Player-Upgrade-Life'a atandı
+    public void UpgradePlayerLife()
+    {
+        Save_Load_Manager.Instance.gameData.allPlayers[playerOrder].playerStat.myLife++;
+        if (Save_Load_Manager.Instance.gameData.allPlayers[playerOrder].playerStatAmount == 0)
+        {
+            CheckUpgradeButton();
+        }
+    }
+    // Canvas -> Panel-Menu -> Panel-Shop -> Panel-Shop-Player-Container -> Panel-Player-Stats -> Button-Player-Upgrade-Speed'a atandı
+    public void UpgradePlayerSpeed()
+    {
+        Save_Load_Manager.Instance.gameData.allPlayers[playerOrder].playerStat.mySpeed += 10;
+        if (Save_Load_Manager.Instance.gameData.allPlayers[playerOrder].playerStatAmount == 0)
+        {
+            CheckUpgradeButton();
+        }
+    }
+    // Canvas -> Panel-Menu -> Panel-Shop -> Panel-Shop-Player-Container -> Panel-Player-Stats -> Button-Player-Upgrade-BombAmount'a atandı
+    public void UpgradePlayerBombAmount()
+    {
+        Save_Load_Manager.Instance.gameData.allPlayers[playerOrder].playerStat.myBombAmount++;
+        if (Save_Load_Manager.Instance.gameData.allPlayers[playerOrder].playerStatAmount == 0)
+        {
+            CheckUpgradeButton();
+        }
+    }
+    // Canvas -> Panel-Menu -> Panel-Shop -> Panel-Shop-Player-Container -> Panel-Player-Stats -> Button-Player-Upgrade-BombPower'a atandı
+    public void UpgradePlayerBombPower()
+    {
+        Save_Load_Manager.Instance.gameData.allPlayers[playerOrder].playerStat.myBombPower++;
+        if (Save_Load_Manager.Instance.gameData.allPlayers[playerOrder].playerStatAmount == 0)
+        {
+            CheckUpgradeButton();
+        }
+    }
+    // Canvas -> Panel-Menu -> Panel-Shop -> Panel-Shop-Player-Container -> Panel-Player-Stats -> Button-Player-Upgrade-BombFireLimit'a atandı
+    public void UpgradePlayerBombFireLimit()
+    {
+        Save_Load_Manager.Instance.gameData.allPlayers[playerOrder].playerStat.myBombFireLimit++;
+        if (Save_Load_Manager.Instance.gameData.allPlayers[playerOrder].playerStatAmount == 0)
+        {
+            CheckUpgradeButton();
+        }
+    }
+    // Canvas -> Panel-Menu -> Panel-Shop -> Panel-Shop-Player-Container -> Panel-Player-Stats -> Button-Player-Upgrade-BoxPassing'a atandı
+    public void UpgradePlayerBoxPassing()
+    {
+        Save_Load_Manager.Instance.gameData.allPlayers[playerOrder].playerStat.myBombBoxPassing++;
+        if (Save_Load_Manager.Instance.gameData.allPlayers[playerOrder].playerStatAmount == 0)
+        {
+            CheckUpgradeButton();
+        }
+    }
+    // Canvas -> Panel-Menu -> Panel-Shop -> Panel-Shop-Player-Container -> Panel-Player-Stats -> Button-Player-Upgrade-BoxPushingTime'a atandı
+    public void UpgradePlayerBoxPushingTime()
+    {
+        Save_Load_Manager.Instance.gameData.allPlayers[playerOrder].playerStat.myBombPushingTime -= 0.1f;
+        if (Save_Load_Manager.Instance.gameData.allPlayers[playerOrder].playerStatAmount == 0)
+        {
+            CheckUpgradeButton();
+        }
+    }
+
     // Canvas -> Panel-Menu -> Panel-Shop -> Panel-Shop-Player-Container -> Panel-Player-Info-Container -> Panel-Player-Bomb -> Button-Left ve Button-Right'a atandı
     public void ShowBombFireLimit(int next)
     {
@@ -404,9 +577,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         SetTrapCreatorSlot();
         SetEnemyCreatorSlot();
         SetBossEnemyCreatorSlot();
-        SetMapButtons();
         SetMyLevelButtons();
-        SetGameLevelButtons();
         SetDungeonSetting();
         CreateAllDungeonBoardCreatorChooser();
     }
@@ -442,10 +613,101 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     {
         Player_Base.Instance.UseBombClockActiviter();
     }
-    // Canvas -> Panel-Game -> Button-Use-Bomb'a atandı
-    public void UseBomb()
+    // Canvas -> Panel-Game -> Button-Bomb-Change'a atandı.
+    public void ChangeBomb()
     {
-        Player_Base.Instance.UseBomb();
+        allBombs[bombOrder].rectBombParent.DORotate(Vector3.forward * 180, 0.5f).OnComplete(() =>
+        {
+            bool findedBomb = false;
+            while (!findedBomb)
+            {
+                bombOrder++;
+                if (bombOrder == Save_Load_Manager.Instance.gameData.allBombAmount.Count)
+                {
+                    bombOrder = 0;
+                    findedBomb = true;
+                    allBombs[bombOrder].rectBombParent.DORotate(Vector3.zero, 0.5f);
+                }
+                else
+                {
+                    if (Save_Load_Manager.Instance.gameData.allBombAmount[bombOrder] > 0)
+                    {
+                        findedBomb = true;
+                        allBombs[bombOrder].rectBombParent.DORotate(Vector3.zero, 0.5f);
+                    }
+                }
+            }
+        });
+    }
+    // Canvas -> Panel-Game -> Bomb-Holder -> Panel-Simple-Bomb-Parent -> Button-Simple-Bomb'a atandı.
+    public void UseSimpleBomb()
+    {
+        Player_Base.Instance.UseSimpleBomb();
+    }
+    // Canvas -> Panel-Game -> Bomb-Holder -> Panel-Anti-Bomb-Parent -> Button-Anti-Bomb'a atandı.
+    public void UseAntiBomb()
+    {
+        player_Base.UseAntiBomb();
+    }
+    // Canvas -> Panel-Game -> Bomb-Holder -> Panel-Area-Bomb-Parent -> Button-Area-Bomb'a atandı.
+    public void UseAreaBomb()
+    {
+        player_Base.UseAreaBomb();
+    }
+    // Canvas -> Panel-Game -> Bomb-Holder -> Panel-Clock-Bomb-Parent -> Button-Clock-Bomb'a atandı.
+    public void UseClockBomb()
+    {
+        player_Base.UseClockBomb();
+    }
+    // Canvas -> Panel-Game -> Bomb-Holder -> Panel-Nucleer-Bomb-Parent -> Button-Nucleer-Bomb'a atandı.
+    public void UseNucleerBomb()
+    {
+        player_Base.UseNucleerBomb();
+    }
+    // Canvas -> Panel-Game -> Bomb-Holder -> Panel-Searcher-Bomb-Parent -> Button-Searcher-Bomb'a atandı.
+    public void UseSearcherBomb()
+    {
+        player_Base.UseSearcherBomb();
+    }
+    // Canvas -> Panel-Game -> Bomb-Holder -> Panel-Elektro-Bomb-Parent -> Button-Elektro-Bomb'a atandı.
+    public void UseElektroBomb()
+    {
+        player_Base.UseElektroBomb();
+    }
+    // Canvas -> Panel-Game -> Bomb-Holder -> Panel-Lav-Bomb-Parent -> Button-Lav-Bomb'a atandı.
+    public void UseLavBomb()
+    {
+        player_Base.UseLavBomb();
+    }
+    // Canvas -> Panel-Game -> Bomb-Holder -> Panel-Buz-Bomb-Parent -> Button-Buz-Bomb'a atandı.
+    public void UseBuzBomb()
+    {
+        player_Base.UseBuzBomb();
+    }
+    // Canvas -> Panel-Game -> Bomb-Holder -> Panel-Sis-Bomb-Parent -> Button-Sis-Bomb'a atandı.
+    public void UseSisBomb()
+    {
+        player_Base.UseSisBomb();
+    }
+    // Canvas -> Panel-Game -> Bomb-Holder -> Panel-Zehir-Bomb-Parent -> Button-Zehir-Bomb'a atandı.
+    public void UseZehirBomb()
+    {
+        player_Base.UseZehirBomb();
+    }
+    public void SetBomb(BombType bombType)
+    {
+        allBombs[(int)bombType].textBombAmount.text = Save_Load_Manager.Instance.gameData.allBombAmount[(int)bombType].ToString();
+        if (Save_Load_Manager.Instance.gameData.allBombAmount[(int)bombType] == 0)
+        {
+            allBombs[(int)bombType].rectBombParent.DORotate(Vector3.forward * 180, 0.5f).OnComplete(() =>
+            {
+                allBombs[(int)BombType.Simple].rectBombParent.DORotate(Vector3.zero, 0.5f);
+            });
+        }
+        else
+        {
+            allBombs[(int)bombType].rectBombParent.gameObject.SetActive(true);
+        }
     }
     #endregion
 
@@ -457,10 +719,12 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         imagePlayerIcon.sprite = all_Item_Holder.PlayerSourceList[Save_Load_Manager.Instance.gameData.playerOrder].MyIcon;
         textPlayerName.text = Save_Load_Manager.Instance.gameData.accountName;
         SetPlayerLifeText();
-        SetPlayerPowerText();
         SetPlayerSpeedText();
-        SetPlayerBombFireLimitText();
         SetPlayerBombAmountText();
+        SetPlayerPowerText();
+        SetPlayerBombFireLimitText();
+        SetPlayerBoxPassingText();
+        SetPlayerBoxPushingTimeText();
         panelGame.SetActive(true);
         SetActiveMapProcess(false);
     }
@@ -487,20 +751,28 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
             rectPlayerLife.DOAnchorPos(new Vector3(60, 0, 0), 0.5f);
         });
     }
-    public void SetPlayerPowerText()
-    {
-        textPlayerPower.text = Player_Base.Instance.CharacterStat.myBombPower.ToString();
-        textPlayerPower.transform.DOShakePosition(2, 50, 25, 180).OnComplete(() =>
-        {
-            rectPlayerPower.DOAnchorPos(new Vector3(60, 0, 0), 0.5f);
-        });
-    }
     public void SetPlayerSpeedText()
     {
         textPlayerSpeed.text = (Player_Base.Instance.MySpeed * 0.01f).ToString();
         textPlayerSpeed.transform.DOShakePosition(2, 50, 25, 180).OnComplete(() =>
         {
             rectPlayerSpeed.DOAnchorPos(new Vector3(60, 0, 0), 0.5f);
+        });
+    }
+    public void SetPlayerBombAmountText()
+    {
+        textPlayerBombAmount.text = Player_Base.Instance.MyBombAmount.ToString();
+        textPlayerBombAmount.transform.DOShakePosition(2, 50, 25, 180).OnComplete(() =>
+        {
+            rectPlayerBombAmount.DOAnchorPos(new Vector3(60, 0, 0), 0.5f);
+        });
+    }
+    public void SetPlayerPowerText()
+    {
+        textPlayerPower.text = Player_Base.Instance.CharacterStat.myBombPower.ToString();
+        textPlayerPower.transform.DOShakePosition(2, 50, 25, 180).OnComplete(() =>
+        {
+            rectPlayerPower.DOAnchorPos(new Vector3(60, 0, 0), 0.5f);
         });
     }
     public void SetPlayerBombFireLimitText()
@@ -511,12 +783,20 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
             rectPlayerBombFireLimit.DOAnchorPos(new Vector3(60, 0, 0), 0.5f);
         });
     }
-    public void SetPlayerBombAmountText()
+    public void SetPlayerBoxPassingText()
     {
-        textPlayerBombAmount.text = Player_Base.Instance.MyBombAmount.ToString();
-        textPlayerBombAmount.transform.DOShakePosition(2, 50, 25, 180).OnComplete(() =>
+        textPlayerBoxPassing.text = Player_Base.Instance.CharacterStat.myBombBoxPassing.ToString();
+        textPlayerBoxPassing.transform.DOShakePosition(2, 50, 25, 180).OnComplete(() =>
         {
-            rectPlayerBombAmount.DOAnchorPos(new Vector3(60, 0, 0), 0.5f);
+            rectPlayerBoxPassing.DOAnchorPos(new Vector3(60, 0, 0), 0.5f);
+        });
+    }
+    public void SetPlayerBoxPushingTimeText()
+    {
+        textPlayerBoxPushingTime.text = Player_Base.Instance.CharacterStat.myBombPushingTime.ToString();
+        textPlayerBoxPushingTime.transform.DOShakePosition(2, 50, 25, 180).OnComplete(() =>
+        {
+            rectPlayerBoxPushingTime.DOAnchorPos(new Vector3(60, 0, 0), 0.5f);
         });
     }
     #endregion
@@ -649,7 +929,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
             {
                 if (Map_Creater_Manager.Instance.ChoosedBoxList.Count == 0)
                 {
-                    Warning_Manager.Instance.ShowMessage("You must choose some Box.");
+                    Warning_Manager.Instance.ShowMessage("You must select at least 1 type of box.");
                     correctMagicStoneAmount = false;
                 }
             }
@@ -676,7 +956,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
             {
                 if (Map_Creater_Manager.Instance.ChoosedBoxList.Count == 0)
                 {
-                    Warning_Manager.Instance.ShowMessage("You must choose some Box.");
+                    Warning_Manager.Instance.ShowMessage("You must choose some type of Box.");
                     correctBoxAmount = false;
                 }
             }
@@ -1024,6 +1304,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     {
         imageProcess.fillAmount = process;
         textProcess.text = (process * 100).ToString("N2");
+        panelCreatorProcessParent.SetActive(process < 1);
     }
     public void SetActiveMapProcess(bool process)
     {
@@ -1046,7 +1327,6 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         if (Map_Creater_Manager.Instance.CheckLevelMap())
         {
             panelMenu.SetActive(false);
-            panelMap.SetActive(false);
             panelGame.SetActive(true);
             panelCreator.SetActive(false);
             Camera_Manager.Instance.SetCameraPos(new Vector3Int(Map_Holder.Instance.BoardSize.x, 0, Map_Holder.Instance.BoardSize.y));
@@ -1136,29 +1416,320 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         }
         // Objeler
         objCreatorButtonTypeList.SetActive(isActive);
-        // OBje listesi
+        // Obje listesi
         objCreatorTypeList.SetActive(isActive);
     }
-    public void SetPanelObjectBehaviourPanel(bool isActive, bool isActiveButtonMove = false, bool isActiveButtonDestroy = false)
-    {
-        panelObjectBehaviour.SetActive(isActive);
-        panelObjectMove.SetActive(isActiveButtonMove);
-        panelObjectDestroy.SetActive(isActiveButtonDestroy);
-    }
-    // Canvas -> Panel-Creator -> Panel-Objects-Behaviour -> Button-Move'a atandı
+    // Canvas -> Panel-Creator -> Panel-Objects-Behaviour -> Panel-Simple -> Button-Move'a atandı
     public void MoveObject()
     {
         Map_Creater_Manager.Instance.MoveObject();
     }
-    // Canvas -> Panel-Creator -> Panel-Objects-Behaviour -> Button-Turn'a atandı
+    // Canvas -> Panel-Creator -> Panel-Objects-Behaviour -> Panel-Simple -> Button-Turn'a atandı
     public void TurnObject()
     {
         Map_Creater_Manager.Instance.TurnObject();
     }
-    // Canvas -> Panel-Creator -> Panel-Objects-Behaviour -> Button-Destroy'a atandı
+    // Canvas -> Panel-Creator -> Panel-Objects-Behaviour -> Panel-Simple -> Button-Destroy'a atandı
     public void DestroyObject()
     {
         Map_Creater_Manager.Instance.DestroyObject();
+    }
+    #endregion
+
+    #region Creator Object Setting
+    // Canvas -> Panel-Creator -> Panel-Objects-Behaviour -> Button-Close'a atandı
+    public void CloseBaseSetting()
+    {
+        SetCreatorButtons(true);
+        panelSettingBase.SetActive(false);
+        Map_Creater_Manager.Instance.FixOrder();
+        if (Map_Creater_Manager.Instance.TrapTrigger != null)
+        {
+            Map_Creater_Manager.Instance.TrapTrigger.transform.localScale = Vector3.one * 1;
+            Map_Creater_Manager.Instance.ChooseTrigger(null);
+        }
+        if (Map_Creater_Manager.Instance.TrapBase != null)
+        {
+            Map_Creater_Manager.Instance.TrapBase.transform.localScale = Vector3.one * 1;
+            Map_Creater_Manager.Instance.ChooseTrap(null);
+        }
+    }
+    /// <summary>
+    /// Objelerin ayar panelini açmaya yarar
+    /// </summary>
+    /// <param name="canMove">Hareket ettirme butonunu açar kapatır. Slottan konulduysa false olabilir.</param>
+    public void OpenBaseSetting(bool canMove)
+    {
+        SetCreatorButtons(false);
+        panelSettingBase.SetActive(true);
+        objButtonMove.SetActive(canMove);
+    }
+    public void CloseSettingPanels()
+    {
+        toggleSettingTrigger.gameObject.SetActive(false);
+        toggleSettingAlwaysActive.gameObject.SetActive(false);
+        toggleSettingTimer.gameObject.SetActive(false);
+        toggleStartingWithActivated.gameObject.SetActive(false);
+        panelSettingForObjectTimer1.gameObject.SetActive(false);
+        panelSettingForObjectTimer2.gameObject.SetActive(false);
+        panelSettingForObjectEffect.gameObject.SetActive(false);
+        textSettingInfo.text = "Click for immobilize.";
+    }
+    /// <summary>
+    /// Trigger sürekli mi yoksa 1 kere mi aktif edecek
+    /// </summary>
+    /// <param name="canMove">True is 1 time work. False is always aktif-deaktive</param>
+    public void OpenTriggerSetting()
+    {
+        toggleSettingTrigger.gameObject.SetActive(true);
+        toggleSettingTrigger.onValueChanged.RemoveAllListeners();
+        toggleSettingTrigger.onValueChanged.AddListener((bool isOn) =>
+        {
+            SetTrigger(isOn);
+        });
+    }
+    /// <summary>
+    /// Objenin triggere ihtiyacı varsa çağrılır.
+    /// </summary>
+    /// <param name="isNeedTrigger">Trigger seçme butonu açık veya kapalı.</param>
+    public void OpenTriggerForObject(bool isNeedTrigger)
+    {
+        toggleSettingTrigger.gameObject.SetActive(isNeedTrigger);
+        toggleSettingTrigger.onValueChanged.RemoveAllListeners();
+        toggleSettingTrigger.isOn = true;
+        toggleSettingTrigger.onValueChanged.AddListener((bool isOn) =>
+        {
+            SetForTrigger(isOn);
+        });
+    }
+    /// <summary>
+    /// Objenin sürekli çalışmasını sağlayacak toggle ı açar veya kapatır
+    /// </summary>
+    /// <param name="isActive">Toggle açık veya kapalı.</param>
+    public void OpenPanelSettingTimerActive(bool isActive)
+    {
+        toggleSettingAlwaysActive.gameObject.SetActive(isActive);
+        toggleSettingAlwaysActive.onValueChanged.RemoveAllListeners();
+        toggleSettingAlwaysActive.onValueChanged.AddListener((bool isOn) =>
+        {
+            SetForTimer2(isOn);
+            SetForAlwaysActivited(isOn);
+        });
+    }
+    /// <summary>
+    /// Obje zamanlı çalıştırıp kapatacak inputları açıp kapatır.
+    /// </summary>
+    /// <param name="isTimer2">2. Zaman inputu açık veya kapalı</param>
+    public void OpenPanelSettingTimer(bool isTimer2)
+    {
+        toggleStartingWithActivated.gameObject.SetActive(false);
+        panelSettingForObjectTimer1.SetActive(false);
+        panelSettingForObjectTimer2.SetActive(false);
+        panelSettingForObjectEffect.gameObject.SetActive(false);
+        toggleSettingTimer.onValueChanged.RemoveAllListeners();
+        if (isTimer2)
+        {
+            toggleSettingTimer.onValueChanged.AddListener((bool isOn) =>
+            {
+                //textSettingInfo.text = "Set object's time for waiting and working.";
+                SetForTimer1(isOn);
+                SetForTimer2(isOn);
+            });
+        }
+        else
+        {
+            toggleSettingTimer.onValueChanged.AddListener((bool isOn) =>
+            {
+                //textSettingInfo.text = "Set object's time for waiting.";
+                SetForTimer1(isOn);
+            });
+        }
+    }
+    // Trigger seçilince working seçme toggle ına verilecek
+    public void SetTrigger(bool isOn)
+    {
+        textSettingInfo.text = "Choose Trigger working times. Choosing is 1 time, not choosing is always work.";
+        Map_Creater_Manager.Instance.TrapTrigger.SetWorkTime(isOn);
+    }
+    // Obje seçilince trigger seçme toggle ına verilecek
+    public void SetForTrigger(bool isOn)
+    {
+        panelTriggerList.SetActive(isOn);
+        if (Map_Creater_Manager.Instance.TrapBase.TryGetComponent(out IHasTrigger hasTrigger))
+        {
+            hasTrigger.SetHasTrigger(isOn);
+        }
+        if (isOn)
+        {
+            for (int e = panelTriggerListParent.childCount - 1; e >= 0; e--)
+            {
+                Destroy(panelTriggerListParent.GetChild(e).gameObject);
+            }
+            for (int e = 0; e < Map_Holder.Instance.TrapObjects.Count; e++)
+            {
+                if (Map_Holder.Instance.TrapObjects[e].TryGetComponent(out Trap_Trigger trigger))
+                {
+                    Trigger_Slot trigSlot = Instantiate(triggerSlot, panelTriggerListParent);
+                    trigSlot.SlotFull(trigger);
+                }
+            }
+
+            textSettingInfo.text = "Choose trigger for object. You can see trigger list.";
+            toggleSettingAlwaysActive.gameObject.SetActive(false);
+            toggleSettingAlwaysActive.SetIsOnWithoutNotify(false);
+            panelSettingForObjectEffect.gameObject.SetActive(false);
+
+            toggleSettingTimer.gameObject.SetActive(false);
+            toggleSettingTimer.SetIsOnWithoutNotify(false);
+
+            toggleStartingWithActivated.gameObject.SetActive(false);
+            panelSettingForObjectTimer1.SetActive(false);
+            panelSettingForObjectTimer2.SetActive(false);
+        }
+        else
+        {
+            textSettingInfo.text = "Choose a behaviour for object.";
+            toggleSettingAlwaysActive.gameObject.SetActive(true);
+            toggleSettingAlwaysActive.SetIsOnWithoutNotify(false);
+
+            toggleSettingTimer.gameObject.SetActive(true);
+            toggleSettingTimer.SetIsOnWithoutNotify(false);
+        }
+    }
+    // Obje trigger ile aktif olduğunda, aktif olarak mı başlayacak yoksa pasif olarak mı ?
+    // Canvas -> Panel-Creator -> Panel-Objects-Behaviour -> Toggle-StartActivatedWithTrigger'a atandı
+    public void SetForTriggerActivated(bool isOn)
+    {
+        if (Map_Creater_Manager.Instance.TrapBase.TryGetComponent(out ISetActivited startActivate))
+        {
+            startActivate.SetActivited(isOn);
+        }
+    }
+    // Obje sçeilince sürekli aktiflik toggle ına verilecek
+    public void SetForAlwaysActivited(bool isOn)
+    {
+        if (Map_Creater_Manager.Instance.TrapBase.TryGetComponent(out IAlwaysActivite alwaysActivite))
+        {
+            alwaysActivite.SetAlwaysActivite(isOn);
+        }
+        panelSettingForObjectEffect.gameObject.SetActive(isOn);
+        if (isOn)
+        {
+            textSettingInfo.text = "Your object will always activated.";
+            toggleSettingTrigger.gameObject.SetActive(false);
+            toggleSettingTrigger.SetIsOnWithoutNotify(false);
+            panelTriggerList.SetActive(false);
+
+            toggleSettingTimer.gameObject.SetActive(false);
+            toggleSettingTimer.SetIsOnWithoutNotify(false);
+
+            toggleStartingWithActivated.gameObject.SetActive(false);
+            panelSettingForObjectTimer1.SetActive(false);
+            panelSettingForObjectTimer2.SetActive(false);
+        }
+        else
+        {
+            textSettingInfo.text = "Choose a behaviour for object.";
+            toggleSettingTrigger.gameObject.SetActive(true);
+            toggleSettingTimer.gameObject.SetActive(true);
+        }
+    }
+    // Obje seçilince objenin türüne göre zaman seçme tagglına atanacak
+    public void SetForTimer1(bool isOn)
+    {
+        panelSettingForObjectTimer1.SetActive(isOn);
+        if (isOn)
+        {
+            textSettingInfo.text = "Set some time for your behaviour.";
+            toggleSettingTrigger.gameObject.SetActive(false);
+            toggleSettingTrigger.SetIsOnWithoutNotify(false);
+
+            toggleSettingAlwaysActive.gameObject.SetActive(false);
+            toggleSettingAlwaysActive.SetIsOnWithoutNotify(false);
+            panelSettingForObjectEffect.gameObject.SetActive(false);
+        }
+        else
+        {
+            textSettingInfo.text = "Choose a behaviour for object.";
+            toggleSettingTrigger.gameObject.SetActive(true);
+            toggleSettingAlwaysActive.gameObject.SetActive(true);
+        }
+    }
+    // Obje seçilince objenin türüne göre zaman seçme tagglına atanacak
+    public void SetForTimer2(bool isOn)
+    {
+        panelSettingForObjectTimer2.SetActive(isOn);
+        toggleStartingWithActivated.gameObject.SetActive(isOn);
+    }
+    // Obje seçilince obje aktif olarak mı başlasın
+    // Canvas -> Panel-Creator -> Panel-Objects-Behaviour -> Toggle-StartActivated'a atandı
+    public void StartingWithActivated(bool isOn)
+    {
+        if (Map_Creater_Manager.Instance.TrapBase.TryGetComponent(out ISetActivited setActivited))
+        {
+            setActivited.SetActivited(isOn);
+            textSettingInfo.text = "Starting with " + (isOn ? "activated." : "deActivated.");
+        }
+    }
+    // Canvas -> Panel-Creator -> Panel-Objects-Behaviour -> Panel-Time-For-Effect -> InputField--For-Effect'a atandı
+    public void SetTimerEffect(string time)
+    {
+        if (string.IsNullOrEmpty(time))
+        {
+            textSettingInfo.text = "Effect time can not be empty.";
+        }
+        if (float.TryParse(time, out float effectTime))
+        {
+            if (Map_Creater_Manager.Instance.TrapBase.TryGetComponent(out ISetEffectTime setEffectTime))
+            {
+                setEffectTime.SetEffectTime(effectTime);
+                textSettingInfo.text = "Effect time set.";
+            }
+        }
+        else
+        {
+            textSettingInfo.text = "Effect time must be decimal number or integer number.";
+        }
+    }
+    // Canvas -> Panel-Creator -> Panel-Objects-Behaviour -> Panel-Time-For-Waiting -> InputField--For-Waiting'a atandı
+    public void SetTimerWaiting(string time)
+    {
+        if (string.IsNullOrEmpty(time))
+        {
+            textSettingInfo.text = "Waiting time can not be empty.";
+        }
+        if (float.TryParse(time, out float waitTime))
+        {
+            if (Map_Creater_Manager.Instance.TrapBase.TryGetComponent(out ISetWaitingTime setWaitingTime))
+            {
+                setWaitingTime.SetWaitingTime(waitTime);
+                textSettingInfo.text = "Waiting time set.";
+            }
+        }
+        else
+        {
+            textSettingInfo.text = "Waiting time must be decimal number or integer number.";
+        }
+    }
+    // Canvas -> Panel-Creator -> Panel-Objects-Behaviour -> Panel-Time-For-Working -> InputField--For-Working'a atandı
+    public void SetTimerWorking(string time)
+    {
+        if (string.IsNullOrEmpty(time))
+        {
+            textSettingInfo.text = "Working time can not be empty.";
+        }
+        if (float.TryParse(time, out float workTime))
+        {
+            if (Map_Creater_Manager.Instance.TrapBase.TryGetComponent(out ISetWorkingTime setWorkingTime))
+            {
+                setWorkingTime.SetWorkingTime(workTime);
+                textSettingInfo.text = "Working time set.";
+            }
+        }
+        else
+        {
+            textSettingInfo.text = "Working time must be decimal number or integer number.";
+        }
     }
     #endregion
 
@@ -1260,11 +1831,13 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         textEarnGold.text = "Gold : " + Game_Manager.Instance.EarnGold.ToString();
         textEarnExp.text = "Exp : " + Game_Manager.Instance.EarnExp.ToString();
     }
+    // Canvas -> Panel-Game-Finish -> Button-Menu'a atandı
     public void NextLevel()
     {
         panelGameFinish.SetActive(false);
         Map_Construct_Manager.Instance.ConstructMap(Save_Load_Manager.Instance.LoadBoard(BoardSaveType.GameLevel, Save_Load_Manager.Instance.gameData.lastLevel));
     }
+    // Canvas -> Panel-Game-Finish -> Button-Next'a atandı
     public void GoMenu()
     {
         panelMenu.SetActive(true);
@@ -1273,10 +1846,55 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         Map_Holder.Instance.CloseBoardGround();
         Map_Holder.Instance.SendToPoolAllObjects();
     }
+    // Canvas -> Panel-Game-Finish -> Button-Reload'a atandı
     public void Reload()
     {
         panelGameFinish.SetActive(false);
         Map_Construct_Manager.Instance.ConstructMap(Save_Load_Manager.Instance.LoadBoard(BoardSaveType.GameLevel, Save_Load_Manager.Instance.gameData.lastLevel));
+    }
+    // Canvas -> Panel-Game-Finish -> Panel-Container -> Panel-Reward -> Button-Double'a atandı
+    public void EarnDoubleReward()
+    {
+        // Power, Fire limit
+        Reklam_Manager.Instance.RewardShowAd(() =>
+        {
+            Game_Manager.Instance.GiveToPlayerExp(Game_Manager.Instance.EarnExp);
+            SetGoldSmooth(Game_Manager.Instance.EarnGold);
+            buttonDoubleReward.interactable = false;
+        });
+    }
+    // Canvas -> Panel-Game-Finish -> Panel-Container -> Panel-Offer -> Button-Item'a atandı
+    public void EarnOffer1()
+    {
+        // Power, Fire limit
+        Reklam_Manager.Instance.RewardShowAd(() =>
+        {
+            Game_Manager.Instance.GiveToPlayerExp(500);
+            buttonOffer1.interactable = false;
+        });
+    }
+    // Canvas -> Panel-Game-Finish -> Panel-Container -> Panel-Offer -> Button-Item (1)'a atandı
+    public void EarnOffer2()
+    {
+        // Power, Fire limit
+        Reklam_Manager.Instance.RewardShowAd(() =>
+        {
+            SetGoldSmooth(100);
+            buttonOffer2.interactable = false;
+        });
+    }
+    // Canvas -> Panel-Game-Finish -> Panel-Container -> Panel-Offer -> Button-Item (2)'a atandı
+    public void EarnOffer3()
+    {
+        buttonOffer3.interactable = false;
+        Warning_Manager.Instance.ShowMessage("Magic system will come next upgrade.");
+        //// Power, Fire limit
+        //Reklam_Manager.Instance.RewardShowAd(() =>
+        //{
+        //    Debug.LogWarning("Offer 3 verild.");
+        //    // 1 Magic verilecek ilerde
+        //    buttonOffer3.interactable = false;
+        //});
     }
     #endregion
 
@@ -1301,10 +1919,12 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         DOVirtual.DelayedCall(waitingTime,
             () =>
             {
-                action?.Invoke();
                 // Open Mask
                 DOTween.To(value => { sceneMaskedImage.localScale = Vector3.one * value; }, startValue: 0, endValue: 2, duration: 1.5f)
-                .SetEase(Ease.Linear);
+                .SetEase(Ease.Linear).OnComplete(() =>
+                {
+                    action?.Invoke();
+                });
             });
     }
     public void LoadScene(string sceneName)

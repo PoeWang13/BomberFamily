@@ -16,12 +16,20 @@ MonoBehaviour:
   myPrice: 250
   boardType: 8
   myPool: {fileID: 11400000, guid: 10c1d4f323bbf2847a815336d92282dc, type: 2}
-  myBombType: 0
+  myCharacterType: 5
   myName: JofbaA
   myBombPooler: {fileID: 11400000, guid: 799287bb672f95a47a4697866c0ae97d, type: 2}
   myUpgrade:
     myLife: 1
     mySpeed: 10
+    myBombAmount: 1
+    myBombPower: 1
+    myBombFireLimit: 1
+    myBombBoxPassing: 1
+    myBombPushingTime: 1
+  myMaxUpgrade:
+    myLife: 1
+    mySpeed: 1
     myBombAmount: 1
     myBombPower: 1
     myBombFireLimit: 1

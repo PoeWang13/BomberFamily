@@ -52,7 +52,14 @@ MonoBehaviour:
   havuzum: {fileID: 11400000, guid: c7fe2b0064b428d4ea36ae73acd0d84c, type: 2}
   myBoardType: 3
   myCollider: {fileID: 3609066291198605602}
+  myTrapType: 1000
   damage: 5
+  boardTrapTimer2:
+    dikenBoardObject:
+      isActivited: 0
+      isAlwaysActivited: 0
+      myStopWorkTime: {x: 0, y: 0}
+      triggedObjects: []
 --- !u!65 &3609066291198605602
 BoxCollider:
   m_ObjectHideFlags: 0

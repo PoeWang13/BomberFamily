@@ -16,5 +16,5 @@ MonoBehaviour:
   myPrice: 15000
   boardType: 9
   myPool: {fileID: 11400000, guid: 5060aa47c4a5cb64ab2c8f09064a3660, type: 2}
-  myBombType: 0
+  myWorldType: 5
   myName: Viking

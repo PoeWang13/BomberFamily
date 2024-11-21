@@ -16,7 +16,7 @@ MonoBehaviour:
   myPrice: 250
   boardType: 4
   myPool: {fileID: 11400000, guid: 0075ad33e6dfa76478c05ee8571b3bb3, type: 2}
-  myBombType: 0
+  myWorldType: 1
   myName: Skeleton Soldier
   myStartingStat:
     myLife: 1

@@ -57,6 +57,7 @@ MonoBehaviour:
   havuzum: {fileID: 11400000, guid: 054f61d113e2cd541991f66ac48aad36, type: 2}
   myBoardType: 3
   myCollider: {fileID: 0}
+  myTrapType: 1004
   damage: 10
   activeTime: 5
   allLazerGameObject:

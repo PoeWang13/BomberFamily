@@ -51,6 +51,7 @@ MonoBehaviour:
   havuzum: {fileID: 11400000, guid: 413d9898475a9284b87164d890ac5f94, type: 2}
   myBoardType: 3
   myCollider: {fileID: 8543083660465809263}
+  myTrapType: 100
   spawnTime: 5
   enemies:
   - {fileID: 11400000, guid: e501449102ea68143b47161cfedfce5c, type: 2}

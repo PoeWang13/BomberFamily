@@ -16,7 +16,7 @@ MonoBehaviour:
   myPrice: 250
   boardType: 5
   myPool: {fileID: 11400000, guid: 00d721b15cf6ce54fa36a0340f1012ad, type: 2}
-  myBombType: 0
+  myWorldType: 3
   myName: Light
   myStartingStat:
     myLife: 1

@@ -19,7 +19,6 @@ public class Bomb_Nukleer : Bomb_Base
         }
         bombTrail.Play();
         SetExploded();
-        MyOwner.IncreaseBombAmount(BombType.Nucleer);
         transform.DOLocalMoveY(10, 1).OnComplete(() =>
         {
             view.eulerAngles = Vector3.right * 180;

@@ -16,7 +16,7 @@ MonoBehaviour:
   myPrice: 250
   boardType: 5
   myPool: {fileID: 11400000, guid: d360c5c5900bfe748affc214a0ac60ed, type: 2}
-  myBombType: 0
+  myWorldType: 1
   myName: Golem
   myStartingStat:
     myLife: 1

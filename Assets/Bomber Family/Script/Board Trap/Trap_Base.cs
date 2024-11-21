@@ -2,12 +2,12 @@
 
 public class Trap_Base : Board_Object
 {
-    public override void SetMouseButton()
+    [SerializeField] private TrapType myTrapType;
+
+    public TrapType MyTrapType { get { return myTrapType; } }
+
+    public virtual void SetTrap()
     {
-        //if (IsStuck)
-        //{
-        //    Map_Creater_Manager.Instance.SetTriggerObject(this);
-        //    Canvas_Manager.Instance.SetCreatorPanel(false);
-        //}
+
     }
 }

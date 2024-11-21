@@ -9,10 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1abd654804b47d4468e2c0f44b7e3701, type: 3}
+  m_Script: {fileID: 11500000, guid: f84eb45377f944b45a60323b034df5de, type: 3}
   m_Name: Item_Trap_Slower
   m_EditorClassIdentifier: 
   myIcon: {fileID: 21300000, guid: 9299ae3a916ca774aae6e33dec5adeca, type: 3}
   myPrice: 250
   boardType: 3
   myPool: {fileID: 11400000, guid: 166f25ee5b3709f4ba59374166d23dc7, type: 2}
+  myTrapType: 1007

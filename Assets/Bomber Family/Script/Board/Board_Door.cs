@@ -9,9 +9,10 @@ public class Board_Door : Board_Box
 
     private float replicaTimeNext;
     private Transform boardBossEnemyParent;
+    private List<Pooler> bossEnemies = new List<Pooler>();
     private List<BoardCoor> boardCoors = new List<BoardCoor>();
 
-    private void Start()
+    public override void OnStart()
     {
         boardBossEnemyParent = Utils.MakeChieldForGameElement("Board_Boss_Enemy");
         for (int x = -1; x < 2; x++)
@@ -34,6 +35,12 @@ public class Board_Door : Board_Box
                 }
             }
         }
+    }
+    public override void SetMouseButton()
+    {
+        Canvas_Manager.Instance.OpenBaseSetting(true);
+        Canvas_Manager.Instance.CloseSettingPanels();
+        Map_Creater_Manager.Instance.ChooseStuckObject(this);
     }
     private void Update()
     {

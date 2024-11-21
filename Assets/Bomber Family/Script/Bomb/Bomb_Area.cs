@@ -9,7 +9,6 @@ public class Bomb_Area : Bomb_Base
             return;
         }
         SetExploded();
-        MyOwner.IncreaseBombAmount(BombType.Area);
         BombFirePool.HavuzdanObjeIste(new Vector3Int(MyCoor.x, 0, MyCoor.y)).GetComponent<Bomb_Fire>().SetFire(MyOwner.CharacterStat.myBombPower);
         for (int x = -1; x < 2; x++)
         {

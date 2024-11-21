@@ -22,7 +22,6 @@ public class Bomb_Anti_Wall : Bomb_Base
         }
         bombTrail.Play();
         SetExploded();
-        MyOwner.IncreaseBombAmount(BombType.Anti);
         view.DOLocalMoveY(10, 1).OnComplete(() =>
         {
             view.eulerAngles = Vector3.right * 180;

@@ -52,6 +52,8 @@ MonoBehaviour:
   havuzum: {fileID: 11400000, guid: 5d18f2dcfe29f184d8b394ec4ce07de8, type: 2}
   myBoardType: 3
   myCollider: {fileID: -8496824323174573710}
+  myTrapType: 1002
+  damage: 5
   fireTime: 5
 --- !u!33 &3352550
 MeshFilter:

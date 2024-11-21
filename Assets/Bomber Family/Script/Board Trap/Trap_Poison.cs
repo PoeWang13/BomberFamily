@@ -1,72 +1,50 @@
 ﻿using UnityEngine;
-using System.Collections.Generic;
 
-public class Trap_Poison : Board_Object
+public class Trap_Poison : Trap_Has_Time_2
 {
     [SerializeField] private int damage;
-    [SerializeField] private float posionTime = 5;
 
-    private float posionTimeNext;
-    private List<Character_Base> allCharacterBase = new List<Character_Base>();
+    private ParticleSystem poisonTrail;
 
     public override void OnStart()
     {
-        Physics.IgnoreCollision(MyCollider, Player_Base.Instance.MyCollider);
+        base.OnStart();
+        poisonTrail = GetComponentInChildren<ParticleSystem>();
     }
-    private void Update()
+    public override void BehaviourChange(bool giveDamage)
     {
-        if (!Game_Manager.Instance.LevelStart)
+        base.BehaviourChange(giveDamage);
+        if (giveDamage)
         {
-            return;
+            GiveDamage();
+            poisonTrail.Play();
         }
-        if (allCharacterBase.Count > 0)
+        else
         {
-            posionTimeNext += Time.deltaTime;
-            if (posionTimeNext > posionTime)
-            {
-                posionTimeNext = 0;
-                allCharacterBase.ForEach(x => x.TakeDamage(damage));
-            }
+            poisonTrail.Stop();
         }
     }
-    private void OnTriggerEnter(Collider other)
+    public override void SetTrapForSpecial()
     {
-        if (other.CompareTag("Player"))
+        if (alwaysActivated || activeted)
+        {
+            poisonTrail.Play();
+        }
+    }
+    private void GiveDamage()
+    {
+        for (int e = 0; e < myCharacterList.Count; e++)
+        {
+            CharacterEntered(myCharacterList[e]);
+        }
+    }
+    public override void CharacterEntered(Character_Base charBase)
+    {
+        if (charBase.CompareTag("Player"))
         {
             Game_Manager.Instance.AddCaughtTrapAmount();
             Game_Manager.Instance.AddLoseLifeAmount(damage);
-            Character_Base character_Base = other.GetComponent<Character_Base>();
-            character_Base.TakeDamage(damage);
-            allCharacterBase.Add(character_Base);
         }
-        else if (other.CompareTag("Enemy"))
-        {
-            Character_Base character_Base = other.GetComponent<Character_Base>();
-            character_Base.TakeDamage(damage);
-            allCharacterBase.Add(character_Base);
-        }
-    }
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            Character_Base character_Base = other.GetComponent<Character_Base>();
-            if (allCharacterBase.Contains(character_Base))
-            {
-                allCharacterBase.Remove(character_Base);
-            }
-        }
-        else if (other.CompareTag("Enemy"))
-        {
-            Character_Base character_Base = other.GetComponent<Character_Base>();
-            if (allCharacterBase.Contains(character_Base))
-            {
-                allCharacterBase.Remove(character_Base);
-            }
-        }
-        if (allCharacterBase.Count == 0)
-        {
-            posionTimeNext = 0;
-        }
+        charBase.TakeDamage(damage);
     }
 }

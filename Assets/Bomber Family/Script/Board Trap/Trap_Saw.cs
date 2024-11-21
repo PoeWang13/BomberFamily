@@ -1,51 +1,44 @@
 ﻿using UnityEngine;
 
-public class Trap_Saw : Board_Object
+public class Trap_Saw : Trap_Has_Time_2
 {
     [SerializeField] private int damage = 5;
-    [SerializeField] private float sawTime = 5;
 
-    private bool isActive;
-    private float sawTimeNext;
     private Animator myAnimator;
 
     public override void OnStart()
     {
+        base.OnStart();
         myAnimator = GetComponent<Animator>();
-        Physics.IgnoreCollision(MyCollider, Player_Base.Instance.MyCollider);
     }
-    private void Update()
+    public override void BehaviourChange(bool giveDamage)
     {
-        sawTimeNext += Time.deltaTime;
-        if (sawTimeNext > sawTime)
+        base.BehaviourChange(giveDamage);
+        myAnimator.SetBool("Activate", activeted);
+        if (giveDamage)
         {
-            SetSaw();
-            sawTimeNext = 0;
+            GiveDamage();
         }
     }
-    private void SetSaw()
+    public override void SetTrapForSpecial()
     {
-        isActive = !myAnimator.GetBool("Saw");
-        myAnimator.SetBool("Saw", isActive);
+        myAnimator.SetBool("Activate", activeted);
+        myAnimator.SetBool("AlwaysActivate", alwaysActivated);
     }
-    private void OnTriggerEnter(Collider other)
+    private void GiveDamage()
     {
-        if (!Game_Manager.Instance.LevelStart)
+        for (int e = 0; e < myCharacterList.Count; e++)
         {
-            return;
+            CharacterEntered(myCharacterList[e]);
         }
-        if (isActive)
+    }
+    public override void CharacterEntered(Character_Base charBase)
+    {
+        if (charBase.CompareTag("Player"))
         {
-            if (other.CompareTag("Player"))
-            {
-                Game_Manager.Instance.AddCaughtTrapAmount();
-                Game_Manager.Instance.AddLoseLifeAmount(damage);
-                other.GetComponent<Player_Base>().TakeDamage(damage);
-            }
-            else if (other.CompareTag("Enemy"))
-            {
-                other.GetComponent<Enemy_Base>().TakeDamage(damage);
-            }
+            Game_Manager.Instance.AddCaughtTrapAmount();
+            Game_Manager.Instance.AddLoseLifeAmount(damage);
         }
+        charBase.TakeDamage(damage);
     }
 }

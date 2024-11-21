@@ -3,16 +3,23 @@ using UnityEngine;
 
 public class Camera_Manager : Singletion<Camera_Manager>
 {
-    [SerializeField] private int cameraSpeed;
+    [SerializeField] private int cameraSpeed = 1;
 
-    [SerializeField] private int xMaxLimit;
-    [SerializeField] private int zMaxLimit;
+    private int xMaxLimit;
+    private int zMaxLimit;
     private int xMinLimit = 5;
     private int zMinLimit = 3;
+    private bool showContructLevel;
     private Transform player;
     private Vector3 playerOldPos;
+
     // X min 5 max 
     // Y min 3 max 
+
+    public void SendCamera(Vector3 limit)
+    {
+        transform.DOMove(limit, 0.5f);
+    }
     public void SetCameraLimit(Vector2Int limit)
     {
         xMaxLimit = limit.x - 5;
@@ -39,7 +46,6 @@ public class Camera_Manager : Singletion<Camera_Manager>
             }
         }, startValue: 0, endValue: 1, duration: 0.5f);
     }
-    private bool showContructLevel;
     public void SetCameraPos(Vector3Int pos)
     {
         showContructLevel = true;
@@ -47,7 +53,7 @@ public class Camera_Manager : Singletion<Camera_Manager>
         {
             transform.DOMove(new Vector3(xMinLimit, 0, zMinLimit), 2.5f).OnComplete(() =>
             {
-                Game_Manager.Instance.StartLevel();
+                Canvas_Manager.Instance.LevelStartHelp(true);
             });
         });
     }

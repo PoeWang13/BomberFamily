@@ -15,6 +15,12 @@ public class Board_Replicater : Board_Box
         boardBoxParent = Utils.MakeChieldForGameElement("Board_Box");
         this.enabled = false;
     }
+    public override void SetMouseButton()
+    {
+        Canvas_Manager.Instance.OpenBaseSetting(true);
+        Canvas_Manager.Instance.CloseSettingPanels();
+        Map_Creater_Manager.Instance.ChooseStuckObject(this);
+    }
     private void Update()
     {
         if (!Game_Manager.Instance.LevelStart)

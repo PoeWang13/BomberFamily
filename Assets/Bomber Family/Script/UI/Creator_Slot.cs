@@ -26,6 +26,35 @@ public class Creator_Slot : MonoBehaviour
         if (Save_Load_Manager.Instance.gameData.gold >= myItem.MyPrice)
         {
             Map_Creater_Manager.Instance.SetCreatedObject(myItem);
+            // Hareket sistemi
+            if (myItem.MyBoardType == BoardType.Trap)
+            {
+                if ((myItem as Item_Trap).MyTrapType == TrapType.None)
+                {
+                    Canvas_Manager.Instance.OpenBaseSetting(false);
+                    Canvas_Manager.Instance.CloseSettingPanels();
+                }
+                else if ((myItem as Item_Trap).MyTrapType == TrapType.Trigger)
+                {
+                    Canvas_Manager.Instance.OpenBaseSetting(false);
+                    Canvas_Manager.Instance.CloseSettingPanels();
+                }
+                else if ((myItem as Item_Trap).MyTrapType > (TrapType)99 && (myItem as Item_Trap).MyTrapType < (TrapType)1000)
+                {
+                    Canvas_Manager.Instance.OpenBaseSetting(false);
+                    Canvas_Manager.Instance.CloseSettingPanels();
+                }
+                else if ((myItem as Item_Trap).MyTrapType > (TrapType)999)
+                {
+                    Canvas_Manager.Instance.OpenBaseSetting(false);
+                    Canvas_Manager.Instance.CloseSettingPanels();
+                }
+            }
+            else
+            {
+                Canvas_Manager.Instance.OpenBaseSetting(false);
+                Canvas_Manager.Instance.CloseSettingPanels();
+            }
             Canvas_Manager.Instance.SetGoldSmooth(-myItem.MyPrice);
         }
         else

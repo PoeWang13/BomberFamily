@@ -56,6 +56,7 @@ public class Character_Base : Board_Object, IDamegable
     public bool CanMove { get { return canMove; } }
     public bool IsDead { get { return isDead; } }
     public bool IsFreeze { get { return isFreeze; } }
+    public bool HasCurse { get { return allCurses.Count > 0; } }
     public Vector3 Direction { get { return direction; } }
     public CharacterStat CharacterStat { get { return characterStat; } }
     public Rigidbody MyRigidbody { get { return myRigidbody; } }
@@ -398,13 +399,56 @@ public class Character_Base : Board_Object, IDamegable
     }
     #endregion
 
+    #region Use Special Bomb
+    public virtual void UseAntiBomb()
+    {
+        Game_Manager.Instance.UseAntiBomb(this);
+    }
+    public virtual void UseAreaBomb()
+    {
+        Game_Manager.Instance.UseAreaBomb(this);
+    }
+    public virtual void UseClockBomb()
+    {
+        Game_Manager.Instance.UseClockBomb(this);
+    }
+    public virtual void UseNucleerBomb()
+    {
+        Game_Manager.Instance.UseNuckleerBomb(this);
+    }
+    public virtual void UseSearcherBomb()
+    {
+        Game_Manager.Instance.UseSearcherBomb(this);
+    }
+    public virtual void UseElektroBomb()
+    {
+        Game_Manager.Instance.UseElektroBomb(this);
+    }
+    public virtual void UseLavBomb()
+    {
+        Game_Manager.Instance.UseLavBomb(this);
+    }
+    public virtual void UseBuzBomb()
+    {
+        Game_Manager.Instance.UseBuzBomb(this);
+    }
+    public virtual void UseSisBomb()
+    {
+        Game_Manager.Instance.UseSisBomb(this);
+    }
+    public virtual void UseZehirBomb()
+    {
+        Game_Manager.Instance.UseZehirBomb(this);
+    }
+    #endregion
+
     #region Increase Stats
     public void IncreaseShieldTime()
     {
         shieldTime += 3;
         canProtect = true;
     }
-    public void UseSimpleBomb()
+    public void UseBomb()
     {
         myBombAmount--;
     }
@@ -424,7 +468,7 @@ public class Character_Base : Board_Object, IDamegable
     {
         myBombFireLimit++;
     }
-    public virtual void IncreaseBombAmount(BombType bombType)
+    public virtual void IncreaseBombAmount()
     {
     }
     public void IncreaseBomb()

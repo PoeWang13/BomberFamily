@@ -23,7 +23,8 @@ public class Loot_Bomb_Nucleer : PoolObje
                 isTaked = true;
                 bombTrail.Play();
                 lootEffect.SetActive(false);
-                player_Base.IncreaseBombAmount(myBombType);
+                Save_Load_Manager.Instance.gameData.allBombAmount[(int)myBombType]++;
+                Canvas_Manager.Instance.SetBomb(myBombType);
                 DOVirtual.DelayedCall(0.25f, () =>
                 {
                     transform.DOLocalMoveY(10, 1).OnComplete(() =>

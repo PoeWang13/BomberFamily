@@ -1,18 +1,18 @@
 ﻿using DG.Tweening;
 using UnityEngine;
 
-public class Trap_Killer : Board_Object
+public class Trap_Killer : Trap_Has_Time_1
 {
-    [SerializeField] private float sleepTime = 5;
-
     private bool isActive;
     private Animator myAnimator;
-    private float sleepTimeNext;
 
     public override void OnStart()
     {
         myAnimator = GetComponent<Animator>();
-        Physics.IgnoreCollision(MyCollider, Player_Base.Instance.MyCollider);
+        if (MyCollider != null)
+        {
+            Physics.IgnoreCollision(MyCollider, Player_Base.Instance.MyCollider);
+        }
     }
     private void Update()
     {
@@ -24,10 +24,10 @@ public class Trap_Killer : Board_Object
         {
             return;
         }
-        sleepTimeNext += Time.deltaTime;
-        if (sleepTimeNext > sleepTime)
+        waitingTimeNext += Time.deltaTime;
+        if (waitingTimeNext > waitingTime)
         {
-            sleepTimeNext = 0;
+            waitingTimeNext = 0;
             isActive = false;
         }
     }

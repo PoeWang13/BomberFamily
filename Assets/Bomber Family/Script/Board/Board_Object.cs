@@ -6,6 +6,7 @@ public class Board_Object : PoolObje
     [SerializeField] private Collider myCollider;
 
     private bool isStuck;
+    private bool isEnter;
     private int myBoardOrder;
     private Vector2Int myCoor;
 
@@ -31,12 +32,26 @@ public class Board_Object : PoolObje
             if (isStuck && Map_Creater_Manager.Instance.CreatedOrder < 0)
             {
                 SetMouseButton();
+                if (isEnter)
+                {
+                    transform.localScale = Vector3.one * 2;
+                }
             }
         }
     }
+    private void OnMouseEnter()
+    {
+        isEnter = true;
+    }
+    private void OnMouseExit()
+    {
+        isEnter = false;
+    }
     public virtual void SetMouseButton()
     {
-        Map_Creater_Manager.Instance.ChooseStuckObject(gameObject);
+        Map_Creater_Manager.Instance.ChooseStuckObject(this);
+        Canvas_Manager.Instance.OpenBaseSetting(true);
+        Canvas_Manager.Instance.CloseSettingPanels();
     }
     private void Instance_OnGameLost(object sender, System.EventArgs e)
     {

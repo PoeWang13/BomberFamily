@@ -16,5 +16,5 @@ MonoBehaviour:
   myPrice: 15000
   boardType: 9
   myPool: {fileID: 11400000, guid: b58ad529fa678f74ab780b9b0b555150, type: 2}
-  myBombType: 0
+  myWorldType: 1
   myName: Magical

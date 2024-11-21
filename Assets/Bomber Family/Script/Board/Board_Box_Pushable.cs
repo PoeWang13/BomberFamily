@@ -15,6 +15,12 @@ public class Board_Box_Pushable : Board_Object
     {
         myView = transform.Find("BoardBoxSimpleView");
     }
+    public override void SetMouseButton()
+    {
+        Canvas_Manager.Instance.OpenBaseSetting(true);
+        Canvas_Manager.Instance.CloseSettingPanels();
+        Map_Creater_Manager.Instance.ChooseStuckObject(this);
+    }
     private void Update()
     {
         if (isMoving)

@@ -16,7 +16,7 @@ MonoBehaviour:
   myPrice: 250
   boardType: 4
   myPool: {fileID: 11400000, guid: 23f0be2ea48889e4c9f9df6c2e1d7035, type: 2}
-  myBombType: 0
+  myWorldType: 1
   myName: Goblin Female
   myStartingStat:
     myLife: 1

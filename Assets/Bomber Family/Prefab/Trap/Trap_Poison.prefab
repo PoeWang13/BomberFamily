@@ -50,6 +50,7 @@ MonoBehaviour:
   havuzum: {fileID: 11400000, guid: 309309c432706dc4ebfe517c742269da, type: 2}
   myBoardType: 3
   myCollider: {fileID: 180276737881431914}
+  myTrapType: 1005
   damage: 2
   posionTime: 5
 --- !u!54 &2765371854414870441

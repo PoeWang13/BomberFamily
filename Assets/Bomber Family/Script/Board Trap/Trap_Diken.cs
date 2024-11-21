@@ -1,75 +1,49 @@
 ﻿using UnityEngine;
 
-public class Trap_Diken : Board_Object
+public class Trap_Diken : Trap_Has_Time_2
 {
     [SerializeField] private int damage;
-    private bool activeted;
-    private Trap_Trigger board_Trigger;
-    private bool waitingTrigged;
-    private bool canTrigged = true;
+
     private Animator myAnimator;
 
     private void Awake()
     {
         myAnimator = GetComponent<Animator>();
     }
-    public override void OnStart()
+    public override void BehaviourChange(bool giveDamage)
     {
-        if (Game_Manager.Instance.GameType == GameType.MapCreate)
+        base.BehaviourChange(giveDamage);
+        myAnimator.SetBool("Activate", activeted);
+        if (giveDamage)
         {
-            Map_Creater_Manager.Instance.OnTriggerTime += Instance_OnTriggerTime;
-        }
-        Physics.IgnoreCollision(MyCollider, Player_Base.Instance.MyCollider);
-    }
-    private void Instance_OnTriggerTime(object sender, System.EventArgs e)
-    {
-        if (canTrigged)
-        {
-            waitingTrigged = true;
-            transform.localScale = Vector3.one * 2;
+            GiveDamage();
         }
     }
-    public override void SetMouseButton()
+    public override void SetTrapForSpecial()
     {
-        Map_Creater_Manager.Instance.ChooseStuckObject(gameObject);
-        if (waitingTrigged)
+        myAnimator.SetBool("Activate", activeted);
+        myAnimator.SetBool("AlwaysActivate", alwaysActivated);
+    }
+    private void GiveDamage()
+    {
+        for (int e = 0; e < myCharacterList.Count; e++)
         {
-            canTrigged = false;
-            waitingTrigged = false;
-            transform.localScale = Vector3.one;
-            Map_Creater_Manager.Instance.SetObjectForTrigger(this);
-            // Creator Menu aç
-            Canvas_Manager.Instance.SetCreatorPanel(true);
+            CharacterEntered(myCharacterList[e]);
         }
     }
     public void SetDiken()
     {
         activeted = !activeted;
         // Diken görselini aktifleştir
-        myAnimator.SetBool("Up", activeted);
+        myAnimator.SetBool("Activate", activeted);
     }
-    public void SetDiken(bool active, Trap_Trigger trigger)
+    public override void CharacterEntered(Character_Base charBase)
     {
-        activeted = active;
-        board_Trigger = trigger;
-        // Diken görselini aktifleştir
-        myAnimator.SetBool("Up", active);
-    }
-    private void OnTriggerEnter(Collider other)
-    {
-        if (!Game_Manager.Instance.LevelStart)
-        {
-            return;
-        }
-        if (other.CompareTag("Player"))
+        if (charBase.CompareTag("Player"))
         {
             Game_Manager.Instance.AddCaughtTrapAmount();
             Game_Manager.Instance.AddLoseLifeAmount(damage);
-            other.GetComponent<Player_Base>().TakeDamage(damage);
         }
-        else if (other.CompareTag("Enemy"))
-        {
-            other.GetComponent<Enemy_Base>().TakeDamage(damage);
-        }
+        charBase.TakeDamage(damage);
     }
 }

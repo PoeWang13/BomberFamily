@@ -50,6 +50,14 @@ MonoBehaviour:
   havuzum: {fileID: 11400000, guid: a35be0b3a15c0de47bc2a6b5913d992b, type: 2}
   myBoardType: 3
   myCollider: {fileID: 7507366488877346184}
+  myTrapType: 1001
+  boardTrapTimer2:
+    BoardObject:
+      isTrigger: 0
+      isAlwaysActivited: 0
+      myEffectTime: 0
+      isActivited: 0
+      myStopWorkTime: {x: 0, y: 0}
   damage: 10
 --- !u!54 &6663521228667204042
 Rigidbody:
@@ -192,5 +200,5 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.5, y: 1, z: 0.5}
-  m_Center: {x: 0, y: 0.5, z: 0}
+  m_Size: {x: 0.5, y: 0.5, z: 0.5}
+  m_Center: {x: 0, y: 0.2, z: 0}

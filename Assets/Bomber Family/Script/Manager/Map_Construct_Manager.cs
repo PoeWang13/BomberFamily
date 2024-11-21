@@ -11,7 +11,6 @@ public class Map_Construct_Manager : Singletion<Map_Construct_Manager>
 
     public void ConstructMap(LevelBoard levelBoard)
     {
-        Camera_Manager.Instance.transform.position = Vector3.zero;
         Canvas_Manager.Instance.SetActiveMapProcess(true);
         Player_Base.Instance.SetEffectivePlayer(false);
         Map_Holder.Instance.SetBoardSize(levelBoard.levelSize);
@@ -45,7 +44,7 @@ public class Map_Construct_Manager : Singletion<Map_Construct_Manager>
 
         // Construct board Gameobjects
         BoardType boardType = BoardType.Empty;
-        List<MapStrings> trapList = new List<MapStrings>();
+        List<PoolObje> trapList = new List<PoolObje>();
         for (int x = 0; x < Map_Holder.Instance.GameBoard.GetLength(0); x++)
         {
             Camera_Manager.Instance.ShowConstructLevelBoard(cameraDirec);
@@ -62,6 +61,7 @@ public class Map_Construct_Manager : Singletion<Map_Construct_Manager>
                 }
                 boardType = BoardType.Empty;
                 PoolObje poolObject = null;
+                string boardSpecial = "";
                 if (Map_Holder.Instance.GameBoard[x, y].board_Game.boardType == BoardType.Wall)
                 {
                     boardType = BoardType.Wall;
@@ -108,13 +108,14 @@ public class Map_Construct_Manager : Singletion<Map_Construct_Manager>
                     if (!string.IsNullOrEmpty(Map_Holder.Instance.GameBoard[x, y].board_Game.boardSpecial))
                     {
                         // Trapin özel durumu vardır.
-                        BoardContainer boardTriggerContainer = JsonUtility.FromJson<BoardContainer>(Map_Holder.Instance.GameBoard[x, y].board_Game.boardSpecial);
-                        trapList.Add(new MapStrings(boardTriggerContainer.boardData, poolObject.gameObject));
+                        trapList.Add(poolObject);
+                        boardSpecial = Map_Holder.Instance.GameBoard[x, y].board_Game.boardSpecial;
                     }
                 }
-                Board_Object board_Object = poolObject.gameObject.GetComponent<Board_Object>();
+                Board_Object board_Object = poolObject.GetComponent<Board_Object>();
+                board_Object.SetBoardOrder(Map_Holder.Instance.GameBoard[x, y].board_Game.boardOrder);
                 board_Object.SetBoardCoor(new Vector2Int(x, y));
-                Map_Holder.Instance.GameBoard[x, y] = new GameBoard(boardType, board_Object.MyBoardOrder, poolObject.gameObject);
+                Map_Holder.Instance.GameBoard[x, y] = new GameBoard(new Board(boardType, board_Object.MyBoardOrder, boardSpecial), poolObject.gameObject);
                 yield return new WaitForSeconds(0.1f);
             }
         }
@@ -122,28 +123,11 @@ public class Map_Construct_Manager : Singletion<Map_Construct_Manager>
         Camera_Manager.Instance.SetCameraPos(new Vector3Int(Map_Holder.Instance.BoardSize.x, 0, Map_Holder.Instance.BoardSize.y));
         Map_Holder.Instance.SetMagicStone(magicStoneAmount);
     }
-    private void SetTrapList(List<MapStrings> trapList)
+    private void SetTrapList(List<PoolObje> trapList)
     {
         for (int e = 0; e < trapList.Count; e++)
         {
-            if (trapList[e].boardData.trapType == TrapType.Trigged)
-            {
-                BoardTrigger triggerData = JsonUtility.FromJson<BoardTrigger>(trapList[e].boardData.boardString);
-                for (int h = 0; h < triggerData.triggerBoardObject.myAllCoor.Count; h++)
-                {
-                    trapList[e].board_Object.GetComponent<Trap_Trigger>()
-                        .AddDiken(Map_Holder.Instance.GameBoard[triggerData.triggerBoardObject.myAllCoor[h].x,
-                        triggerData.triggerBoardObject.myAllCoor[h].y].board_Object.GetComponent<Trap_Diken>());
-                }
-            }
-            else if (trapList[e].boardData.trapType == TrapType.Diken)
-            {
-                BoardDiken dikenData = JsonUtility.FromJson<BoardDiken>(trapList[e].boardData.boardString);
-                trapList[e].board_Object.GetComponent<Trap_Diken>().
-                        SetDiken(dikenData.dikenBoardObject.isActivited,
-                        Map_Holder.Instance.GameBoard[dikenData.dikenBoardObject.myTriggedObjectCoor.x,
-                        dikenData.dikenBoardObject.myTriggedObjectCoor.y].board_Object.GetComponent<Trap_Trigger>());
-            }
+            trapList[e].GetComponent<Trap_Base>().SetTrap();
         }
     }
 }

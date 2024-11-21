@@ -24,7 +24,22 @@ public class Game_Manager : Singletion<Game_Manager>
     [SerializeField] private GameObject onlineController;
     [SerializeField] private All_Item_Holder all_Item_Holder;
     [SerializeField] private Level_Exp_Holder level_Exp_Holder;
+    [SerializeField] private ParticleSystem nextLevelParticle;
+    [SerializeField] private ParticleSystem failedLevelParticle;
     [SerializeField] private List<GameObject> finishParticles = new List<GameObject>();
+    [SerializeField] private List<Level_Opener> levelOpenerList = new List<Level_Opener>();
+
+    [Header("Pooler")]
+    [SerializeField] private Pooler antiPooler;
+    [SerializeField] private Pooler areaPooler;
+    [SerializeField] private Pooler clockPooler;
+    [SerializeField] private Pooler nucleerPooler;
+    [SerializeField] private Pooler searcherPooler;
+    [SerializeField] private Pooler elektroPooler;
+    [SerializeField] private Pooler lavPooler;
+    [SerializeField] private Pooler buzPooler;
+    [SerializeField] private Pooler sisPooler;
+    [SerializeField] private Pooler zehirPooler;
 
     private bool levelStart;
     private bool areWeOnline;
@@ -41,6 +56,7 @@ public class Game_Manager : Singletion<Game_Manager>
     private int killingEnemyAmont;
 
     private GameType gameType;
+    private Transform bombParent;
     private Transform boardLootParent;
     private List<PoolObje> lootObjects = new List<PoolObje>();
 
@@ -62,6 +78,7 @@ public class Game_Manager : Singletion<Game_Manager>
     {
         Utils.SetAllParents(gameElements);
         boardLootParent = Utils.MakeChieldForGameElement("Board_Loot");
+        bombParent = Utils.MakeChieldForGameElement("Board_Bomb");
         DayTime();
     }
     [ContextMenu("Day Time")]
@@ -99,6 +116,35 @@ public class Game_Manager : Singletion<Game_Manager>
     {
         Canvas_Manager.Instance.OnGameWin += Instance_OnGameWin;
         Canvas_Manager.Instance.OnGameLost += Instance_OnGameLost;
+
+        for (int e = 0; e < levelOpenerList.Count; e++)
+        {
+            levelOpenerList[e].SetOpenerOrder(e);
+        }
+    }
+    public List<Pooler> LearnBossEnemyForSameWorld(WorldType worldType)
+    {
+        List<Pooler> bossEnemies = new List<Pooler>();
+        for (int e = 0; e < all_Item_Holder.BossEnemyList.Count; e++)
+        {
+            if (worldType == (all_Item_Holder.BossEnemyList[e] as Item_Character).MyWorldType)
+            {
+                bossEnemies.Add(all_Item_Holder.BossEnemyList[e].MyPool);
+            }
+        }
+        return bossEnemies;
+    }
+    public List<Pooler> LearnEnemyForSameWorld(WorldType worldType)
+    {
+        List<Pooler> enemies = new List<Pooler>();
+        for (int e = 0; e < all_Item_Holder.EnemyList.Count; e++)
+        {
+            if (worldType == (all_Item_Holder.EnemyList[e] as Item_Character).MyWorldType)
+            {
+                enemies.Add(all_Item_Holder.EnemyList[e].MyPool);
+            }
+        }
+        return enemies;
     }
     public void GameWin()
     {
@@ -112,10 +158,19 @@ public class Game_Manager : Singletion<Game_Manager>
     }
     private void Instance_OnGameLost(object sender, EventArgs e)
     {
+        levelOpenerList[Save_Load_Manager.Instance.gameData.lastLevel].LevelFinishFailed();
         GameFinish();
+        failedLevelParticle.transform.position = levelOpenerList[Save_Load_Manager.Instance.gameData.lastLevel].transform.position;
+        failedLevelParticle.Play();
+        nextLevelParticle.Stop();
     }
     private void Instance_OnGameWin(object sender, EventArgs e)
     {
+        levelOpenerList[Save_Load_Manager.Instance.gameData.lastLevel].LevelFinish();
+        levelOpenerList[Save_Load_Manager.Instance.gameData.lastLevel + 1].SetOpener();
+        nextLevelParticle.transform.position = levelOpenerList[Save_Load_Manager.Instance.gameData.lastLevel + 1].transform.position;
+        nextLevelParticle.Play();
+        failedLevelParticle.Stop();
         GameFinish();
     }
     private void GameFinish()
@@ -195,8 +250,9 @@ public class Game_Manager : Singletion<Game_Manager>
     public void AddGoldAmount(int amount)
     {
         earnGold += amount;
+        Canvas_Manager.Instance.SetGoldSmooth(amount);
     }
-    [ContextMenu("Exp")]
+    [ContextMenu("Add Exp")]
     private void ExpAdd()
     {
         AddExpAmount(33);
@@ -204,22 +260,27 @@ public class Game_Manager : Singletion<Game_Manager>
     public void AddExpAmount(int amount)
     {
         earnExp += amount;
-        int exp = Save_Load_Manager.Instance.gameData.allPlayers[Save_Load_Manager.Instance.gameData.playerOrder].playerExp;
-        int expMax = Save_Load_Manager.Instance.gameData.allPlayers[Save_Load_Manager.Instance.gameData.playerOrder].playerExpMax;
-        int level = Save_Load_Manager.Instance.gameData.allPlayers[Save_Load_Manager.Instance.gameData.playerOrder].playerLevel;
+        GiveToPlayerExp(amount);
+    }
+    public void GiveToPlayerExp(int exp)
+    {
+        int playerExp = Save_Load_Manager.Instance.gameData.allPlayers[Save_Load_Manager.Instance.gameData.playerOrder].playerExp;
+        int playerExpMax = Save_Load_Manager.Instance.gameData.allPlayers[Save_Load_Manager.Instance.gameData.playerOrder].playerExpMax;
+        int playerLevel = Save_Load_Manager.Instance.gameData.allPlayers[Save_Load_Manager.Instance.gameData.playerOrder].playerLevel;
 
-        exp += amount;
+        playerExp += exp;
         bool canUpgrade = true;
         while (canUpgrade)
         {
-            if (level_Exp_Holder.CanIncreaseMyLevel(level))
+            if (level_Exp_Holder.CanIncreaseMyLevel(playerLevel))
             {
-                if (exp >= expMax)
+                if (playerExp >= playerExpMax)
                 {
-                    level++;
-                    exp -= expMax;
-                    expMax = level_Exp_Holder.LearnMyLevelMaxExp(level);
-                    canUpgrade = exp >= expMax;
+                    playerLevel++;
+                    playerExp -= playerExpMax;
+                    playerExpMax = level_Exp_Holder.LearnMyLevelMaxExp(playerLevel);
+                    Save_Load_Manager.Instance.gameData.allPlayers[Save_Load_Manager.Instance.gameData.playerOrder].playerStatAmount++;
+                    canUpgrade = playerExp >= playerExpMax;
                 }
                 else
                 {
@@ -231,11 +292,65 @@ public class Game_Manager : Singletion<Game_Manager>
                 canUpgrade = false;
             }
         }
-        Save_Load_Manager.Instance.gameData.allPlayers[Save_Load_Manager.Instance.gameData.playerOrder].playerExp = exp;
-        Save_Load_Manager.Instance.gameData.allPlayers[Save_Load_Manager.Instance.gameData.playerOrder].playerExpMax = expMax;
-        Save_Load_Manager.Instance.gameData.allPlayers[Save_Load_Manager.Instance.gameData.playerOrder].playerLevel = level;
+        Save_Load_Manager.Instance.gameData.allPlayers[Save_Load_Manager.Instance.gameData.playerOrder].playerExp = playerExp;
+        Save_Load_Manager.Instance.gameData.allPlayers[Save_Load_Manager.Instance.gameData.playerOrder].playerExpMax = playerExpMax;
+        Save_Load_Manager.Instance.gameData.allPlayers[Save_Load_Manager.Instance.gameData.playerOrder].playerLevel = playerLevel;
 
         Canvas_Manager.Instance.SetLevel();
+    }
+    #endregion
+
+    #region Use Special Bomb
+    public void UseAntiBomb(Character_Base owner)
+    {
+        SetBomb(owner, antiPooler);
+    }
+    public void UseAreaBomb(Character_Base owner)
+    {
+        SetBomb(owner, areaPooler);
+    }
+    public void UseClockBomb(Character_Base owner)
+    {
+        SetBomb(owner, clockPooler);
+    }
+    public void UseNuckleerBomb(Character_Base owner)
+    {
+        SetBomb(owner, nucleerPooler);
+    }
+    public void UseSearcherBomb(Character_Base owner)
+    {
+        SetBomb(owner, searcherPooler);
+    }
+    public void UseElektroBomb(Character_Base owner)
+    {
+        SetBomb(owner, elektroPooler);
+    }
+    public void UseLavBomb(Character_Base owner)
+    {
+        SetBomb(owner, lavPooler);
+    }
+    public void UseBuzBomb(Character_Base owner)
+    {
+        SetBomb(owner, buzPooler);
+    }
+    public void UseSisBomb(Character_Base owner)
+    {
+        SetBomb(owner, sisPooler);
+    }
+    public void UseZehirBomb(Character_Base owner)
+    {
+        SetBomb(owner, zehirPooler);
+    }
+    private void SetBomb(Character_Base owner, Pooler pool, bool isSearcher = false)
+    {
+        (PoolObje, bool) bombItem = pool.HavuzdanObjeIste_Kontrol(new Vector3(owner.MyCoor.x, 0, owner.MyCoor.y));
+        Bomb_Base bomb = bombItem.Item1.GetComponent<Bomb_Base>();
+        bomb.SetBomb(owner, isSearcher);
+        bomb.SetBoardCoor(owner.MyCoor);
+        if (bombItem.Item2)
+        {
+            bombParent.transform.SetParent(bombParent);
+        }
     }
     #endregion
 }

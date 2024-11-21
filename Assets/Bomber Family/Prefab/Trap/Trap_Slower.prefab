@@ -50,6 +50,7 @@ MonoBehaviour:
   havuzum: {fileID: 11400000, guid: 166f25ee5b3709f4ba59374166d23dc7, type: 2}
   myBoardType: 3
   myCollider: {fileID: 1119241862685507815}
+  myTrapType: 1007
   slowerPercent: 0.2
 --- !u!54 &2856774946244458110
 Rigidbody:

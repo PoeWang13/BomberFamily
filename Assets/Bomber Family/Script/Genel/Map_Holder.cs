@@ -21,12 +21,13 @@ public class Board
     {
         this.boardOrder = board.boardOrder;
         this.boardType = board.boardType;
-        this.boardOrder = board.boardOrder;
+        this.boardSpecial = board.boardSpecial;
     }
-    public Board(BoardType boardType, int boardOrder)
+    public Board(BoardType boardType, int boardOrder, string boardSpecial)
     {
         this.boardType = boardType;
         this.boardOrder = boardOrder;
+        this.boardSpecial = boardSpecial;
     }
 }
 public class GameBoard
@@ -77,11 +78,6 @@ public enum BoardType
     Bomb = 7,
     Player = 8,
     Npc = 9
-}
-public enum TrapType
-{
-    Trigged = 0,
-    Diken = 1,
 }
 public class Map_Holder : Singletion<Map_Holder>
 {

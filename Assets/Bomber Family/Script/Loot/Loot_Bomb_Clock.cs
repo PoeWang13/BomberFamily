@@ -20,7 +20,8 @@ public class Loot_Bomb_Clock : PoolObje
             {
                 isTaked = true;
                 lootEffect.SetActive(false);
-                player_Base.IncreaseBombAmount(myBombType);
+                Save_Load_Manager.Instance.gameData.allBombAmount[(int)myBombType]++;
+                Canvas_Manager.Instance.SetBomb(myBombType);
                 transform.DOLocalRotate(Vector3.forward * 30, 0.1f).OnComplete(() =>
                 {
                     transform.DOLocalRotate(Vector3.back * 30, 0.1f).OnComplete(() =>

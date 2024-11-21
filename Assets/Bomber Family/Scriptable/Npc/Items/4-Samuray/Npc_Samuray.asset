@@ -16,5 +16,5 @@ MonoBehaviour:
   myPrice: 15000
   boardType: 9
   myPool: {fileID: 11400000, guid: 97890b7635e0af34ca03f898d91f1892, type: 2}
-  myBombType: 0
+  myWorldType: 4
   myName: Samuray

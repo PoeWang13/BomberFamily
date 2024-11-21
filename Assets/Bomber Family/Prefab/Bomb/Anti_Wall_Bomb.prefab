@@ -46,7 +46,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   havuzum: {fileID: 11400000, guid: aca1c291cd7dfe7499e2e3b5fc3ad091, type: 2}
-  boardType: 7
+  myBoardType: 7
+  myCollider: {fileID: 0}
   bombFirePool: {fileID: 11400000, guid: bb1d6524a4192be4f93f2c0f5812eefe, type: 2}
   bombFireTime: 1
 --- !u!1 &3950642811029340920
