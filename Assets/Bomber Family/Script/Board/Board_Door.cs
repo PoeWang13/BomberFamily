@@ -4,8 +4,10 @@ using System.Collections.Generic;
 
 public class Board_Door : Board_Box
 {
+    [SerializeField] private WorldType worldType;
     [SerializeField] private float replicaTime = 5;
     [SerializeField] private All_Item_Holder all_Item_Holder;
+
 
     private float replicaTimeNext;
     private Transform boardBossEnemyParent;
@@ -35,6 +37,7 @@ public class Board_Door : Board_Box
                 }
             }
         }
+        bossEnemies = Game_Manager.Instance.LearnBossEnemyForSameWorld(worldType);
     }
     public override void SetMouseButton()
     {
@@ -55,8 +58,7 @@ public class Board_Door : Board_Box
             int rndDirec = Random.Range(0, boardCoors.Count);
             if (Map_Holder.Instance.GameBoard[boardCoors[rndDirec].x, boardCoors[rndDirec].y].board_Object is null)
             {
-                int rndOrder = Random.Range(0, all_Item_Holder.BossEnemyList.Count);
-                Enemy_Base enemy_Base = all_Item_Holder.BossEnemyList[rndOrder].MyPool.HavuzdanObjeIste(new Vector3(MyCoor.x, -5, MyCoor.y)).GetComponent<Enemy_Base>();
+                Enemy_Base enemy_Base = bossEnemies[Random.Range(0, bossEnemies.Count)].HavuzdanObjeIste(new Vector3(MyCoor.x, -5, MyCoor.y)).GetComponent<Enemy_Base>();
                 enemy_Base.SetMove(false);
                 enemy_Base.MyCollider.enabled = false;
                 SendBossOutSide(enemy_Base, rndDirec);

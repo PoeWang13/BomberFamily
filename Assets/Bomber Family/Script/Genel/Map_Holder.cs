@@ -332,13 +332,13 @@ public class Map_Holder : Singletion<Map_Holder>
     {
         SendToPoolAllObjects();
         SetBoardGround();
-        Map_Creater_Manager.Instance.ReleaseMap();
+        Map_Creater_Manager.Instance.ReleaseGate();
     }
     public void CloseMap()
     {
         SendToPoolAllObjects();
         boardGround.gameObject.SetActive(false);
-        Map_Creater_Manager.Instance.ReleaseMap();
+        Map_Creater_Manager.Instance.ReleaseGate();
     }
     public (Transform, Vector3Int) LearnClosestEnemy(Transform tr, bool isPlayer)
     {

@@ -16,11 +16,11 @@ public class BombList
 }
 public class Canvas_Manager : Singletion<Canvas_Manager>
 {
-    public Sprite emptySlotIcon;
     public event EventHandler OnGameWin;
     public event EventHandler OnGameLost;
 
     // Genel
+    [SerializeField] private Sprite emptySlotIcon;
     [SerializeField] private Transform sceneMaskedImage;
     [SerializeField] private All_Item_Holder all_Item_Holder;
     [SerializeField] private TextMeshProUGUI textMenuGoldAmount;
@@ -95,6 +95,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     [SerializeField] private TextMeshProUGUI textSettingInfo;
 
     // Dungeon Create Setting
+    [SerializeField] private Toggle toggleDungeonFree;
     [SerializeField] private Toggle toggleDungeonSetting;
     [SerializeField] private Button buttonDungeonCreate;
     [SerializeField] private Button buttonChooser;
@@ -180,6 +181,9 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     [SerializeField] private Button buttonLevelHelpLife;
     [SerializeField] private Button buttonLevelHelpAmount;
     [SerializeField] private Button buttonLevelHelpPower;
+    [SerializeField] private GameObject panelLevelMap;
+    [SerializeField] private GameObject cameraMenu;
+    [SerializeField] private GameObject cameraMap;
 
     private bool isBuyed;
     private bool correctWallAmount;
@@ -203,6 +207,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     private List<bool> buttonCreaterEnemyList = new List<bool>();
     private List<bool> buttonCreaterBossEnemyList = new List<bool>();
 
+    public Sprite EmptySlotIcon { get { return emptySlotIcon; } }
     public bool ToggleDungeonSetting { get { return toggleDungeonSetting.isOn; } }
 
     #region Menu
@@ -234,6 +239,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         panelMenu.SetActive(false);
         // Son haritanın mapini oluştur ve oyuna başlat
         Game_Manager.Instance.SetGameType(GameType.Game);
+        SetMapPanel();
         Map_Construct_Manager.Instance.ConstructMap(Save_Load_Manager.Instance.LoadBoard(BoardSaveType.GameLevel, Save_Load_Manager.Instance.gameData.lastLevel));
     }
     private void SetMyLevelButtons()
@@ -262,6 +268,51 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         panelMenu.SetActive(false);
         panelCreator.SetActive(true);
         panelBoardSize.SetActive(true);
+
+        // Değişkenleri fiazla
+        correctDungeonSize = true;
+        inputBoardSizeX.text = 11.ToString();
+        inputBoardSizeY.text = 11.ToString();
+
+        correctMagicStoneAmount = false;
+        inputMagicStoneAmount.text = 0.ToString();
+
+        correctBoxAmount = false;
+        inputBoxAmount.text = 0.ToString();
+        Map_Creater_Manager.Instance.ChoosedBoxList.Clear();
+
+        correctWallAmount = true;
+        inputWallAmount.text = 0.ToString();
+        Map_Creater_Manager.Instance.ChoosedWallList.Clear();
+
+        correctTrapAmount = true;
+        inputTrapAmount.text = 0.ToString();
+        Map_Creater_Manager.Instance.ChoosedTrapList.Clear();
+
+        correctEnemyAmount = true;
+        inputEnemyAmount.text = 0.ToString();
+        Map_Creater_Manager.Instance.ChoosedEnemyList.Clear();
+
+        correctBossEnemyAmount = true;
+        inputBossEnemyAmount.text = 0.ToString();
+        Map_Creater_Manager.Instance.ChoosedBossEnemyList.Clear();
+
+        panelDungeonSetting.DOScaleX(0, 0.1f);
+        panelCreateSetting.DOScaleY(0, 0.1f);
+        buttonDungeonCreate.interactable = false;
+
+        toggleDungeonSetting.isOn = false;
+        toggleDungeonFree.isOn = true;
+
+        // Gate fix
+        Map_Creater_Manager.Instance.ReleaseGate();
+
+        buttonCreaterWallList.Clear();
+        buttonCreaterBoxList.Clear();
+        buttonCreaterTrapList.Clear();
+        buttonCreaterEnemyList.Clear();
+        buttonCreaterBossEnemyList.Clear();
+        CreateAllDungeonBoardCreatorChooser();
     }
     // Canvas -> Panel-Menu -> Button-Map'a atandı
     public void OpenMap()
@@ -269,19 +320,30 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         OpenMask(0, () =>
         {
             panelMenu.SetActive(false);
+            panelLevelMap.SetActive(true);
+            cameraMenu.SetActive(false);
+            cameraMap.SetActive(true);
             Camera_Manager.Instance.transform.position = new Vector3(0, -55, 0);
             CloseMask(0.5f, null);
         });
+    }
+    public void SetMapPanel()
+    {
+        panelLevelMap.SetActive(false);
     }
     public void OpenLevel(int levelOrder)
     {
         Audio_Manager.Instance.PlayGameStart();
         OpenMask(0, () =>
         {
+            panelLevelMap.SetActive(false);
+            cameraMenu.SetActive(true);
+            cameraMap.SetActive(false);
             // Ekran kapatıldı.
             Warning_Manager.Instance.ShowMessage("Please wait. Level loading...", 3);
             Game_Manager.Instance.SetGameType(GameType.Game);
             Camera_Manager.Instance.transform.position = Vector3.zero;
+            SetMapPanel();
             CloseMask(0.5f, () =>
             {
                 // Ekran açıldı.
@@ -579,7 +641,6 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         SetBossEnemyCreatorSlot();
         SetMyLevelButtons();
         SetDungeonSetting();
-        CreateAllDungeonBoardCreatorChooser();
     }
     public void SetGold()
     {
@@ -1097,8 +1158,8 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     // Canvas -> Panel-Creator -> Panel-Map-Size -> Panel-Dungeon-Setting -> Toggle-Free-Start-Random'a atandı
     public void DungeonCreateSetting(bool isOn)
     {
-        CheckDungeonSettingCorrect();
         panelCreateSetting.DOScaleY(isOn ? 1 : 0, 1.0f);
+        CheckDungeonSettingCorrect();
     }
     private void CheckDungeonSettingCorrect()
     {
@@ -1131,6 +1192,10 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     }
     private void CreaterWallChooseButton()
     {
+        for (int e = wallChooseParent.childCount; e >= 0; e--)
+        {
+            Destroy(wallChooseParent.GetChild(e).gameObject);
+        }
         for (int e = 0; e < all_Item_Holder.WallList.Count; e++)
         {
             buttonCreaterWallList.Add(false);
@@ -1163,6 +1228,10 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     }
     private void CreaterBoxChooseButton()
     {
+        for (int e = boxChooseParent.childCount; e >= 0; e--)
+        {
+            Destroy(boxChooseParent.GetChild(e).gameObject);
+        }
         for (int e = 0; e < all_Item_Holder.BoxList.Count; e++)
         {
             buttonCreaterBoxList.Add(false);
@@ -1195,6 +1264,10 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     }
     private void CreaterTrapChooseButton()
     {
+        for (int e = trapChooseParent.childCount; e >= 0; e--)
+        {
+            Destroy(trapChooseParent.GetChild(e).gameObject);
+        }
         for (int e = 0; e < all_Item_Holder.TrapList.Count; e++)
         {
             buttonCreaterTrapList.Add(false);
@@ -1227,6 +1300,10 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     }
     private void CreaterEnemyChooseButton()
     {
+        for (int e = enemyChooseParent.childCount; e >= 0; e--)
+        {
+            Destroy(enemyChooseParent.GetChild(e).gameObject);
+        }
         for (int e = 0; e < all_Item_Holder.EnemyList.Count; e++)
         {
             buttonCreaterEnemyList.Add(false);
@@ -1259,6 +1336,10 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     }
     private void CreaterBossEnemyChooseButton()
     {
+        for (int e = bossEnemyChooseParent.childCount; e >= 0; e--)
+        {
+            Destroy(bossEnemyChooseParent.GetChild(e).gameObject);
+        }
         for (int e = 0; e < all_Item_Holder.BossEnemyList.Count; e++)
         {
             buttonCreaterBossEnemyList.Add(false);
@@ -1835,6 +1916,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     public void NextLevel()
     {
         panelGameFinish.SetActive(false);
+        SetMapPanel();
         Map_Construct_Manager.Instance.ConstructMap(Save_Load_Manager.Instance.LoadBoard(BoardSaveType.GameLevel, Save_Load_Manager.Instance.gameData.lastLevel));
     }
     // Canvas -> Panel-Game-Finish -> Button-Next'a atandı
@@ -1850,6 +1932,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     public void Reload()
     {
         panelGameFinish.SetActive(false);
+        SetMapPanel();
         Map_Construct_Manager.Instance.ConstructMap(Save_Load_Manager.Instance.LoadBoard(BoardSaveType.GameLevel, Save_Load_Manager.Instance.gameData.lastLevel));
     }
     // Canvas -> Panel-Game-Finish -> Panel-Container -> Panel-Reward -> Button-Double'a atandı

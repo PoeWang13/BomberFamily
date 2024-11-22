@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class Trap_Home : Trap_Has_Time_1
 {
+    [SerializeField] private WorldType worldType;
+
     private PoolObje poolObje;
     private Transform boardEnemyParent;
     private List<Pooler> enemies = new List<Pooler>();
@@ -32,6 +34,7 @@ public class Trap_Home : Trap_Has_Time_1
                 }
             }
         }
+        enemies = Game_Manager.Instance.LearnEnemyForSameWorld(worldType);
     }
     private void Update()
     {

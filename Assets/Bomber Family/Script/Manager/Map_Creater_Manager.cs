@@ -156,11 +156,9 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
     private Camera myCamera;
     private Item createdItem;
     private Item createdNullItem;
-    //private Color createdObjectColor;
     private GameObject createdObject;
     private Trap_Trigger trapTrigger;
     private Trap_Base trapBase;
-    //private Material createdObjectMaterial;
     private List<Color> createdObjectColors = new List<Color>();
     private List<Material> createdObjectMaterials = new List<Material>();
     private List<BoardCoor> myBoardList = new List<BoardCoor>();
@@ -214,7 +212,7 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
     {
         boardMagicStoneAmount = amount;
     }
-    public void ReleaseMap()
+    public void ReleaseGate()
     {
         hasGate = false;
     }
@@ -578,35 +576,38 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
     {
         Canvas_Manager.Instance.SetGoldSmooth(Mathf.FloorToInt(createdItem.MyPrice * 0.5f));
         Canvas_Manager.Instance.CloseBaseSetting();
-        Board_Object board_Object = createdObject.GetComponent<Board_Object>();
-        myBoardList.Add(new BoardCoor(board_Object.MyCoor.x, board_Object.MyCoor.y));
-        if (Map_Holder.Instance.GameBoard[board_Object.MyCoor.x, board_Object.MyCoor.y].board_Game.boardType == BoardType.Wall)
+        if (createdObject != null)
         {
-            Map_Holder.Instance.WallObjects.Remove(board_Object);
+            Board_Object board_Object = createdObject.GetComponent<Board_Object>();
+            myBoardList.Add(new BoardCoor(board_Object.MyCoor.x, board_Object.MyCoor.y));
+            if (Map_Holder.Instance.GameBoard[board_Object.MyCoor.x, board_Object.MyCoor.y].board_Game.boardType == BoardType.Wall)
+            {
+                Map_Holder.Instance.WallObjects.Remove(board_Object);
+            }
+            else if (Map_Holder.Instance.GameBoard[board_Object.MyCoor.x, board_Object.MyCoor.y].board_Game.boardType == BoardType.Box)
+            {
+                Map_Holder.Instance.BoxObjects.Remove(board_Object);
+            }
+            else if (Map_Holder.Instance.GameBoard[board_Object.MyCoor.x, board_Object.MyCoor.y].board_Game.boardType == BoardType.Trap)
+            {
+                Map_Holder.Instance.TrapObjects.Remove(board_Object);
+            }
+            else if (Map_Holder.Instance.GameBoard[board_Object.MyCoor.x, board_Object.MyCoor.y].board_Game.boardType == BoardType.Enemy)
+            {
+                Map_Holder.Instance.EnemyObjects.Remove(board_Object);
+            }
+            else if (Map_Holder.Instance.GameBoard[board_Object.MyCoor.x, board_Object.MyCoor.y].board_Game.boardType == BoardType.BossEnemy)
+            {
+                Map_Holder.Instance.BossEnemyObjects.Remove(board_Object);
+            }
+            else if (Map_Holder.Instance.GameBoard[board_Object.MyCoor.x, board_Object.MyCoor.y].board_Game.boardType == BoardType.Gate)
+            {
+                hasGate = false;
+                Map_Holder.Instance.GateObjects.Remove(board_Object);
+            }
+            Map_Holder.Instance.GameBoard[board_Object.MyCoor.x, board_Object.MyCoor.y] = new GameBoard();
+            board_Object.EnterHavuz();
         }
-        else if (Map_Holder.Instance.GameBoard[board_Object.MyCoor.x, board_Object.MyCoor.y].board_Game.boardType == BoardType.Box)
-        {
-            Map_Holder.Instance.BoxObjects.Remove(board_Object);
-        }
-        else if (Map_Holder.Instance.GameBoard[board_Object.MyCoor.x, board_Object.MyCoor.y].board_Game.boardType == BoardType.Trap)
-        {
-            Map_Holder.Instance.TrapObjects.Remove(board_Object);
-        }
-        else if (Map_Holder.Instance.GameBoard[board_Object.MyCoor.x, board_Object.MyCoor.y].board_Game.boardType == BoardType.Enemy)
-        {
-            Map_Holder.Instance.EnemyObjects.Remove(board_Object);
-        }
-        else if (Map_Holder.Instance.GameBoard[board_Object.MyCoor.x, board_Object.MyCoor.y].board_Game.boardType == BoardType.BossEnemy)
-        {
-            Map_Holder.Instance.BossEnemyObjects.Remove(board_Object);
-        }
-        else if (Map_Holder.Instance.GameBoard[board_Object.MyCoor.x, board_Object.MyCoor.y].board_Game.boardType == BoardType.Gate)
-        {
-            hasGate = false;
-            Map_Holder.Instance.GateObjects.Remove(board_Object);
-        }
-        Map_Holder.Instance.GameBoard[board_Object.MyCoor.x, board_Object.MyCoor.y] = new GameBoard();
-        board_Object.EnterHavuz();
     }
     public bool CheckLevelMap()
     {

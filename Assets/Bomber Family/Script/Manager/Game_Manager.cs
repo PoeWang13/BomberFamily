@@ -19,15 +19,18 @@ public class Game_Manager : Singletion<Game_Manager>
 
     [Header("Genel")]
     [SerializeField] private Pooler magicStone;
+    [SerializeField] private GameObject objLevelLost;
     [SerializeField] private Transform gameElements;
     [SerializeField] private Transform playerWaitingPoint;
     [SerializeField] private GameObject onlineController;
+    [SerializeField] private GameObject levelLostParticle;
+    [SerializeField] private Material materialLevelFinish;
+    [SerializeField] private Material materialLevelOpen;
+    [SerializeField] private Material materialLevelLost;
     [SerializeField] private All_Item_Holder all_Item_Holder;
     [SerializeField] private Level_Exp_Holder level_Exp_Holder;
-    [SerializeField] private ParticleSystem nextLevelParticle;
-    [SerializeField] private ParticleSystem failedLevelParticle;
     [SerializeField] private List<GameObject> finishParticles = new List<GameObject>();
-    [SerializeField] private List<Level_Opener> levelOpenerList = new List<Level_Opener>();
+    public List<Level_Opener> levelOpenerList = new List<Level_Opener>();
 
     [Header("Pooler")]
     [SerializeField] private Pooler antiPooler;
@@ -62,6 +65,7 @@ public class Game_Manager : Singletion<Game_Manager>
 
     public GameType GameType { get { return gameType; } }
     public Vector3 PlayerWaitingPoint { get { return playerWaitingPoint.position; } }
+    public Material MaterialLevelOpen { get { return materialLevelOpen; } }
     public bool LevelStart { get { return levelStart; } }
     public bool AreWeOnline { get { return areWeOnline; } }
     public float LevelTime { get { return levelTime; } }
@@ -153,24 +157,18 @@ public class Game_Manager : Singletion<Game_Manager>
             GameObject rndObj = finishParticles[Random.Range(0, finishParticles.Count)];
             Vector3 rndPos = new Vector3(Player_Base.Instance.transform.position.x + Random.Range(-5, 5), 5,
                 Player_Base.Instance.transform.position.z + Random.Range(-5 , 5));
-            Destroy(Instantiate(rndObj, rndPos, Quaternion.identity));
+            Destroy(Instantiate(rndObj, rndPos, Quaternion.identity), 3);
         }
     }
     private void Instance_OnGameLost(object sender, EventArgs e)
     {
-        levelOpenerList[Save_Load_Manager.Instance.gameData.lastLevel].LevelFinishFailed();
+        levelOpenerList[Save_Load_Manager.Instance.gameData.lastLevel].LevelFinishLost(materialLevelLost);
         GameFinish();
-        failedLevelParticle.transform.position = levelOpenerList[Save_Load_Manager.Instance.gameData.lastLevel].transform.position;
-        failedLevelParticle.Play();
-        nextLevelParticle.Stop();
     }
     private void Instance_OnGameWin(object sender, EventArgs e)
     {
-        levelOpenerList[Save_Load_Manager.Instance.gameData.lastLevel].LevelFinish();
-        levelOpenerList[Save_Load_Manager.Instance.gameData.lastLevel + 1].SetOpener();
-        nextLevelParticle.transform.position = levelOpenerList[Save_Load_Manager.Instance.gameData.lastLevel + 1].transform.position;
-        nextLevelParticle.Play();
-        failedLevelParticle.Stop();
+        levelOpenerList[Save_Load_Manager.Instance.gameData.lastLevel].LevelFinish(materialLevelOpen);
+        levelOpenerList[Save_Load_Manager.Instance.gameData.lastLevel + 1].SetOpener(materialLevelFinish);
         GameFinish();
     }
     private void GameFinish()

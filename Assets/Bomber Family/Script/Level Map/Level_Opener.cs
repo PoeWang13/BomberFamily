@@ -2,6 +2,22 @@
 
 public class Level_Opener : MonoBehaviour
 {
+    public Game_Manager manager;
+    public bool deneme;
+    private void OnValidate()
+    {
+        if (deneme)
+        {
+            deneme = false;
+            for (int e = 0; e < manager.levelOpenerList.Count; e++)
+            {
+                if (manager.levelOpenerList[e].transform == transform)
+                {
+                    transform.name = "Level Opener - " + e;
+                }
+            }
+        }
+    }
     private int levelOrder;
     private bool waitUpgrade;
     private Renderer levelRenderer;
@@ -11,11 +27,11 @@ public class Level_Opener : MonoBehaviour
         levelRenderer = GetComponent<Renderer>();
         levelOrder = order;
         waitUpgrade = levelOrder >= Save_Load_Manager.Instance.gameData.maxGameLevel;
-        levelRenderer.material.color = levelOrder <= Save_Load_Manager.Instance.gameData.lastLevel ? Color.green : Color.gray;
+        levelRenderer.material = levelOrder <= Save_Load_Manager.Instance.gameData.lastLevel ? Game_Manager.Instance.MaterialLevelOpen : levelRenderer.material;
     }
-    public void SetOpener()
+    public void SetOpener(Material materialLevelOpen)
     {
-        levelRenderer.material.color = Color.green;
+        levelRenderer.material = materialLevelOpen;
     }
     private void OnMouseUpAsButton()
     {
@@ -31,14 +47,14 @@ public class Level_Opener : MonoBehaviour
         }
         Canvas_Manager.Instance.OpenLevel(levelOrder);
     }
-    public void LevelFinish()
+    public void LevelFinish(Material materialLevelFinish)
     {
         // Level bitirildi.
-        levelRenderer.material.color = Color.green;
+        levelRenderer.material = materialLevelFinish;
     }
-    public void LevelFinishFailed()
+    public void LevelFinishLost(Material materialLevelLost)
     {
         // Level bitirme denemesi başarısız oldu.
-        levelRenderer.material.color = Color.red;
+        levelRenderer.material = materialLevelLost;
     }
 }

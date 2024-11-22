@@ -16,7 +16,7 @@ public class Slot : MonoBehaviour
     public void SlotRelease()
     {
         myItem = null;
-        imageSlotIcon.sprite = Canvas_Manager.Instance.emptySlotIcon;
+        imageSlotIcon.sprite = Canvas_Manager.Instance.EmptySlotIcon;
         textSlotAmount.text = "";
     }
     public void SlotFull(Item_Material item, int slotAmount)

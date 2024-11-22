@@ -8,6 +8,7 @@ public class Canvas_Manager_Editor : Editor
     #region Property
     private bool showGenel;
     #region Genel
+    private SerializedProperty emptySlotIcon;
     private SerializedProperty sceneMaskedImage;
     private SerializedProperty all_Item_Holder;
     private SerializedProperty textMenuGoldAmount;
@@ -94,6 +95,7 @@ public class Canvas_Manager_Editor : Editor
 
     #region Dungeon Create Setting
     private bool showDungeonCreateSetting;
+    private SerializedProperty toggleDungeonFree;
     private SerializedProperty toggleDungeonSetting;
     private SerializedProperty buttonDungeonCreate;
     private SerializedProperty buttonChooser;
@@ -187,6 +189,9 @@ public class Canvas_Manager_Editor : Editor
     private SerializedProperty buttonLevelHelpLife;
     private SerializedProperty buttonLevelHelpAmount;
     private SerializedProperty buttonLevelHelpPower;
+    private SerializedProperty panelLevelMap;
+    private SerializedProperty cameraMenu;
+    private SerializedProperty cameraMap;
     #endregion
     #endregion
 
@@ -197,6 +202,7 @@ public class Canvas_Manager_Editor : Editor
     public virtual void Serialized()
     {
         #region Genel
+        emptySlotIcon = serializedObject.FindProperty("emptySlotIcon");
         sceneMaskedImage = serializedObject.FindProperty("sceneMaskedImage");
         all_Item_Holder = serializedObject.FindProperty("all_Item_Holder");
         textMenuGoldAmount = serializedObject.FindProperty("textMenuGoldAmount");
@@ -277,6 +283,7 @@ public class Canvas_Manager_Editor : Editor
         #endregion
 
         #region Dungeon Create Setting
+        toggleDungeonFree = serializedObject.FindProperty("toggleDungeonFree");
         toggleDungeonSetting = serializedObject.FindProperty("toggleDungeonSetting");
         buttonDungeonCreate = serializedObject.FindProperty("buttonDungeonCreate");
         buttonChooser = serializedObject.FindProperty("buttonChooser");
@@ -366,6 +373,9 @@ public class Canvas_Manager_Editor : Editor
         buttonLevelHelpLife = serializedObject.FindProperty("buttonLevelHelpLife");
         buttonLevelHelpAmount = serializedObject.FindProperty("buttonLevelHelpAmount");
         buttonLevelHelpPower = serializedObject.FindProperty("buttonLevelHelpPower");
+        panelLevelMap = serializedObject.FindProperty("panelLevelMap");
+        cameraMenu = serializedObject.FindProperty("cameraMenu");
+        cameraMap = serializedObject.FindProperty("cameraMap");
         #endregion
     }
     public override void OnInspectorGUI()
@@ -375,6 +385,7 @@ public class Canvas_Manager_Editor : Editor
         showGenel = EditorGUILayout.Toggle("Genel", showGenel);
         if (showGenel)
         {
+            EditorGUILayout.PropertyField(emptySlotIcon);
             EditorGUILayout.PropertyField(sceneMaskedImage);
             EditorGUILayout.PropertyField(all_Item_Holder);
             EditorGUILayout.PropertyField(textMenuGoldAmount);
@@ -479,6 +490,7 @@ public class Canvas_Manager_Editor : Editor
         showDungeonCreateSetting = EditorGUILayout.Toggle("Dungeon Create Setting", showDungeonCreateSetting);
         if (showDungeonCreateSetting)
         {
+            EditorGUILayout.PropertyField(toggleDungeonFree);
             EditorGUILayout.PropertyField(toggleDungeonSetting);
             EditorGUILayout.PropertyField(buttonDungeonCreate);
             EditorGUILayout.PropertyField(buttonChooser);
@@ -583,6 +595,9 @@ public class Canvas_Manager_Editor : Editor
             EditorGUILayout.PropertyField(buttonLevelHelpLife);
             EditorGUILayout.PropertyField(buttonLevelHelpAmount);
             EditorGUILayout.PropertyField(buttonLevelHelpPower);
+            EditorGUILayout.PropertyField(panelLevelMap);
+            EditorGUILayout.PropertyField(cameraMenu);
+            EditorGUILayout.PropertyField(cameraMap);
         }
 
         serializedObject.ApplyModifiedProperties();
