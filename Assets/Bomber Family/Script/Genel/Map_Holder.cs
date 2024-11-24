@@ -113,6 +113,7 @@ public class Map_Holder : Singletion<Map_Holder>
     private List<PoolObje> boxObjects = new List<PoolObje>();
     private List<PoolObje> lootObjects = new List<PoolObje>();
     private List<PoolObje> wallObjects = new List<PoolObje>();
+    private List<PoolObje> outSideWallObjects = new List<PoolObje>();
     private List<PoolObje> trapObjects = new List<PoolObje>();
     private List<PoolObje> gateObjects = new List<PoolObje>();
     private List<PoolObje> enemyObjects = new List<PoolObje>();
@@ -135,6 +136,7 @@ public class Map_Holder : Singletion<Map_Holder>
     public List<PoolObje> BoxObjects { get { return boxObjects; } }
     public List<PoolObje> LootObjects { get { return lootObjects; } }
     public List<PoolObje> WallObjects { get { return wallObjects; } }
+    public List<PoolObje> OutSideWallObjects { get { return outSideWallObjects; } }
     public List<PoolObje> TrapObjects { get { return trapObjects; } }
     public List<PoolObje> GateObjects { get { return gateObjects; } }
     public List<PoolObje> EnemyObjects { get { return enemyObjects; } }
@@ -168,6 +170,7 @@ public class Map_Holder : Singletion<Map_Holder>
     {
         boxObjects.Clear();
         wallObjects.Clear();
+        outSideWallObjects.Clear();
         trapObjects.Clear();
         gateObjects.Clear();
         enemyObjects.Clear();
@@ -252,6 +255,16 @@ public class Map_Holder : Singletion<Map_Holder>
             }
         }
     }
+    public void SendToPoolOutSideWallObjects()
+    {
+        for (int e = 0; e < outSideWallObjects.Count; e++)
+        {
+            if (outSideWallObjects[e].gameObject.activeSelf)
+            {
+                outSideWallObjects[e].EnterHavuz();
+            }
+        }
+    }
     public void CloseBoardGround()
     {
         boardGround.gameObject.SetActive(false);
@@ -293,7 +306,7 @@ public class Map_Holder : Singletion<Map_Holder>
     }
     public void CreateWall(int x, int y, int wallOrder)
     {
-        Transform wallOutSide = CreateOtSideWall(x, y, wallOrder);
+        Transform wallOutSide = CreateOutSideWall(x, y, wallOrder);
 
         if (x != -1 && x != gameBoard.GetLength(0))
         {
@@ -302,16 +315,16 @@ public class Map_Holder : Singletion<Map_Holder>
     }
     public void CreateWall(int x, int y, int wallOrder, Vector3Int angle)
     {
-        Transform wallOutSide = CreateOtSideWall(x, y, wallOrder);
+        Transform wallOutSide = CreateOutSideWall(x, y, wallOrder);
 
         wallOutSide.GetChild(0).eulerAngles = angle;
     }
-    private Transform CreateOtSideWall(int x, int y, int wallOrder)
+    private Transform CreateOutSideWall(int x, int y, int wallOrder)
     {
         PoolObje poolObje = all_Item_Holder.WallList[wallOrder].MyPool.HavuzdanObjeIste(new Vector3(x, 0, y));
         Transform wallOutSide = poolObje.transform;
         wallOutSide.transform.SetParent(boardWallParent);
-        wallObjects.Add(poolObje);
+        outSideWallObjects.Add(poolObje);
         wallOutSide.name = "WallOutSide -> X: " + x + ", Y: " + y;
         return wallOutSide;
     }
@@ -344,6 +357,7 @@ public class Map_Holder : Singletion<Map_Holder>
     public void CloseMap()
     {
         SendToPoolAllObjects();
+        SendToPoolOutSideWallObjects();
         boardGround.gameObject.SetActive(false);
         Map_Creater_Manager.Instance.ReleaseGate();
     }
@@ -424,12 +438,46 @@ public class Map_Holder : Singletion<Map_Holder>
             {
                 if (Save_Load_Manager.Instance.gameData.gold >= myltiplePlacementItem.MyPrice)
                 {
+                    BoardType boardType = BoardType.Empty;
                     Canvas_Manager.Instance.SetGoldSmooth(-myltiplePlacementItem.MyPrice);
                     Board_Object board_Object = myltiplePlacementItem.MyPool.HavuzdanObjeIste(newPlace).GetComponent<Board_Object>();
                     board_Object.SetBoardOrder(all_Item_Holder.LearnOrder(myltiplePlacementItem));
                     board_Object.SetBoardCoor(new Vector2Int(myBoardList[rndOrder].x, myBoardList[rndOrder].y));
                     Utils.SetParent(board_Object.gameObject, "Board_" + board_Object.MyBoardType);
                     amount--;
+                    if (board_Object.MyBoardType == BoardType.Wall)
+                    {
+                        boardType = BoardType.Wall;
+                        wallObjects.Add(board_Object);
+                    }
+                    else if (board_Object.MyBoardType == BoardType.Box)
+                    {
+                        boardType = BoardType.Box;
+                        boxObjects.Add(board_Object);
+                    }
+                    else if (board_Object.MyBoardType == BoardType.Gate)
+                    {
+                        boardType = BoardType.Gate;
+                        SetBoardGate(board_Object);
+                    }
+                    else if (board_Object.MyBoardType == BoardType.Enemy)
+                    {
+                        boardType = BoardType.Enemy;
+                        enemyObjects.Add(board_Object);
+                        allEnemyObjects.Add(board_Object);
+                    }
+                    else if (board_Object.MyBoardType == BoardType.BossEnemy)
+                    {
+                        boardType = BoardType.BossEnemy;
+                        bossEnemyObjects.Add(board_Object);
+                        allEnemyObjects.Add(board_Object);
+                    }
+                    else if (board_Object.MyBoardType == BoardType.Trap)
+                    {
+                        boardType = BoardType.Trap;
+                        trapObjects.Add(board_Object);
+                    }
+                    gameBoard[newPlace.x, newPlace.z] = new GameBoard(new Board(boardType, board_Object.MyBoardOrder, ""), board_Object.gameObject);
                 }
                 else
                 {
@@ -440,6 +488,13 @@ public class Map_Holder : Singletion<Map_Holder>
             }
         }
     }
+    //public List<PoolObje> BoxObjects { get { return boxObjects; } }
+    //public List<PoolObje> LootObjects { get { return lootObjects; } }
+    //public List<PoolObje> WallObjects { get { return wallObjects; } }
+    //public List<PoolObje> TrapObjects { get { return trapObjects; } }
+    //public List<PoolObje> GateObjects { get { return gateObjects; } }
+    //public List<PoolObje> EnemyObjects { get { return enemyObjects; } }
+    //public List<PoolObje> BossEnemyObjects { get { return bossEnemyObjects; } }
 
     #region Close Game Board
     [ContextMenu("Close Game Board")]

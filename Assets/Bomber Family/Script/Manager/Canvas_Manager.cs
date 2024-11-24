@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using static UnityEditor.Progress;
 
 [Serializable]
 public class BombList
@@ -1391,6 +1392,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         objCreatingMultipleObject.SetActive(isMultiple);
         objEmptyArea.SetActive(isMultiple);
         textCreateObjectSetting.text = "";
+        Map_Holder.Instance.SetMultiplePlacementObject(null);
 
         if (isMultiple)
         {
