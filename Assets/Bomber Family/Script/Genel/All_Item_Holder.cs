@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using static UnityEditor.Progress;
 
 [CreateAssetMenu(menuName = "Genel/All Item Holder")]
 public class All_Item_Holder : ScriptableObject

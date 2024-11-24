@@ -11,6 +11,10 @@ public class Object_Taker : Secret_Object
 
     public void TakeMover(Transform object_Mover)
     {
+        if (MissionComplete)
+        {
+            return;
+        }
         if (LevelCondition())
         {
             object_Mover.transform.DOMove(transform.position + sendingOffSet, movingTime).OnComplete(() =>

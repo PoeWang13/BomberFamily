@@ -20,6 +20,10 @@ public class Object_2_Clicker : Secret_Object
     }
     private void OnMouseUpAsButton()
     {
+        if (MissionComplete)
+        {
+            return;
+        }
         if (LevelCondition())
         {
             isHandled = !isHandled;
@@ -36,6 +40,10 @@ public class Object_2_Clicker : Secret_Object
     }
     private void Update()
     {
+        if (MissionComplete)
+        {
+            return;
+        }
         if (isHandled && canClick)
         {
             Ray ray = myCamera.ScreenPointToRay(Input.mousePosition);

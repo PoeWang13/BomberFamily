@@ -9,6 +9,10 @@ public class Object_Sender : Secret_Object
 
     public void SendingObject(Transform object_Send)
     {
+        if (MissionComplete)
+        {
+            return;
+        }
         object_Send.transform.DOMove(sendingPos, sendingTime).OnComplete(() =>
         {
             SetMissionComplete();

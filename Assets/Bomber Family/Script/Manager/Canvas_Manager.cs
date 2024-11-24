@@ -5,8 +5,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
-using Unity.VisualScripting;
-using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 
 [Serializable]
 public class BombList
@@ -59,6 +57,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     // Creator
     [SerializeField] private GameObject panelCreator;
     [SerializeField] private GameObject panelBoardSize;
+    [SerializeField] private GameObject panelProcessHolder;
     [SerializeField] private GameObject panelProcess;
     [SerializeField] private TMP_InputField inputBoardSizeX;
     [SerializeField] private TMP_InputField inputBoardSizeY;
@@ -70,14 +69,20 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     [SerializeField] private Transform enemyParent;
     [SerializeField] private Transform bossEnemyParent;
     [SerializeField] private Button buttonSaveMap;
-    [SerializeField] private GameObject panelCreatorProcessParent;
     [SerializeField] private Image imageProcess;
     [SerializeField] private TextMeshProUGUI textProcess;
+    [SerializeField] private TextMeshProUGUI textProcessBase;
     [SerializeField] private GameObject objCheckingMapButton;
     [SerializeField] private GameObject objSaveMapButtonsParent;
     [SerializeField] private GameObject objCreatorButtonTypeList;
     [SerializeField] private GameObject objCreatorTypeList;
     [SerializeField] private GameObject objChangeMapButton;
+    [SerializeField] private GameObject objEmptyArea;
+    [SerializeField] private Image imageMultiplePlacement;
+    [SerializeField] private GameObject objCreatingMultipleObject;
+    [SerializeField] private TextMeshProUGUI textPlacementType;
+    [SerializeField] private TextMeshProUGUI textCreateObjectSetting;
+    [SerializeField] private TMP_InputField inputMultiplePlacementAmount;
 
     // Creator Object Setting
     [SerializeField] private GameObject panelSettingBase;
@@ -193,7 +198,9 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     private bool correctBossEnemyAmount;
     private bool correctMagicStoneAmount;
     private bool correctDungeonSize;
+    private bool isMultiple;
 
+    private int amountMultiple;
     private int bombOrder;
     private int playerOrder;
     private int goldChangedAmount;
@@ -209,6 +216,8 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
 
     public Sprite EmptySlotIcon { get { return emptySlotIcon; } }
     public bool ToggleDungeonSetting { get { return toggleDungeonSetting.isOn; } }
+    public bool IsMultiple { get { return isMultiple; } }
+    public int AmountMultiple { get { return amountMultiple; } }
 
     #region Menu
     private void Start()
@@ -331,7 +340,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     {
         panelLevelMap.SetActive(false);
     }
-    public void OpenLevel(int levelOrder)
+    public void OpenLevel(BoardSaveType boardSaveType, int levelOrder)
     {
         Audio_Manager.Instance.PlayGameStart();
         OpenMask(0, () =>
@@ -347,7 +356,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
             CloseMask(0.5f, () =>
             {
                 // Ekran açıldı.
-                Map_Construct_Manager.Instance.ConstructMap(Save_Load_Manager.Instance.LoadBoard(BoardSaveType.GameLevel, levelOrder));
+                Map_Construct_Manager.Instance.ConstructMap(Save_Load_Manager.Instance.LoadBoard(boardSaveType, levelOrder));
             });
         });
     }
@@ -787,7 +796,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         SetPlayerBoxPassingText();
         SetPlayerBoxPushingTimeText();
         panelGame.SetActive(true);
-        SetActiveMapProcess(false);
+        SetActiveMapProcessHolder(false);
     }
     public void SetLevel()
     {
@@ -905,7 +914,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         else
         {
             correctDungeonSize = false;
-            Warning_Manager.Instance.ShowMessage("Board Size Width must be number, NOT letter.");
+            Warning_Manager.Instance.ShowMessage("Board Size Width must be integer number.");
         }
         if (int.TryParse(inputBoardSizeY.text, out int sizeY))
         {
@@ -928,7 +937,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         else
         {
             correctDungeonSize = false;
-            Warning_Manager.Instance.ShowMessage("Board Size Height must be number, NOT letter.");
+            Warning_Manager.Instance.ShowMessage("Board Size Height must be integer number.");
         }
         if (sizeX * sizeY > 500)
         {
@@ -964,7 +973,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         }
         else
         {
-            Warning_Manager.Instance.ShowMessage("The number of Wall must be number, NOT letter.");
+            Warning_Manager.Instance.ShowMessage("The number of Wall must be integer number.");
             correctWallAmount = false;
         }
         Map_Creater_Manager.Instance.SetWallBoard(wallAmount);
@@ -997,7 +1006,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         }
         else
         {
-            Warning_Manager.Instance.ShowMessage("The number of Magic Stone must be number, NOT letter.");
+            Warning_Manager.Instance.ShowMessage("The number of Magic Stone must be integer number.");
             correctMagicStoneAmount = false;
         }
         correctBoxAmount = true;
@@ -1024,7 +1033,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         }
         else
         {
-            Warning_Manager.Instance.ShowMessage("The number of Boxes must be number, NOT letter.");
+            Warning_Manager.Instance.ShowMessage("The number of Boxes must be integer number.");
             correctBoxAmount = false;
         }
         Map_Creater_Manager.Instance.SetBoxBoard(boxAmount);
@@ -1058,7 +1067,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         }
         else
         {
-            Warning_Manager.Instance.ShowMessage("The number of Trap must be number, NOT letter.");
+            Warning_Manager.Instance.ShowMessage("The number of Trap must be integer number.");
             correctTrapAmount = false;
         }
         Map_Creater_Manager.Instance.SetTrapBoard(trapAmount);
@@ -1091,7 +1100,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         }
         else
         {
-            Warning_Manager.Instance.ShowMessage("The number of Enemy must be number, NOT letter.");
+            Warning_Manager.Instance.ShowMessage("The number of Enemy must be integer number.");
             correctEnemyAmount = false;
         }
         Map_Creater_Manager.Instance.SetEnemyBoard(enemyAmount);
@@ -1124,7 +1133,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         }
         else
         {
-            Warning_Manager.Instance.ShowMessage("The number of Boss Enemy must be number, NOT letter.");
+            Warning_Manager.Instance.ShowMessage("The number of Boss Enemy must be integer number.");
             correctBossEnemyAmount = false;
         }
         Map_Creater_Manager.Instance.SetBossEnemyBoard(bossEnemyAmount);
@@ -1149,7 +1158,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         }
         else
         {
-            Warning_Manager.Instance.ShowMessage("The number of Magic Stone must be number, NOT letter.");
+            Warning_Manager.Instance.ShowMessage("The number of Magic Stone must be integer number.");
             correctMagicStoneAmount = false;
         }
         Map_Creater_Manager.Instance.SetMagicStoneBoard(magicStoneAmount);
@@ -1192,7 +1201,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     }
     private void CreaterWallChooseButton()
     {
-        for (int e = wallChooseParent.childCount; e >= 0; e--)
+        for (int e = wallChooseParent.childCount - 1; e >= 0; e--)
         {
             Destroy(wallChooseParent.GetChild(e).gameObject);
         }
@@ -1228,7 +1237,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     }
     private void CreaterBoxChooseButton()
     {
-        for (int e = boxChooseParent.childCount; e >= 0; e--)
+        for (int e = boxChooseParent.childCount - 1; e >= 0; e--)
         {
             Destroy(boxChooseParent.GetChild(e).gameObject);
         }
@@ -1264,7 +1273,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     }
     private void CreaterTrapChooseButton()
     {
-        for (int e = trapChooseParent.childCount; e >= 0; e--)
+        for (int e = trapChooseParent.childCount - 1; e >= 0; e--)
         {
             Destroy(trapChooseParent.GetChild(e).gameObject);
         }
@@ -1300,7 +1309,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     }
     private void CreaterEnemyChooseButton()
     {
-        for (int e = enemyChooseParent.childCount; e >= 0; e--)
+        for (int e = enemyChooseParent.childCount - 1; e >= 0; e--)
         {
             Destroy(enemyChooseParent.GetChild(e).gameObject);
         }
@@ -1336,7 +1345,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     }
     private void CreaterBossEnemyChooseButton()
     {
-        for (int e = bossEnemyChooseParent.childCount; e >= 0; e--)
+        for (int e = bossEnemyChooseParent.childCount - 1; e >= 0; e--)
         {
             Destroy(bossEnemyChooseParent.GetChild(e).gameObject);
         }
@@ -1373,6 +1382,63 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     #endregion
 
     #region Creator
+    // Canvas -> Panel-Creator -> Panel-Placement -> Button-Placement-Type'a atandı
+    public void SetCreatingObjectAmount()
+    {
+        isMultiple = !isMultiple;
+        imageMultiplePlacement.gameObject.SetActive(isMultiple);
+        inputMultiplePlacementAmount.gameObject.SetActive(isMultiple);
+        objCreatingMultipleObject.SetActive(isMultiple);
+        objEmptyArea.SetActive(isMultiple);
+        textCreateObjectSetting.text = "";
+
+        if (isMultiple)
+        {
+            textPlacementType.text = "Single Placement";
+        }
+        else
+        {
+            textPlacementType.text = "Multiple Random Placement";
+            inputMultiplePlacementAmount.text = 0.ToString();
+            imageMultiplePlacement.sprite = emptySlotIcon;
+            amountMultiple = 0;
+            textCreateObjectSetting.text = "Choose a Board Object.";
+        }
+    }
+    // Canvas -> Panel-Creator -> Panel-Placement -> InputField-Multiple-Placement-Amount'a atandı
+    public void SetMultiplePlacementAmount(string amountText)
+    {
+        if (string.IsNullOrEmpty(amountText))
+        {
+            textCreateObjectSetting.text = "Amount Text can not be empty.";
+        }
+        if (int.TryParse(amountText, out int amount))
+        {
+            amountMultiple = amount;
+            textCreateObjectSetting.text = "You will placement " + amount + " board object.";
+        }
+        else
+        {
+            textCreateObjectSetting.text = "Amount Text must be integer number.";
+        }
+    }
+    // Canvas -> Panel-Creator -> Panel-Placement -> Button-Create-Placement'a atandı
+    public void CreateMultiplePlacement()
+    {
+        Map_Holder.Instance.CreateMultiplePlacement();
+    }
+    public void SetMultiplePlacementObject(Item item)
+    {
+        if (item.MyBoardType == BoardType.Gate)
+        {
+            Warning_Manager.Instance.ShowMessage("You cannot place Gate Object in more than one place.", 2);
+            SetCreatingObjectAmount();
+            return;
+        }
+        imageMultiplePlacement.sprite = item.MyIcon;
+        textCreateObjectSetting.text = "";
+        Map_Holder.Instance.SetMultiplePlacementObject(item);
+    }
     // Canvas -> Panel-Creator -> Panel-Map-Size -> Button-Create'a atandı.
     public void CreateMapBoard()
     {
@@ -1385,7 +1451,16 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     {
         imageProcess.fillAmount = process;
         textProcess.text = (process * 100).ToString("N2");
-        panelCreatorProcessParent.SetActive(process < 1);
+    }
+    public void MapProcessBase(string processBase)
+    {
+        textProcessBase.text = processBase + " Process -> % ";
+        imageProcess.fillAmount = 0;
+        textProcess.text = 0.ToString("N2");
+    }
+    public void SetActiveMapProcessHolder(bool process)
+    {
+        panelProcessHolder.SetActive(process);
     }
     public void SetActiveMapProcess(bool process)
     {
@@ -1481,6 +1556,10 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     public void SetCreatorPanel(bool isActive)
     {
         panelCreator.SetActive(isActive);
+    }
+    public void SetPanelCreatorButtonTypeList(bool isActive)
+    {
+        objCreatorButtonTypeList.SetActive(isActive);
     }
     public void SetCreatorButtons(bool isActive)
     {

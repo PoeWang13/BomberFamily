@@ -10,6 +10,10 @@ public class Object_Thrower : Secret_Object
     [ContextMenu("Throw")]
     public void Throw()
     {
+        if (MissionComplete)
+        {
+            return;
+        }
         if (LevelCondition())
         {
             object_Throw.useGravity = true;

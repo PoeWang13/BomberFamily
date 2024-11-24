@@ -11,6 +11,10 @@ public class Secret_Object : MonoBehaviour
 
     public bool MissionComplete { get { return missionComplete; } }
 
+    public virtual void ObjectFixed()
+    {
+        missionComplete = true;
+    }
     public void SetMissionComplete()
     {
         missionComplete = true;

@@ -20,7 +20,8 @@ public class MyBoard
 public enum BoardSaveType
 {
     GameLevel,
-    MyLevel
+    MyLevel,
+    SecretLevel
 }
 [Serializable]
 public class CharacterStat
@@ -99,6 +100,7 @@ public class GameData
 public class LevelDatas
 {
     public List<string> LevelLinks = new List<string>();
+    public List<string> SecretLevelLinks = new List<string>();
 }
 [Serializable]
 public class LevelDataContainer
@@ -172,6 +174,7 @@ public class Save_Load_Manager : Singletion<Save_Load_Manager>
                 gameData.maxGameLevel = allLevelDatas.GameDatas.LevelLinks.Count;
                 StartCoroutine(GetLastLevelsData(gameData.lastLevel, allLevelDatas.GameDatas.LevelLinks[gameData.lastLevel]));
                 StartCoroutine(GetLevelsData());
+                StartCoroutine(GetSecretLevelsData());
             }
             catch
             {
@@ -208,6 +211,45 @@ public class Save_Load_Manager : Singletion<Save_Load_Manager>
                         LevelBoard levelBoard = JsonUtility.FromJson<LevelBoard>(unityWebRequest.downloadHandler.text);
                         string levelJson = JsonUtility.ToJson(levelBoard);
                         File.WriteAllText(Application.persistentDataPath + "/Game-Level/Game-Level-" + order + ".kimex", levelJson);
+                        allLevelDatas.GameDatas.LevelLinks.RemoveAt(0);
+                        order++;
+                    }
+                    catch
+                    {
+                        Debug.LogError("Bilgi gelmedi. Hata : " + unityWebRequest.error);
+                    }
+                }
+                unityWebRequest.Dispose();
+            }
+        }
+    }
+    IEnumerator GetSecretLevelsData()
+    {
+        int order = 0;
+        while (allLevelDatas.GameDatas.SecretLevelLinks.Count > 0)
+        {
+            if (File.Exists(Application.persistentDataPath + "/Secret-Level/Secret-Level-" + order + ".kimex"))
+            {
+                allLevelDatas.GameDatas.LevelLinks.RemoveAt(0);
+                order++;
+            }
+            else
+            {
+                UnityWebRequest unityWebRequest = UnityWebRequest.Get(driveStartLink + allLevelDatas.GameDatas.SecretLevelLinks[0]);
+                yield return unityWebRequest.SendWebRequest();
+                UnityWebRequest.Result result = unityWebRequest.result;
+                if (result == UnityWebRequest.Result.ConnectionError)
+                {
+                    Debug.LogWarning("Bilgi gelmedi. Hata : " + unityWebRequest.error);
+                }
+                else
+                {
+                    try
+                    {
+                        // Dosya var yani resim indirilmiş.
+                        LevelBoard levelBoard = JsonUtility.FromJson<LevelBoard>(unityWebRequest.downloadHandler.text);
+                        string levelJson = JsonUtility.ToJson(levelBoard);
+                        File.WriteAllText(Application.persistentDataPath + "/Secret-Level/Secret-Level-" + order + ".kimex", levelJson);
                         allLevelDatas.GameDatas.LevelLinks.RemoveAt(0);
                         order++;
                     }
@@ -277,7 +319,17 @@ public class Save_Load_Manager : Singletion<Save_Load_Manager>
             File.WriteAllText(Application.persistentDataPath + "/My-Level/My-Level-" + gameData.maxMyLevel + ".kimex", levelJson);
             gameData.maxMyLevel++;
         }
-        else
+        else if (saveType == BoardSaveType.SecretLevel)
+        {
+            if (File.Exists("C:/Users/90545/Desktop/Secret-Level-" + saveGameOrder + ".kimex"))
+            {
+                Warning_Manager.Instance.ShowMessage("Your level order is wrong check save data files.", 2);
+                return;
+            }
+            Warning_Manager.Instance.ShowMessage("Saved level board. Check level files.", 2);
+            File.WriteAllText("C:/Users/90545/Desktop/Secret-Level-" + saveGameOrder + ".kimex", levelJson);
+        }
+        else if (saveType == BoardSaveType.GameLevel)
         {
             if (File.Exists("C:/Users/90545/Desktop/Game-Level-" + saveGameOrder + ".kimex"))
             {
@@ -308,7 +360,24 @@ public class Save_Load_Manager : Singletion<Save_Load_Manager>
                 return levelBoard;
             }
         }
-        else
+        else if (saveType == BoardSaveType.SecretLevel)
+        {
+            if (File.Exists(Application.persistentDataPath + "/Secret-Level/Secret-Level-" + order + ".kimex"))
+            {
+                // Dosya var.
+                string levelJson = File.ReadAllText(Application.persistentDataPath + "/Secret-Level/Secret-Level-" + order + ".kimex");
+                LevelBoard levelBoard = JsonUtility.FromJson<LevelBoard>(levelJson);
+                return levelBoard;
+            }
+            else
+            {
+                Warning_Manager.Instance.ShowMessage("We can not found your Level so we give Last Secret Level. Check save data files..", 2);
+                string levelJson = File.ReadAllText(Application.persistentDataPath + "/Secret-Level/Secret-Level-" + order + ".kimex");
+                LevelBoard levelBoard = JsonUtility.FromJson<LevelBoard>(levelJson);
+                return levelBoard;
+            }
+        }
+        else if (saveType == BoardSaveType.GameLevel)
         {
             if (File.Exists(Application.persistentDataPath + "/Game-Level/Game-Level-" + order + ".kimex"))
             {
@@ -325,6 +394,7 @@ public class Save_Load_Manager : Singletion<Save_Load_Manager>
                 return levelBoard;
             }
         }
+        return null;
     }
     #endregion
 
@@ -337,6 +407,7 @@ public class Save_Load_Manager : Singletion<Save_Load_Manager>
             gameData = new GameData();
             Directory.CreateDirectory(Application.persistentDataPath + "/Game-Level");
             Directory.CreateDirectory(Application.persistentDataPath + "/My-Level");
+            Directory.CreateDirectory(Application.persistentDataPath + "/Secret-Level");
             for (int e = 0; e < all_Item_Holder.PlayerSourceList.Count; e++)
             {
                 gameData.allPlayers.Add(new PlayerData());

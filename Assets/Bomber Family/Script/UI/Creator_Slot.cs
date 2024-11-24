@@ -23,28 +23,41 @@ public class Creator_Slot : MonoBehaviour
                 return;
             }
         }
-        if (Save_Load_Manager.Instance.gameData.gold >= myItem.MyPrice)
+        if (Canvas_Manager.Instance.IsMultiple)
         {
-            Map_Creater_Manager.Instance.SetCreatedObject(myItem);
-            // Hareket sistemi
-            if (myItem.MyBoardType == BoardType.Trap)
+            Canvas_Manager.Instance.SetMultiplePlacementObject(myItem);
+        }
+        else
+        {
+            if (Save_Load_Manager.Instance.gameData.gold >= myItem.MyPrice)
             {
-                if ((myItem as Item_Trap).MyTrapType == TrapType.None)
+                Map_Creater_Manager.Instance.SetCreatedObject(myItem);
+                Canvas_Manager.Instance.SetGoldSmooth(-myItem.MyPrice);
+                // Hareket sistemi
+                if (myItem.MyBoardType == BoardType.Trap)
                 {
-                    Canvas_Manager.Instance.OpenBaseSetting(false);
-                    Canvas_Manager.Instance.CloseSettingPanels();
+                    if ((myItem as Item_Trap).MyTrapType == TrapType.None)
+                    {
+                        Canvas_Manager.Instance.OpenBaseSetting(false);
+                        Canvas_Manager.Instance.CloseSettingPanels();
+                    }
+                    else if ((myItem as Item_Trap).MyTrapType == TrapType.Trigger)
+                    {
+                        Canvas_Manager.Instance.OpenBaseSetting(false);
+                        Canvas_Manager.Instance.CloseSettingPanels();
+                    }
+                    else if ((myItem as Item_Trap).MyTrapType > (TrapType)99 && (myItem as Item_Trap).MyTrapType < (TrapType)1000)
+                    {
+                        Canvas_Manager.Instance.OpenBaseSetting(false);
+                        Canvas_Manager.Instance.CloseSettingPanels();
+                    }
+                    else if ((myItem as Item_Trap).MyTrapType > (TrapType)999)
+                    {
+                        Canvas_Manager.Instance.OpenBaseSetting(false);
+                        Canvas_Manager.Instance.CloseSettingPanels();
+                    }
                 }
-                else if ((myItem as Item_Trap).MyTrapType == TrapType.Trigger)
-                {
-                    Canvas_Manager.Instance.OpenBaseSetting(false);
-                    Canvas_Manager.Instance.CloseSettingPanels();
-                }
-                else if ((myItem as Item_Trap).MyTrapType > (TrapType)99 && (myItem as Item_Trap).MyTrapType < (TrapType)1000)
-                {
-                    Canvas_Manager.Instance.OpenBaseSetting(false);
-                    Canvas_Manager.Instance.CloseSettingPanels();
-                }
-                else if ((myItem as Item_Trap).MyTrapType > (TrapType)999)
+                else
                 {
                     Canvas_Manager.Instance.OpenBaseSetting(false);
                     Canvas_Manager.Instance.CloseSettingPanels();
@@ -52,14 +65,8 @@ public class Creator_Slot : MonoBehaviour
             }
             else
             {
-                Canvas_Manager.Instance.OpenBaseSetting(false);
-                Canvas_Manager.Instance.CloseSettingPanels();
+                Warning_Manager.Instance.ShowMessage("You dont have enough Gold.", 2);
             }
-            Canvas_Manager.Instance.SetGoldSmooth(-myItem.MyPrice);
-        }
-        else
-        {
-            Warning_Manager.Instance.ShowMessage("You dont have enough Gold.", 2);
         }
     }
 }

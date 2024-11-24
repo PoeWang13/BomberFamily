@@ -4,6 +4,8 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using Random = UnityEngine.Random;
+using Unity.Burst.CompilerServices;
+using static UnityEditor.Progress;
 
 [Serializable]
 public class Board
@@ -105,6 +107,9 @@ public class Map_Holder : Singletion<Map_Holder>
     private Transform boardEnemyParent;
     private Transform boardCloserParent;
     private Transform boardBossEnemyParent;
+    private Item myltiplePlacementItem;
+    private List<BoardCoor> myBoardList = new List<BoardCoor>();
+    private List<BoardCoor> myBoardListBackup = new List<BoardCoor>();
     private List<PoolObje> boxObjects = new List<PoolObje>();
     private List<PoolObje> lootObjects = new List<PoolObje>();
     private List<PoolObje> wallObjects = new List<PoolObje>();
@@ -125,6 +130,8 @@ public class Map_Holder : Singletion<Map_Holder>
     public Transform BoardGateParent { get { return boardGateParent; } }
     public Transform BoardEnemyParent { get { return boardEnemyParent; } }
     public Transform BoardBossEnemyParent { get { return boardBossEnemyParent; } }
+    public List<BoardCoor> MyBoardList { get { return myBoardList; } }
+    public List<BoardCoor> MyBoardListBackup { get { return myBoardListBackup; } }
     public List<PoolObje> BoxObjects { get { return boxObjects; } }
     public List<PoolObje> LootObjects { get { return lootObjects; } }
     public List<PoolObje> WallObjects { get { return wallObjects; } }
@@ -387,6 +394,49 @@ public class Map_Holder : Singletion<Map_Holder>
             else
             {
                 return (null, Vector3Int.zero);
+            }
+        }
+    }
+    public void SetMultiplePlacementObject(Item item)
+    {
+        myltiplePlacementItem = item;
+    }
+    public void CreateMultiplePlacement()
+    {
+        if (myltiplePlacementItem is null)
+        {
+            Warning_Manager.Instance.ShowMessage("You must choose a Board Object", 2);
+            return;
+        }
+        StartCoroutine(StartPlacement());
+    }
+    IEnumerator StartPlacement()
+    {
+        int amount = Canvas_Manager.Instance.AmountMultiple;
+        while (amount > 0)
+        {
+            yield return null;
+            int rndOrder = Random.Range(0, myBoardList.Count);
+            Vector3Int newPlace = new Vector3Int(myBoardList[rndOrder].x, 0, myBoardList[rndOrder].y);
+            myBoardList.RemoveAt(rndOrder);
+
+            if (gameBoard[newPlace.x, newPlace.z].board_Object is null)
+            {
+                if (Save_Load_Manager.Instance.gameData.gold >= myltiplePlacementItem.MyPrice)
+                {
+                    Canvas_Manager.Instance.SetGoldSmooth(-myltiplePlacementItem.MyPrice);
+                    Board_Object board_Object = myltiplePlacementItem.MyPool.HavuzdanObjeIste(newPlace).GetComponent<Board_Object>();
+                    board_Object.SetBoardOrder(all_Item_Holder.LearnOrder(myltiplePlacementItem));
+                    board_Object.SetBoardCoor(new Vector2Int(myBoardList[rndOrder].x, myBoardList[rndOrder].y));
+                    Utils.SetParent(board_Object.gameObject, "Board_" + board_Object.MyBoardType);
+                    amount--;
+                }
+                else
+                {
+                    Warning_Manager.Instance.ShowMessage("We were only able to place " + (Canvas_Manager.Instance.AmountMultiple - amount) + " board objects.", 2);
+                    Warning_Manager.Instance.ShowMessage("You dont have enough Gold.", 2);
+                    amount = 0;
+                }
             }
         }
     }

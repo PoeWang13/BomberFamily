@@ -1,5 +1,4 @@
-﻿using TMPro;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 [CustomEditor(typeof(Canvas_Manager))]
@@ -55,6 +54,7 @@ public class Canvas_Manager_Editor : Editor
     private bool showCreator;
     private SerializedProperty panelCreator;
     private SerializedProperty panelBoardSize;
+    private SerializedProperty panelProcessHolder;
     private SerializedProperty panelProcess;
     private SerializedProperty inputBoardSizeX;
     private SerializedProperty inputBoardSizeY;
@@ -66,14 +66,20 @@ public class Canvas_Manager_Editor : Editor
     private SerializedProperty enemyParent;
     private SerializedProperty bossEnemyParent;
     private SerializedProperty buttonSaveMap;
-    private SerializedProperty panelCreatorProcessParent;
     private SerializedProperty imageProcess;
     private SerializedProperty textProcess;
+    private SerializedProperty textProcessBase;
     private SerializedProperty objCheckingMapButton;
     private SerializedProperty objSaveMapButtonsParent;
     private SerializedProperty objCreatorButtonTypeList;
     private SerializedProperty objCreatorTypeList;
     private SerializedProperty objChangeMapButton;
+    private SerializedProperty objEmptyArea;
+    private SerializedProperty imageMultiplePlacement;
+    private SerializedProperty objCreatingMultipleObject;
+    private SerializedProperty textPlacementType;
+    private SerializedProperty textCreateObjectSetting;
+    private SerializedProperty inputMultiplePlacementAmount;
     #endregion
 
     #region Creator Object Setting
@@ -245,6 +251,7 @@ public class Canvas_Manager_Editor : Editor
         #region Creator
         panelCreator = serializedObject.FindProperty("panelCreator");
         panelBoardSize = serializedObject.FindProperty("panelBoardSize");
+        panelProcessHolder = serializedObject.FindProperty("panelProcessHolder");
         panelProcess = serializedObject.FindProperty("panelProcess");
         inputBoardSizeX = serializedObject.FindProperty("inputBoardSizeX");
         inputBoardSizeY = serializedObject.FindProperty("inputBoardSizeY");
@@ -256,14 +263,20 @@ public class Canvas_Manager_Editor : Editor
         enemyParent = serializedObject.FindProperty("enemyParent");
         bossEnemyParent = serializedObject.FindProperty("bossEnemyParent");
         buttonSaveMap = serializedObject.FindProperty("buttonSaveMap");
-        panelCreatorProcessParent = serializedObject.FindProperty("panelCreatorProcessParent");
         imageProcess = serializedObject.FindProperty("imageProcess");
         textProcess = serializedObject.FindProperty("textProcess");
+        textProcessBase = serializedObject.FindProperty("textProcessBase");
         objCheckingMapButton = serializedObject.FindProperty("objCheckingMapButton");
         objSaveMapButtonsParent = serializedObject.FindProperty("objSaveMapButtonsParent");
         objCreatorButtonTypeList = serializedObject.FindProperty("objCreatorButtonTypeList");
         objCreatorTypeList = serializedObject.FindProperty("objCreatorTypeList");
         objChangeMapButton = serializedObject.FindProperty("objChangeMapButton");
+        objEmptyArea = serializedObject.FindProperty("objEmptyArea");
+        imageMultiplePlacement = serializedObject.FindProperty("imageMultiplePlacement");
+        objCreatingMultipleObject = serializedObject.FindProperty("objCreatingMultipleObject");
+        textPlacementType = serializedObject.FindProperty("textPlacementType");
+        textCreateObjectSetting = serializedObject.FindProperty("textCreateObjectSetting");
+        inputMultiplePlacementAmount = serializedObject.FindProperty("inputMultiplePlacementAmount");
         #endregion
 
         #region Creator Object Setting
@@ -444,6 +457,7 @@ public class Canvas_Manager_Editor : Editor
         {
             EditorGUILayout.PropertyField(panelCreator);
             EditorGUILayout.PropertyField(panelBoardSize);
+            EditorGUILayout.PropertyField(panelProcessHolder);
             EditorGUILayout.PropertyField(panelProcess);
             EditorGUILayout.PropertyField(inputBoardSizeX);
             EditorGUILayout.PropertyField(inputBoardSizeY);
@@ -455,14 +469,20 @@ public class Canvas_Manager_Editor : Editor
             EditorGUILayout.PropertyField(enemyParent);
             EditorGUILayout.PropertyField(bossEnemyParent);
             EditorGUILayout.PropertyField(buttonSaveMap);
-            EditorGUILayout.PropertyField(panelCreatorProcessParent);
             EditorGUILayout.PropertyField(imageProcess);
             EditorGUILayout.PropertyField(textProcess);
+            EditorGUILayout.PropertyField(textProcessBase);
             EditorGUILayout.PropertyField(objCheckingMapButton);
             EditorGUILayout.PropertyField(objSaveMapButtonsParent);
             EditorGUILayout.PropertyField(objCreatorButtonTypeList);
             EditorGUILayout.PropertyField(objCreatorTypeList);
             EditorGUILayout.PropertyField(objChangeMapButton);
+            EditorGUILayout.PropertyField(objEmptyArea);
+            EditorGUILayout.PropertyField(imageMultiplePlacement);
+            EditorGUILayout.PropertyField(objCreatingMultipleObject);
+            EditorGUILayout.PropertyField(textPlacementType);
+            EditorGUILayout.PropertyField(textCreateObjectSetting);
+            EditorGUILayout.PropertyField(inputMultiplePlacementAmount);
             EditorGUILayout.Space(5);
         }
 

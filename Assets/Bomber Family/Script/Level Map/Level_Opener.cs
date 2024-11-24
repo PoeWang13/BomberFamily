@@ -2,23 +2,9 @@
 
 public class Level_Opener : MonoBehaviour
 {
-    public Game_Manager manager;
-    public bool deneme;
-    private void OnValidate()
-    {
-        if (deneme)
-        {
-            deneme = false;
-            for (int e = 0; e < manager.levelOpenerList.Count; e++)
-            {
-                if (manager.levelOpenerList[e].transform == transform)
-                {
-                    transform.name = "Level Opener - " + e;
-                }
-            }
-        }
-    }
-    private int levelOrder;
+    [SerializeField] private int levelOrder;
+    [SerializeField] private BoardSaveType boardSaveType;
+
     private bool waitUpgrade;
     private Renderer levelRenderer;
 
@@ -45,7 +31,7 @@ public class Level_Opener : MonoBehaviour
             Warning_Manager.Instance.ShowMessage("You should finish all previous level.", 2);
             return;
         }
-        Canvas_Manager.Instance.OpenLevel(levelOrder);
+        Canvas_Manager.Instance.OpenLevel(boardSaveType, levelOrder);
     }
     public void LevelFinish(Material materialLevelFinish)
     {

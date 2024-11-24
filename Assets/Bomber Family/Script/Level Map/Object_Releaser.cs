@@ -10,6 +10,10 @@ public class Object_Releaser : Secret_Object
 
     private void OnMouseUpAsButton()
     {
+        if (MissionComplete)
+        {
+            return;
+        }
         if (LevelCondition())
         {
             if (movers.Count == 0)

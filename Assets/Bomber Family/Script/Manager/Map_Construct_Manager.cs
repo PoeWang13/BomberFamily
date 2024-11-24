@@ -11,10 +11,12 @@ public class Map_Construct_Manager : Singletion<Map_Construct_Manager>
 
     public void ConstructMap(LevelBoard levelBoard)
     {
-        Canvas_Manager.Instance.SetActiveMapProcess(true);
+        Canvas_Manager.Instance.SetActiveMapProcessHolder(true);
         Player_Base.Instance.SetEffectivePlayer(false);
         Map_Holder.Instance.SetBoardSize(levelBoard.levelSize);
         Map_Holder.Instance.SetBoardGround();
+
+        Canvas_Manager.Instance.MapProcessBase("Map");
         mapProcess = 0;
         mapMaxProcess = levelBoard.levelSize.x * levelBoard.levelSize.y;
 
@@ -38,6 +40,7 @@ public class Map_Construct_Manager : Singletion<Map_Construct_Manager>
     {
         Vector3 cameraDirec = new Vector3(Map_Holder.Instance.GameBoard.GetLength(0), 0, 
             Map_Holder.Instance.GameBoard.GetLength(1)) / Map_Holder.Instance.GameBoard.GetLength(0);
+        Canvas_Manager.Instance.SetActiveMapProcessHolder(true);
 
         // Dış çerçeveye duvarlar eklenecek
         Map_Holder.Instance.CreateOutsideWall();
@@ -120,6 +123,7 @@ public class Map_Construct_Manager : Singletion<Map_Construct_Manager>
             }
         }
         SetTrapList(trapList);
+        Canvas_Manager.Instance.SetActiveMapProcessHolder(false);
         Camera_Manager.Instance.SetCameraPos(new Vector3Int(Map_Holder.Instance.BoardSize.x, 0, Map_Holder.Instance.BoardSize.y));
         Map_Holder.Instance.SetMagicStone(magicStoneAmount);
     }

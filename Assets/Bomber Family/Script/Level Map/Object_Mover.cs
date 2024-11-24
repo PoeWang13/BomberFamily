@@ -24,6 +24,10 @@ public class Object_Mover : Secret_Object
     }
     private void OnMouseUpAsButton()
     {
+        if (MissionComplete)
+        {
+            return;
+        }
         if (LevelCondition())
         {
             isHandled = !isHandled;
@@ -39,6 +43,10 @@ public class Object_Mover : Secret_Object
     }
     private void Update()
     {
+        if (MissionComplete)
+        {
+            return;
+        }
         if (isHandled)
         {
             if (Input.GetMouseButtonDown(0))

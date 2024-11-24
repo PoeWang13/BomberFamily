@@ -16,6 +16,10 @@ public class Object_Turner : Secret_Object
 
     private void OnMouseUpAsButton()
     {
+        if (MissionComplete)
+        {
+            return;
+        }
         if (canTurn)
         {
             if (LevelCondition())

@@ -93,6 +93,19 @@ public class Fikirler : MonoBehaviour
     //        {
     //        });
 
+    /// -Anahtarları düşmanlarada verebiliriz
+    /// -Üstünde durunca tetiklenen çıkınca bırakılan tuzaklar yapabiliriz.
+    /// -Normalde tek olan ama birine saldırılınca diğerlerininde düşmanlığını kazandığımız düşman çeşitleri olabilir.
+    /// -üstünden geçemediğimiz blocklar olabilir
+    /// -Bize yapışan ve bize debuff veren clicklemeyle üstümüzden attığımız düşmanlar olabilir.
+    /// -Ateşle tetiklenen bloklar olabilir.
+    /// -Bütün haritayı etkileyen tuzaklar olabilir.
+    /// -Üstündekileri boşluk veya üstünden geçilebilecek alan varsa gösterdiği istikamete gönderen tuzaklar
+    /// 
+    /// 
+    ///
+
+
     /* Düşanlar yön bulma türleri
      * 1-Rastgele dolaşan
      * 2-Playera yaklaşan
