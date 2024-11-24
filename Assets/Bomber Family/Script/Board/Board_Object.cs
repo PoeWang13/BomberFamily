@@ -34,7 +34,7 @@ public class Board_Object : PoolObje
                 SetMouseButton();
                 if (isEnter)
                 {
-                    transform.localScale = Vector3.one * 2;
+                    transform.localScale = Vector3.one * 1.5f;
                 }
             }
         }

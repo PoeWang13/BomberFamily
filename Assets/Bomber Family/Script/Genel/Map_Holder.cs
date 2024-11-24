@@ -168,14 +168,14 @@ public class Map_Holder : Singletion<Map_Holder>
     }
     public void SetBoardGround()
     {
+        myBoardList.Clear();
         boxObjects.Clear();
         wallObjects.Clear();
-        outSideWallObjects.Clear();
         trapObjects.Clear();
         gateObjects.Clear();
         enemyObjects.Clear();
         bossEnemyObjects.Clear();
-        MagicStoneObjects.Clear();
+        magicStoneObjects.Clear();
         AllEnemyObjects.Clear();
         SendToPoolCloserObject();
         boardGround.gameObject.SetActive(true);
@@ -193,8 +193,10 @@ public class Map_Holder : Singletion<Map_Holder>
             for (int y = 0; y < boardSize.y; y++)
             {
                 gameBoard[x, y] = new GameBoard();
+                myBoardList.Add(new BoardCoor(x, y));
             }
         }
+        SetBoardForNonUseable();
     }
     public void SendToPoolAllObjects()
     {

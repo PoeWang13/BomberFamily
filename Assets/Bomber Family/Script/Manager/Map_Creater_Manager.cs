@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using static UnityEditor.Progress;
 
 [System.Serializable]
 public class BoardContainer
@@ -230,20 +229,12 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
         Game_Manager.Instance.SetGameType(GameType.MapCreate);
         Map_Holder.Instance.SendToPoolAllObjects();
         Map_Holder.Instance.SetBoardGround();
-        for (int x = 0; x < sizeX; x++)
-        {
-            for (int y = 0; y < sizeY; y++)
-            {
-                Map_Holder.Instance.MyBoardList.Add(new BoardCoor(x, y));
-            }
-        }
         CreateLimitWall();
     }
     private void CreateLimitWall()
     {
         // Dış çerçeveye duvarlar eklenecek
         Map_Holder.Instance.CreateOutsideWall();
-        Map_Holder.Instance.SetBoardForNonUseable();
         if (Canvas_Manager.Instance.ToggleDungeonSetting)
         {
             // Ortaya duvarlar konacak

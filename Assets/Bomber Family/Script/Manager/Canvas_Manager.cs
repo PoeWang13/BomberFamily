@@ -1403,6 +1403,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         {
             textPlacementType.text = "Multiple Random Placement";
             inputMultiplePlacementAmount.text = 0.ToString();
+            textCreateObjectSetting.text = "";
             imageMultiplePlacement.sprite = emptySlotIcon;
             amountMultiple = 0;
         }
@@ -1435,11 +1436,12 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         {
             Warning_Manager.Instance.ShowMessage("You cannot place Gate Object in more than one place.", 2);
             SetCreatingObjectAmount();
+            textCreateObjectSetting.text = "";
             return;
         }
         imageMultiplePlacement.sprite = item.MyIcon;
-        textCreateObjectSetting.text = "";
         Map_Holder.Instance.SetMultiplePlacementObject(item);
+        textCreateObjectSetting.text = "You place a " + item.MyBoardType + " type object.";
     }
     // Canvas -> Panel-Creator -> Panel-Map-Size -> Button-Create'a atandı.
     public void CreateMapBoard()
