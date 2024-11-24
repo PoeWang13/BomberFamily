@@ -328,21 +328,14 @@ public class Map_Holder : Singletion<Map_Holder>
         wallOutSide.name = "WallOutSide -> X: " + x + ", Y: " + y;
         return wallOutSide;
     }
-    public void FixBoardCoorList()
-    {
-        for (int e = 0; e < myBoardListBackup.Count; e++)
-        {
-            myBoardList.Add(myBoardListBackup[e]);
-        }
-        myBoardListBackup.Clear();
-    }
     public void SetBoardForUsing()
     {
         for (int e = 0; e < myBoardListBackup.Count; e++)
         {
             myBoardList.Add(myBoardListBackup[e]);
-            gameBoard[0, 1].board_Game.boardType = BoardType.Enemy;
+            gameBoard[myBoardListBackup[e].x, myBoardListBackup[e].y].board_Game.boardType = BoardType.Empty;
         }
+        myBoardListBackup.Clear();
         SetBoardForNonUseable();
     }
     public void SetBoardForNonUseable()
@@ -387,6 +380,22 @@ public class Map_Holder : Singletion<Map_Holder>
                 finded = true;
                 myBoardList.RemoveAt(e);
             }
+        }
+    }
+    public void HasNotBackup(int x, int z)
+    {
+        bool finded = false;
+        for (int e = 0; e < myBoardListBackup.Count && !finded; e++)
+        {
+            if (myBoardListBackup[e].SameCoor(x, z))
+            {
+                Debug.Log(myBoardListBackup[e]);
+                finded = true;
+            }
+        }
+        if (!finded)
+        {
+            myBoardListBackup.Add(new BoardCoor(x, z));
         }
     }
     public void ReleaseMap()
@@ -473,7 +482,6 @@ public class Map_Holder : Singletion<Map_Holder>
             yield return null;
             int rndOrder = Random.Range(0, myBoardList.Count);
             Vector3Int newPlace = new Vector3Int(myBoardList[rndOrder].x, 0, myBoardList[rndOrder].y);
-            myBoardList.RemoveAt(rndOrder);
 
             if (gameBoard[newPlace.x, newPlace.z].board_Object is null)
             {
@@ -484,6 +492,7 @@ public class Map_Holder : Singletion<Map_Holder>
                     Board_Object board_Object = myltiplePlacementItem.MyPool.HavuzdanObjeIste(newPlace).GetComponent<Board_Object>();
                     board_Object.SetBoardOrder(all_Item_Holder.LearnOrder(myltiplePlacementItem));
                     board_Object.SetBoardCoor(new Vector2Int(myBoardList[rndOrder].x, myBoardList[rndOrder].y));
+                    myBoardList.RemoveAt(rndOrder);
                     Utils.SetParent(board_Object.gameObject, "Board_" + board_Object.MyBoardType);
                     amount--;
                     if (board_Object.MyBoardType == BoardType.Wall)

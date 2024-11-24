@@ -1397,6 +1397,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         if (isMultiple)
         {
             textPlacementType.text = "Single Placement";
+            textCreateObjectSetting.text = "Choose a Board Object.";
         }
         else
         {
@@ -1404,7 +1405,6 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
             inputMultiplePlacementAmount.text = 0.ToString();
             imageMultiplePlacement.sprite = emptySlotIcon;
             amountMultiple = 0;
-            textCreateObjectSetting.text = "Choose a Board Object.";
         }
     }
     // Canvas -> Panel-Creator -> Panel-Placement -> InputField-Multiple-Placement-Amount'a atandı
