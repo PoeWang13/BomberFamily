@@ -328,6 +328,23 @@ public class Map_Holder : Singletion<Map_Holder>
         wallOutSide.name = "WallOutSide -> X: " + x + ", Y: " + y;
         return wallOutSide;
     }
+    public void FixBoardCoorList()
+    {
+        for (int e = 0; e < myBoardListBackup.Count; e++)
+        {
+            myBoardList.Add(myBoardListBackup[e]);
+        }
+        myBoardListBackup.Clear();
+    }
+    public void SetBoardForUsing()
+    {
+        for (int e = 0; e < myBoardListBackup.Count; e++)
+        {
+            myBoardList.Add(myBoardListBackup[e]);
+            gameBoard[0, 1].board_Game.boardType = BoardType.Enemy;
+        }
+        SetBoardForNonUseable();
+    }
     public void SetBoardForNonUseable()
     {
         // Kullanılmayan alanlar belirlenecek
@@ -335,18 +352,42 @@ public class Map_Holder : Singletion<Map_Holder>
         gameBoard[0, 1].board_Game.boardType = BoardType.NonUseable;
         gameBoard[0, 0].board_Game.boardType = BoardType.NonUseable;
         gameBoard[1, 0].board_Game.boardType = BoardType.NonUseable;
+        RemoveBoardFromList(0, 1);
+        RemoveBoardFromList(0, 0);
+        RemoveBoardFromList(1, 0);
         //  Sol Üst
         gameBoard[0, boardSize.y - 2].board_Game.boardType = BoardType.NonUseable;
         gameBoard[0, boardSize.y - 1].board_Game.boardType = BoardType.NonUseable;
         gameBoard[1, boardSize.y - 1].board_Game.boardType = BoardType.NonUseable;
+        RemoveBoardFromList(0, boardSize.y - 2);
+        RemoveBoardFromList(0, boardSize.y - 1);
+        RemoveBoardFromList(1, boardSize.y - 1);
         //  Sağ Üst
         gameBoard[boardSize.x - 2, boardSize.y - 1].board_Game.boardType = BoardType.NonUseable;
         gameBoard[boardSize.x - 1, boardSize.y - 1].board_Game.boardType = BoardType.NonUseable;
         gameBoard[boardSize.x - 1, boardSize.y - 2].board_Game.boardType = BoardType.NonUseable;
+        RemoveBoardFromList(boardSize.x - 2, boardSize.y - 1);
+        RemoveBoardFromList(boardSize.x - 1, boardSize.y - 1);
+        RemoveBoardFromList(boardSize.x - 1, boardSize.y - 2);
         //  Sağ Alt
         gameBoard[boardSize.x - 1, 1].board_Game.boardType = BoardType.NonUseable;
         gameBoard[boardSize.x - 1, 0].board_Game.boardType = BoardType.NonUseable;
         gameBoard[boardSize.x - 2, 0].board_Game.boardType = BoardType.NonUseable;
+        RemoveBoardFromList(boardSize.x - 1, 1);
+        RemoveBoardFromList(boardSize.x - 1, 0);
+        RemoveBoardFromList(boardSize.x - 2, 0);
+    }
+    public void RemoveBoardFromList(int x, int z)
+    {
+        bool finded = false;
+        for (int e = 0; e < myBoardList.Count && !finded; e++)
+        {
+            if (myBoardList[e].SameCoor(x, z))
+            {
+                finded = true;
+                myBoardList.RemoveAt(e);
+            }
+        }
     }
     public void ReleaseMap()
     {

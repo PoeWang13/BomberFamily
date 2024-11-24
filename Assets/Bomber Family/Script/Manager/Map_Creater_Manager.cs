@@ -430,7 +430,7 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
                                 hasGate = true;
                                 Map_Holder.Instance.GateObjects.Add(board_Object);
                             }
-                            RemoveBoardFromList(x, z);
+                            Map_Holder.Instance.RemoveBoardFromList(x, z);
                             // Seçili parçayı null objeye eşitle
                             createdObject.transform.localScale = Vector3.one;
                             createdItem = createdNullItem;
@@ -495,7 +495,7 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
                     {
                         CreatorActive(boardType, board_Object);
                     }
-                    RemoveBoardFromList(x, z);
+                    Map_Holder.Instance.RemoveBoardFromList(x, z);
                     Canvas_Manager.Instance.SetCreatorButtons(true);
                     Canvas_Manager.Instance.CloseBaseSetting();
                 }
@@ -721,11 +721,6 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
                         }
                     }
                 }
-                Map_Holder.Instance.SetBoardForNonUseable();
-                Canvas_Manager.Instance.SetButtonChangeMap(true);
-                Map_Holder.Instance.BoardGate.SetNeededMagicStone(boardMagicStoneAmount);
-                addMagicStone = false;
-                FixBoardCoorList();
                 Warning_Manager.Instance.ShowMessage("Map is good so You can save it or change it", 3);
             }
             else
@@ -757,13 +752,12 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
                     }
                 }
                 Canvas_Manager.Instance.CanNotSaveMap();
-                Map_Holder.Instance.SetBoardForNonUseable();
-                Canvas_Manager.Instance.SetButtonChangeMap(true);
-                Map_Holder.Instance.BoardGate.SetNeededMagicStone(boardMagicStoneAmount);
-                addMagicStone = false;
-                FixBoardCoorList();
                 Warning_Manager.Instance.ShowMessage("Player can not move some area. Fixed pls.", 3);
             }
+            addMagicStone = false;
+            Map_Holder.Instance.SetBoardForUsing();
+            Canvas_Manager.Instance.SetButtonChangeMap(true);
+            Map_Holder.Instance.BoardGate.SetNeededMagicStone(boardMagicStoneAmount);
         }
     }
     public void SaveMyLevel()
@@ -786,7 +780,7 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
         if (Map_Holder.Instance.GameBoard[rndX, rndY].board_Game.boardType == BoardType.Empty || Map_Holder.Instance.GameBoard[rndX, rndY].board_Game.boardType == BoardType.NonUseable)
         {
             Map_Holder.Instance.MyBoardListBackup.Add(new BoardCoor(rndX, rndY));
-            RemoveBoardFromList(rndX, rndY);
+            Map_Holder.Instance.RemoveBoardFromList(rndX, rndY);
             Map_Holder.Instance.GameBoard[rndX, rndY].board_Game.boardType = BoardType.Checked;
             randomBoardCheckTime = 5;
             CheckBoardLimitForMyLevel(rndX, rndY);
@@ -810,26 +804,6 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
         {
             StartCoroutine(CheckBoardForMyLevel(rndX, rndY + 1));
         }
-    }
-    private void RemoveBoardFromList(int x, int z)
-    {
-        bool finded = false;
-        for (int e = 0; e < Map_Holder.Instance.MyBoardList.Count && !finded; e++)
-        {
-            if (Map_Holder.Instance.MyBoardList[e].SameCoor(x, z))
-            {
-                finded = true;
-                Map_Holder.Instance.MyBoardList.RemoveAt(e);
-            }
-        }
-    }
-    private void FixBoardCoorList()
-    {
-        for (int e = 0; e < Map_Holder.Instance.MyBoardListBackup.Count; e++)
-        {
-            Map_Holder.Instance.MyBoardList.Add(Map_Holder.Instance.MyBoardListBackup[e]);
-        }
-        Map_Holder.Instance.MyBoardListBackup.Clear();
     }
     #endregion
 
@@ -867,7 +841,7 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
                 {
                     boardWallAmount++;
                     Canvas_Manager.Instance.MapProcess(1.0f * boardWallAmount / boardOrjWallAmount);
-                    RemoveBoardFromList(rndX, rndY);
+                    Map_Holder.Instance.RemoveBoardFromList(rndX, rndY);
                     int rndWall = Random.Range(0,choosedWallList.Count);
                     PoolObje poolObje = all_Item_Holder.WallList[choosedWallList[rndWall]].MyPool.HavuzdanObjeIste(new Vector3(rndX, 0, rndY));
                     GameObject gameObje = poolObje.gameObject;
@@ -896,7 +870,7 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
                 }
             }
             Canvas_Manager.Instance.SetActiveMapProcess(true);
-            SetBoardForUsing();
+            Map_Holder.Instance.SetBoardForUsing();
             if (Map_Holder.Instance.MyBoardList.Count == 0)
             {
                 Debug.LogWarning("Boardda geçilemeyen boşluk yok. Kutuları koymaya başlıyoruz.");
@@ -920,7 +894,7 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
         if (Map_Holder.Instance.GameBoard[rndX, rndY].board_Game.boardType == BoardType.Empty || Map_Holder.Instance.GameBoard[rndX, rndY].board_Game.boardType == BoardType.NonUseable)
         {
             Map_Holder.Instance.MyBoardListBackup.Add(new BoardCoor(rndX, rndY));
-            RemoveBoardFromList(rndX, rndY);
+            Map_Holder.Instance.RemoveBoardFromList(rndX, rndY);
             Map_Holder.Instance.GameBoard[rndX, rndY].board_Game.boardType = BoardType.Checked;
             if (Map_Holder.Instance.MyBoardList.Count > 0)
             {
@@ -952,24 +926,8 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
             StartCoroutine(CheckBoardForGame(rndX, rndY + 1));
         }
     }
-    private void SetBoardForUsing()
-    {
-        Map_Holder.Instance.SetBoardForNonUseable();
-
-        for (int x = 0; x < Map_Holder.Instance.BoardSize.x; x++)
-        {
-            for (int y = 0; y < Map_Holder.Instance.BoardSize.y; y++)
-            {
-                if (Map_Holder.Instance.GameBoard[x, y].board_Game.boardType == BoardType.Checked)
-                {
-                    Map_Holder.Instance.GameBoard[x, y].board_Game.boardType = BoardType.Empty;
-                }
-            }
-        }
-    }
     IEnumerator CreateBox()
     {
-        FixBoardCoorList();
         if (boardOrjBoxAmount > 0)
         {
             Canvas_Manager.Instance.SetActiveMapProcessHolder(true);
@@ -983,7 +941,7 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
                 {
                     boardBoxAmount++;
                     Canvas_Manager.Instance.MapProcess(1.0f * boardBoxAmount / boardOrjBoxAmount);
-                    RemoveBoardFromList(rndX, rndY);
+                    Map_Holder.Instance.RemoveBoardFromList(rndX, rndY);
                     int rndBox = Random.Range(0, choosedBoxList.Count);
                     PoolObje poolObje = all_Item_Holder.BoxList[choosedBoxList[rndBox]].MyPool.HavuzdanObjeIste(new Vector3(rndX, 0, rndY));
                     GameObject gameObje = poolObje.gameObject;
@@ -1019,7 +977,7 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
                 {
                     boardEnemyAmount++;
                     Canvas_Manager.Instance.MapProcess(1.0f * boardEnemyAmount / boardOrjEnemyAmount);
-                    RemoveBoardFromList(rndX, rndY);
+                    Map_Holder.Instance.RemoveBoardFromList(rndX, rndY);
                     int rndEnemy = Random.Range(0, choosedEnemyList.Count);
                     PoolObje poolObje = all_Item_Holder.EnemyList[choosedEnemyList[rndEnemy]].MyPool.HavuzdanObjeIste(new Vector3(rndX, 0, rndY));
                     GameObject gameObje = poolObje.gameObject;
@@ -1056,7 +1014,7 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
                 {
                     boardBossEnemyAmount++;
                     Canvas_Manager.Instance.MapProcess(1.0f * boardBossEnemyAmount / boardOrjBossEnemyAmount);
-                    RemoveBoardFromList(rndX, rndY);
+                    Map_Holder.Instance.RemoveBoardFromList(rndX, rndY);
                     int rndBossEnemy = Random.Range(0, choosedBossEnemyList.Count);
                     PoolObje poolObje = all_Item_Holder.BossEnemyList[choosedBossEnemyList[rndBossEnemy]].MyPool.HavuzdanObjeIste(new Vector3(rndX, 0, rndY));
                     GameObject gameObje = poolObje.gameObject;
@@ -1093,7 +1051,7 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
                 {
                     boardTrapAmount++;
                     Canvas_Manager.Instance.MapProcess(1.0f * boardTrapAmount / boardOrjTrapAmount);
-                    RemoveBoardFromList(rndX, rndY);
+                    Map_Holder.Instance.RemoveBoardFromList(rndX, rndY);
                     int rndBossEnemy = Random.Range(0, choosedTrapList.Count);
                     PoolObje poolObje = all_Item_Holder.TrapList[choosedTrapList[rndBossEnemy]].MyPool.HavuzdanObjeIste(new Vector3(rndX, 0, rndY));
                     GameObject gameObje = poolObje.gameObject;
