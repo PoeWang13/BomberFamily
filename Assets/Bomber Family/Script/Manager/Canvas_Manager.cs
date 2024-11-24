@@ -187,7 +187,6 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     [SerializeField] private Button buttonLevelHelpLife;
     [SerializeField] private Button buttonLevelHelpAmount;
     [SerializeField] private Button buttonLevelHelpPower;
-    [SerializeField] private GameObject panelLevelMap;
     [SerializeField] private GameObject cameraMenu;
     [SerializeField] private GameObject cameraMap;
 
@@ -249,7 +248,6 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         panelMenu.SetActive(false);
         // Son haritanın mapini oluştur ve oyuna başlat
         Game_Manager.Instance.SetGameType(GameType.Game);
-        SetMapPanel();
         Map_Construct_Manager.Instance.ConstructMap(Save_Load_Manager.Instance.LoadBoard(BoardSaveType.GameLevel, Save_Load_Manager.Instance.gameData.lastLevel));
     }
     private void SetMyLevelButtons()
@@ -330,30 +328,23 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         OpenMask(0, () =>
         {
             panelMenu.SetActive(false);
-            panelLevelMap.SetActive(true);
             cameraMenu.SetActive(false);
             cameraMap.SetActive(true);
             Camera_Manager.Instance.transform.position = new Vector3(0, -55, 0);
             CloseMask(0.5f, null);
         });
     }
-    public void SetMapPanel()
-    {
-        panelLevelMap.SetActive(false);
-    }
     public void OpenLevel(BoardSaveType boardSaveType, int levelOrder)
     {
         Audio_Manager.Instance.PlayGameStart();
         OpenMask(0, () =>
         {
-            panelLevelMap.SetActive(false);
             cameraMenu.SetActive(true);
             cameraMap.SetActive(false);
             // Ekran kapatıldı.
             Warning_Manager.Instance.ShowMessage("Please wait. Level loading...", 3);
             Game_Manager.Instance.SetGameType(GameType.Game);
             Camera_Manager.Instance.transform.position = Vector3.zero;
-            SetMapPanel();
             CloseMask(0.5f, () =>
             {
                 // Ekran açıldı.
@@ -384,11 +375,11 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
 
     #region Level Start Help
     // Canvas -> Panel-Game -> Panel-Level-Help -> Button-Close'a atandı
-    public void LevelStartHelp(bool isOpen)
+    public void LevelStartHelp(bool isShow)
     {
-        rectLevelHelp.DOAnchorPos(new Vector2(0, isOpen ? 25 : -325), 0.5f).OnComplete(() =>
+        rectLevelHelp.DOAnchorPos(new Vector2(0, isShow ? 25 : -325), 0.5f).OnComplete(() =>
         {
-            if (!isOpen)
+            if (!isShow)
             {
                 Game_Manager.Instance.StartLevel();
                 buttonLevelHelpLife.interactable = true;
@@ -1999,7 +1990,6 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     public void NextLevel()
     {
         panelGameFinish.SetActive(false);
-        SetMapPanel();
         Map_Construct_Manager.Instance.ConstructMap(Save_Load_Manager.Instance.LoadBoard(BoardSaveType.GameLevel, Save_Load_Manager.Instance.gameData.lastLevel));
     }
     // Canvas -> Panel-Game-Finish -> Button-Next'a atandı
@@ -2015,7 +2005,6 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     public void Reload()
     {
         panelGameFinish.SetActive(false);
-        SetMapPanel();
         Map_Construct_Manager.Instance.ConstructMap(Save_Load_Manager.Instance.LoadBoard(BoardSaveType.GameLevel, Save_Load_Manager.Instance.gameData.lastLevel));
     }
     // Canvas -> Panel-Game-Finish -> Panel-Container -> Panel-Reward -> Button-Double'a atandı

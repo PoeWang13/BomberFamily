@@ -195,7 +195,6 @@ public class Canvas_Manager_Editor : Editor
     private SerializedProperty buttonLevelHelpLife;
     private SerializedProperty buttonLevelHelpAmount;
     private SerializedProperty buttonLevelHelpPower;
-    private SerializedProperty panelLevelMap;
     private SerializedProperty cameraMenu;
     private SerializedProperty cameraMap;
     #endregion
@@ -386,7 +385,6 @@ public class Canvas_Manager_Editor : Editor
         buttonLevelHelpLife = serializedObject.FindProperty("buttonLevelHelpLife");
         buttonLevelHelpAmount = serializedObject.FindProperty("buttonLevelHelpAmount");
         buttonLevelHelpPower = serializedObject.FindProperty("buttonLevelHelpPower");
-        panelLevelMap = serializedObject.FindProperty("panelLevelMap");
         cameraMenu = serializedObject.FindProperty("cameraMenu");
         cameraMap = serializedObject.FindProperty("cameraMap");
         #endregion
@@ -615,7 +613,6 @@ public class Canvas_Manager_Editor : Editor
             EditorGUILayout.PropertyField(buttonLevelHelpLife);
             EditorGUILayout.PropertyField(buttonLevelHelpAmount);
             EditorGUILayout.PropertyField(buttonLevelHelpPower);
-            EditorGUILayout.PropertyField(panelLevelMap);
             EditorGUILayout.PropertyField(cameraMenu);
             EditorGUILayout.PropertyField(cameraMap);
         }

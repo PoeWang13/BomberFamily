@@ -26,10 +26,6 @@ public class Enemy_Base : Character_Base
         SetMySpeed(CharacterStat.mySpeed);
         SetCharacterStat(myItem.MyStartingStat);
     }
-    public override void IncreaseBombAmount()
-    {
-        IncreaseBomb();
-    }
     public override void SetMouseButton()
     {
         Map_Creater_Manager.Instance.ChooseStuckObject(this);

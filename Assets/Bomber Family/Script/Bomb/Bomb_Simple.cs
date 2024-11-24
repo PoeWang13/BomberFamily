@@ -167,6 +167,7 @@ public class Bomb_Simple : Bomb_Base
         }
         movingStep = 0;
         Game_Manager.Instance.AddBombAmount();
+        MyOwner.IncreaseBombAmount();
         EnterHavuz();
     }
 }
