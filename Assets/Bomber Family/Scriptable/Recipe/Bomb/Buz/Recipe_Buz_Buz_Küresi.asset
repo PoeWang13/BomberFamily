@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5eee6412e285c614d967efe1ae2afd32, type: 3}
+  m_Name: "Recipe_Buz_Buz_K\xFCresi"
+  m_EditorClassIdentifier: 
+  myIcon: {fileID: 21300000, guid: 29d475c854cd63b4a9952b142616f22e, type: 3}
+  myRecipeItem: {fileID: 11400000, guid: 494051979c5236640ad53c0604eeb8de, type: 2}
+  myRecipePrice: 100
+  myNeededMaterialList:
+  - recipeItem: {fileID: 11400000, guid: dafbcef974cae3642ab8856d9ad0cca9, type: 2}
+    recipeAmount: 10
+  - recipeItem: {fileID: 11400000, guid: b22f6b3387fea784d8e566e2423163cf, type: 2}
+    recipeAmount: 10
+  - recipeItem: {fileID: 11400000, guid: d45255b5133c4a146abe856e3abf5208, type: 2}
+    recipeAmount: 10

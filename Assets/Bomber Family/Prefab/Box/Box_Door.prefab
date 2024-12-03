@@ -51,10 +51,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   havuzum: {fileID: 11400000, guid: 00a783e6500e37544a4a26490687b4cf, type: 2}
   myBoardType: 2
-  myCollider: {fileID: -8348117772095832839}
+  myTriggeredCollider: {fileID: -8961743459670303670}
+  myNotTriggeredCollider: {fileID: -8348117772095832839}
   life: 10
   lootChance: 10
   loot_Controller: {fileID: 11400000, guid: 4223c774c2e5e744ebc60628c7b0bd95, type: 2}
+  worldType: 0
   replicaTime: 5
   all_Item_Holder: {fileID: 11400000, guid: d49edd28b1ef24d4fbb235c4e18bcad5, type: 2}
 --- !u!65 &-8961743459670303670

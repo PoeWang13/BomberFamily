@@ -10,7 +10,7 @@ public class Reklam_Manager : Singletion<Reklam_Manager>
     // InterRewarded : ca-app-pub-1398478089736122/5005515368
     // Rewarded : ca-app-pub-1398478089736122/3620281509
     //https://play.google.com/store/apps/details?id=com.Kimex.WonderfulPuzzles&hl=tr&gl=US
-    [SerializeField] private bool isTest;
+    [SerializeField] private bool isTest = true;
     [SerializeField] private List<Button> reklamButtons = new List<Button>();
 
     private const string _adInterAdsId = "ca-app-pub-1398478089736122/5005515368";

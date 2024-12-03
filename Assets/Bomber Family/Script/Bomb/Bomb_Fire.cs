@@ -4,9 +4,11 @@ using System.Collections.Generic;
 public class Bomb_Fire : PoolObje
 {
     [SerializeField] private float fireTime = 1;
+
     private float newFireTime = 1;
     private int power;
     private Transform boardFireParent;
+    private Collider myCollider;
     private List<ParticleSystem> particles = new List<ParticleSystem>();
 
     private void Awake()
@@ -14,12 +16,14 @@ public class Bomb_Fire : PoolObje
         boardFireParent = Utils.MakeChieldForGameElement("Board_Fire");
         transform.SetParent(boardFireParent);
         particles.AddRange(GetComponentsInChildren<ParticleSystem>());
+        myCollider = GetComponent<Collider>();
     }
     public void SetFire(int power)
     {
         this.power = power;
         newFireTime = fireTime;
         particles.ForEach(p => { p.Play(); });
+        Player_Base.Instance.IgnoreCollider(myCollider);
     }
     private void Update()
     {

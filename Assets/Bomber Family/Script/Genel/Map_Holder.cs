@@ -4,8 +4,6 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using Random = UnityEngine.Random;
-using Unity.Burst.CompilerServices;
-using static UnityEditor.Progress;
 
 [Serializable]
 public class Board
@@ -79,7 +77,9 @@ public enum BoardType
     Gate = 6,
     Bomb = 7,
     Player = 8,
-    Npc = 9
+    Npc = 9,
+    Recipe = 10,
+    Material = 11,
 }
 public class Map_Holder : Singletion<Map_Holder>
 {
@@ -107,7 +107,7 @@ public class Map_Holder : Singletion<Map_Holder>
     private Transform boardEnemyParent;
     private Transform boardCloserParent;
     private Transform boardBossEnemyParent;
-    private Item myltiplePlacementItem;
+    private Item_Board myMultiplePlacementItem;
     private List<BoardCoor> myBoardList = new List<BoardCoor>();
     private List<BoardCoor> myBoardListBackup = new List<BoardCoor>();
     private List<PoolObje> boxObjects = new List<PoolObje>();
@@ -463,13 +463,13 @@ public class Map_Holder : Singletion<Map_Holder>
             }
         }
     }
-    public void SetMultiplePlacementObject(Item item)
+    public void SetMultiplePlacementObject(Item_Board item)
     {
-        myltiplePlacementItem = item;
+        myMultiplePlacementItem = item;
     }
     public void CreateMultiplePlacement()
     {
-        if (myltiplePlacementItem is null)
+        if (myMultiplePlacementItem is null)
         {
             Warning_Manager.Instance.ShowMessage("You must choose a Board Object", 2);
             return;
@@ -487,12 +487,12 @@ public class Map_Holder : Singletion<Map_Holder>
 
             if (gameBoard[newPlace.x, newPlace.z].board_Object is null)
             {
-                if (Save_Load_Manager.Instance.gameData.gold >= myltiplePlacementItem.MyPrice)
+                if (Save_Load_Manager.Instance.gameData.gold >= myMultiplePlacementItem.MyPrice)
                 {
                     BoardType boardType = BoardType.Empty;
-                    Canvas_Manager.Instance.SetGoldSmooth(-myltiplePlacementItem.MyPrice);
-                    Board_Object board_Object = myltiplePlacementItem.MyPool.HavuzdanObjeIste(newPlace).GetComponent<Board_Object>();
-                    board_Object.SetBoardOrder(all_Item_Holder.LearnOrder(myltiplePlacementItem));
+                    Canvas_Manager.Instance.SetGoldSmooth(-myMultiplePlacementItem.MyPrice);
+                    Board_Object board_Object = myMultiplePlacementItem.MyPool.HavuzdanObjeIste(newPlace).GetComponent<Board_Object>();
+                    board_Object.SetBoardOrder(all_Item_Holder.LearnOrder(myMultiplePlacementItem));
                     board_Object.SetBoardCoor(new Vector2Int(myBoardList[rndOrder].x, myBoardList[rndOrder].y));
                     myBoardList.RemoveAt(rndOrder);
                     Utils.SetParent(board_Object.gameObject, "Board_" + board_Object.MyBoardType);

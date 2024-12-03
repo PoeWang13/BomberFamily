@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5eee6412e285c614d967efe1ae2afd32, type: 3}
+  m_Name: Recipe_Lav_Toprak_Delici
+  m_EditorClassIdentifier: 
+  myIcon: {fileID: 21300000, guid: e1f3f46e2a0c51c4da186ba04251308d, type: 3}
+  myRecipeItem: {fileID: 11400000, guid: bfbf31913186a6f4ab5aaed6d1613dd7, type: 2}
+  myRecipePrice: 250
+  myNeededMaterialList:
+  - recipeItem: {fileID: 11400000, guid: cd6554c6dd1e3154580a15c6b782ba30, type: 2}
+    recipeAmount: 10
+  - recipeItem: {fileID: 11400000, guid: 99fd1fd47e0f96f49a1bc353c310e14b, type: 2}
+    recipeAmount: 10
+  - recipeItem: {fileID: 11400000, guid: b9ef139e6f090234e94997db1e0b8345, type: 2}
+    recipeAmount: 10

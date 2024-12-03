@@ -20,7 +20,7 @@ public enum TrapType
     Slower = 1007,
 }
 [CreateAssetMenu(menuName = "Item/Item Trap")]
-public class Item_Trap : Item
+public class Item_Trap : Item_Board
 {
     [SerializeField] private TrapType myTrapType;
 

@@ -10,7 +10,7 @@ public class Trap_Trigger : Trap_Base, ISetWorkTime, ISetActivatedObject, ISetDe
     public override void OnStart()
     {
         myAnimator = GetComponent<Animator>();
-        Physics.IgnoreCollision(MyCollider, Player_Base.Instance.MyCollider);
+        Physics.IgnoreCollision(MyNotTriggeredCollider, Player_Base.Instance.MyNotTriggeredCollider);
     }
     public override void SetTrap()
     {

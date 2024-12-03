@@ -1,25 +1,44 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
+public enum GenelIcon
+{
+    Gold = 0,
+    Exp = 1,
+}
 [CreateAssetMenu(menuName = "Genel/All Item Holder")]
 public class All_Item_Holder : ScriptableObject
 {
+    [Header("Items")]
     [SerializeField] private List<Item> genelList = new List<Item>();
-    [SerializeField] private List<Item> wallList = new List<Item>();
-    [SerializeField] private List<Item> boxList = new List<Item>();
-    [SerializeField] private List<Item> trapList = new List<Item>();
-    [SerializeField] private List<Item> enemyList = new List<Item>();
-    [SerializeField] private List<Item> bossEnemyList = new List<Item>();
-    [SerializeField] private List<Item> gateList = new List<Item>();
-
-    [SerializeField] private List<Player_Source> playerSourceList = new List<Player_Source>();
+    [SerializeField] private List<Item> malzemeList = new List<Item>();
+    [SerializeField] private List<Item> aletList = new List<Item>();
+    [SerializeField] private List<Item> bombList = new List<Item>();
+    [SerializeField] private List<Item_Board> wallList = new List<Item_Board>();
+    [SerializeField] private List<Item_Board> boxList = new List<Item_Board>();
+    [SerializeField] private List<Item_Board> trapList = new List<Item_Board>();
+    [SerializeField] private List<Item_Board> enemyList = new List<Item_Board>();
+    [SerializeField] private List<Item_Board> bossEnemyList = new List<Item_Board>();
+    [SerializeField] private List<Item_Board> gateList = new List<Item_Board>();
     public List<Item> GenelList { get { return genelList; } }
-    public List<Item> WallList { get { return wallList; } }
-    public List<Item> BoxList { get { return boxList; } }
-    public List<Item> TrapList { get { return trapList; } }
-    public List<Item> EnemyList { get { return enemyList; } }
-    public List<Item> BossEnemyList { get { return bossEnemyList; } }
-    public List<Item> GateList { get { return gateList; } }
+    public List<Item> MalzemeList { get { return malzemeList; } }
+    public List<Item> AletList { get { return aletList; } }
+    public List<Item> BombList { get { return bombList; } }
+    public List<Item_Board> WallList { get { return wallList; } }
+    public List<Item_Board> BoxList { get { return boxList; } }
+    public List<Item_Board> TrapList { get { return trapList; } }
+    public List<Item_Board> EnemyList { get { return enemyList; } }
+    public List<Item_Board> BossEnemyList { get { return bossEnemyList; } }
+    public List<Item_Board> GateList { get { return gateList; } }
+
+    [Header("Sprite")]
+    [SerializeField] private List<Sprite> genelIcons = new List<Sprite>();
+    [SerializeField] private List<Sprite> biletIcons = new List<Sprite>();
+    public List<Sprite> GenelIcons { get { return genelIcons; } }
+    public List<Sprite> BiletIcons { get { return biletIcons; } }
+
+    [Header("Player")]
+    [SerializeField] private List<Player_Source> playerSourceList = new List<Player_Source>();
     public List<Player_Source> PlayerSourceList { get { return playerSourceList; } }
 
     public int LearnPlayerOrder(Player_Source source)
@@ -33,7 +52,7 @@ public class All_Item_Holder : ScriptableObject
         }
         return -1;
     }
-    public int LearnOrder(Item item)
+    public int LearnOrder(Item_Board item)
     {
         if (item.MyBoardType == BoardType.Wall)
         {

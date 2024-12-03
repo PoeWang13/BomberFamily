@@ -5,7 +5,7 @@ public class Trap_Black_Hole : Trap_Base
 {
     public override void OnStart()
     {
-        Physics.IgnoreCollision(MyCollider, Player_Base.Instance.MyCollider);
+        Physics.IgnoreCollision(MyNotTriggeredCollider, Player_Base.Instance.MyNotTriggeredCollider);
     }
     public override void SetMouseButton()
     {

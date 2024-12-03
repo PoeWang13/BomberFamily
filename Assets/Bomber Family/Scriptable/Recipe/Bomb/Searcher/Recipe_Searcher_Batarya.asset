@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5eee6412e285c614d967efe1ae2afd32, type: 3}
+  m_Name: Recipe_Searcher_Batarya
+  m_EditorClassIdentifier: 
+  myIcon: {fileID: 21300000, guid: 8daf4de06f23c474bb49c4489cb564ff, type: 3}
+  myRecipeItem: {fileID: 11400000, guid: 38b073a0346b47f4799268b32e1b2cc0, type: 2}
+  myRecipePrice: 100
+  myNeededMaterialList:
+  - recipeItem: {fileID: 11400000, guid: d303835706ee3d748932d06f62f5b2ae, type: 2}
+    recipeAmount: 10
+  - recipeItem: {fileID: 11400000, guid: 1a5a58846722d9c47800da3622d1b303, type: 2}
+    recipeAmount: 10
+  - recipeItem: {fileID: 11400000, guid: 6d56ef44c2a77f74fa75498148eead85, type: 2}
+    recipeAmount: 10

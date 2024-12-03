@@ -8,12 +8,15 @@ public class Level_Opener : MonoBehaviour
     private bool waitUpgrade;
     private Renderer levelRenderer;
 
-    public void SetOpenerOrder(int order)
+    private void Start()
     {
         levelRenderer = GetComponent<Renderer>();
-        levelOrder = order;
         waitUpgrade = levelOrder >= Save_Load_Manager.Instance.gameData.maxGameLevel;
         levelRenderer.material = levelOrder <= Save_Load_Manager.Instance.gameData.lastLevel ? Game_Manager.Instance.MaterialLevelOpen : levelRenderer.material;
+    }
+    public void SetOpenerOrder(int order)
+    {
+        levelOrder = order;
     }
     public void SetOpener(Material materialLevelOpen)
     {

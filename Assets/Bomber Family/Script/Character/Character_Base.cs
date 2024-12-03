@@ -31,8 +31,10 @@ public class Character_Base : Board_Object, IDamegable
     private int myLife;
     private int mySpeed;
     private int myBombAmount = 1;
-    private int myBombFirePower = 1;
+    private int myBombPower = 1;
     private int myBombFireLimit = 1;
+    private int myBombBoxPassing ;
+    private float myBombPushingTime;
     private float shieldTime;
     private float shieldAngle;
     private bool canMove;
@@ -51,8 +53,10 @@ public class Character_Base : Board_Object, IDamegable
     public int MyLife { get { return myLife; } }
     public int MySpeed { get { return mySpeed; } }
     public int MyBombAmount { get { return myBombAmount; } }
-    public int MyBombFirePower { get { return myBombFirePower; } }
+    public int MyBombPower { get { return myBombPower; } }
     public int MyBombFireLimit { get { return myBombFireLimit; } }
+    public int MyBombBoxPassing { get { return myBombBoxPassing; } }
+    public float MyBombPushingTime { get { return myBombPushingTime; } }
     public bool CanMove { get { return canMove; } }
     public bool IsDead { get { return isDead; } }
     public bool IsFreeze { get { return isFreeze; } }
@@ -264,7 +268,7 @@ public class Character_Base : Board_Object, IDamegable
     }
     public void ResetPower()
     {
-        myBombFirePower = characterStat.myBombPower;
+        myBombPower = characterStat.myBombPower;
     }
     public void ResetLimit()
     {
@@ -273,6 +277,14 @@ public class Character_Base : Board_Object, IDamegable
     public void ResetAmount()
     {
         myBombAmount = characterStat.myBombAmount;
+    }
+    public void ResetBoxPassing()
+    {
+        myBombBoxPassing = characterStat.myBombBoxPassing;
+    }
+    public void ResetPushingTime()
+    {
+        myBombPushingTime = characterStat.myBombPushingTime;
     }
     public void SetScale(bool isBig)
     {
@@ -309,13 +321,39 @@ public class Character_Base : Board_Object, IDamegable
         ResetAmount();
         ResetPower();
         ResetLimit();
+        ResetBoxPassing();
+        ResetPushingTime();
         allCurses.Clear();
         myAnimator.SetBool("Dead", false);
     }
     public bool CanCreateBomb()
     {
         // Bir obje var mı veya active değil mi
-        if (Map_Holder.Instance.GameBoard[MyCoor.x, MyCoor.y].board_Object is null || !Map_Holder.Instance.GameBoard[MyCoor.x, MyCoor.y].board_Object.activeSelf)
+        if (Map_Holder.Instance.GameBoard[MyCoor.x, MyCoor.y].board_Game.boardType == BoardType.NonUseable)
+        {
+            return true;
+        }
+        if (Map_Holder.Instance.GameBoard[MyCoor.x, MyCoor.y].board_Game.boardType == BoardType.Checked)
+        {
+            return true;
+        }
+        if (Map_Holder.Instance.GameBoard[MyCoor.x, MyCoor.y].board_Game.boardType == BoardType.Empty)
+        {
+            return true;
+        }
+        if (Map_Holder.Instance.GameBoard[MyCoor.x, MyCoor.y].board_Game.boardType == BoardType.Enemy || Map_Holder.Instance.GameBoard[MyCoor.x, MyCoor.y].board_Game.boardType == BoardType.BossEnemy)
+        {
+            return true;
+        }
+        if (Map_Holder.Instance.GameBoard[MyCoor.x, MyCoor.y].board_Game.boardType == BoardType.Player || Map_Holder.Instance.GameBoard[MyCoor.x, MyCoor.y].board_Game.boardType == BoardType.Npc)
+        {
+            return true;
+        }
+        if (Map_Holder.Instance.GameBoard[MyCoor.x, MyCoor.y].board_Game.boardType == BoardType.Box && !Map_Holder.Instance.GameBoard[MyCoor.x, MyCoor.y].board_Object.activeSelf)
+        {
+            return true;
+        }
+        if (Map_Holder.Instance.GameBoard[MyCoor.x, MyCoor.y].board_Game.boardType == BoardType.Bomb && !Map_Holder.Instance.GameBoard[MyCoor.x, MyCoor.y].board_Object.activeSelf)
         {
             return true;
         }
@@ -353,6 +391,10 @@ public class Character_Base : Board_Object, IDamegable
     }
     public virtual void Dead()
     {
+    }
+    public void IgnoreCollider(Collider collider)
+    {
+        Physics.IgnoreCollision(MyNotTriggeredCollider, collider);
     }
     #endregion
 
@@ -462,11 +504,19 @@ public class Character_Base : Board_Object, IDamegable
     }
     public virtual void IncreaseBombFirePower()
     {
-        myBombFirePower++;
+        myBombPower++;
     }
     public virtual void IncreaseBombFireLimit()
     {
         myBombFireLimit++;
+    }
+    public virtual void IncreaseBoxPassing()
+    {
+        myBombBoxPassing++;
+    }
+    public virtual void IncreasePushingTime()
+    {
+        myBombPushingTime -= 0.1f;
     }
     public virtual void IncreaseBombAmount()
     {
@@ -547,7 +597,7 @@ public class Character_Base : Board_Object, IDamegable
             else if ((CurseType)rndCurse == CurseType.DecPower)
             {
                 allCurses.Add(new CurseClass(5, rndCurse));
-                myBombFirePower = 1;
+                myBombPower = 1;
                 Canvas_Manager.Instance.SetPlayerPowerText();
             }
             else if ((CurseType)rndCurse == CurseType.DecBomb)

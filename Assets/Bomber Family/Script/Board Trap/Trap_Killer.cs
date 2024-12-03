@@ -9,9 +9,9 @@ public class Trap_Killer : Trap_Has_Time_1
     public override void OnStart()
     {
         myAnimator = GetComponent<Animator>();
-        if (MyCollider != null)
+        if (MyNotTriggeredCollider != null)
         {
-            Physics.IgnoreCollision(MyCollider, Player_Base.Instance.MyCollider);
+            Physics.IgnoreCollision(MyNotTriggeredCollider, Player_Base.Instance.MyNotTriggeredCollider);
         }
     }
     private void Update()

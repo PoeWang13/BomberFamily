@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5eee6412e285c614d967efe1ae2afd32, type: 3}
+  m_Name: Recipe_Searcher_Radar
+  m_EditorClassIdentifier: 
+  myIcon: {fileID: 21300000, guid: 9df263c2e7488e24d9c694bc6e47a4f0, type: 3}
+  myRecipeItem: {fileID: 11400000, guid: 29c41d4e4aa469e48a9c5172ba49df24, type: 2}
+  myRecipePrice: 250
+  myNeededMaterialList:
+  - recipeItem: {fileID: 11400000, guid: be9c90a2c0158d4419786299edb9ae6d, type: 2}
+    recipeAmount: 10
+  - recipeItem: {fileID: 11400000, guid: e2a6a31b4928fab449189cb2199c0b6f, type: 2}
+    recipeAmount: 10
+  - recipeItem: {fileID: 11400000, guid: 9a9b7d27f5521c64f96c4247df9bc571, type: 2}
+    recipeAmount: 10

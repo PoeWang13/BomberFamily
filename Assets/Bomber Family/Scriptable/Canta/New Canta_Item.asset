@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0ff90ac29c24bb4fb3abf5211c22207, type: 3}
+  m_Name: New Canta_Item
+  m_EditorClassIdentifier: 
+  myIcon: {fileID: 0}
+  myPrice: 0
+  boardType: 0
+  myPool: {fileID: 0}
+  cantaName: 
+  cantaOrder: 0
+  cantaSlotAmount: 10

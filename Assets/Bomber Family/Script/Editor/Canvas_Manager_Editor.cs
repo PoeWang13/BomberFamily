@@ -1,12 +1,13 @@
-﻿using UnityEditor;
+﻿using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 [CustomEditor(typeof(Canvas_Manager))]
 public class Canvas_Manager_Editor : Editor
 {
     #region Property
-    private bool showGenel;
     #region Genel
+    private bool showGenel;
     private SerializedProperty emptySlotIcon;
     private SerializedProperty sceneMaskedImage;
     private SerializedProperty all_Item_Holder;
@@ -46,8 +47,9 @@ public class Canvas_Manager_Editor : Editor
     private SerializedProperty panelMenu;
     private SerializedProperty panelShop;
     private SerializedProperty buttonMyLevel;
-    private SerializedProperty mapButtonsParent;
+    private SerializedProperty panelLevelsMap;
     private SerializedProperty myLevelButtonParent;
+    private SerializedProperty dailyButtons;
     #endregion
 
     #region Creator
@@ -58,7 +60,7 @@ public class Canvas_Manager_Editor : Editor
     private SerializedProperty panelProcess;
     private SerializedProperty inputBoardSizeX;
     private SerializedProperty inputBoardSizeY;
-    private SerializedProperty creator_Slot;
+    private SerializedProperty slotCreator;
     private SerializedProperty gateParent;
     private SerializedProperty wallParent;
     private SerializedProperty boxParent;
@@ -86,7 +88,7 @@ public class Canvas_Manager_Editor : Editor
     private bool showCreatorObjectSetting;
     private SerializedProperty panelSettingBase;
     private SerializedProperty objButtonMove;
-    private SerializedProperty triggerSlot;
+    private SerializedProperty slotTrigger;
     private SerializedProperty toggleSettingTrigger;
     private SerializedProperty toggleSettingAlwaysActive;
     private SerializedProperty toggleSettingTimer;
@@ -192,11 +194,20 @@ public class Canvas_Manager_Editor : Editor
     #region Level Start Help
     private bool showLevelStartHelp;
     private SerializedProperty rectLevelHelp;
+    private SerializedProperty imageLevelHelpPlayerIcon;
     private SerializedProperty buttonLevelHelpLife;
     private SerializedProperty buttonLevelHelpAmount;
     private SerializedProperty buttonLevelHelpPower;
     private SerializedProperty cameraMenu;
     private SerializedProperty cameraMap;
+    #endregion
+
+    #region Craft
+    private bool showCraft;
+    private SerializedProperty buttonCraft;
+    private SerializedProperty buttonCraftIcon;
+    private SerializedProperty myMaterialList;
+    private SerializedProperty myRecipeList;
     #endregion
     #endregion
 
@@ -243,8 +254,9 @@ public class Canvas_Manager_Editor : Editor
         panelMenu = serializedObject.FindProperty("panelMenu");
         panelShop = serializedObject.FindProperty("panelShop");
         buttonMyLevel = serializedObject.FindProperty("buttonMyLevel");
-        mapButtonsParent = serializedObject.FindProperty("mapButtonsParent");
+        panelLevelsMap = serializedObject.FindProperty("panelLevelsMap");
         myLevelButtonParent = serializedObject.FindProperty("myLevelButtonParent");
+        dailyButtons = serializedObject.FindProperty("dailyButtons");
         #endregion
 
         #region Creator
@@ -254,7 +266,7 @@ public class Canvas_Manager_Editor : Editor
         panelProcess = serializedObject.FindProperty("panelProcess");
         inputBoardSizeX = serializedObject.FindProperty("inputBoardSizeX");
         inputBoardSizeY = serializedObject.FindProperty("inputBoardSizeY");
-        creator_Slot = serializedObject.FindProperty("creator_Slot");
+        slotCreator = serializedObject.FindProperty("slotCreator");
         gateParent = serializedObject.FindProperty("gateParent");
         wallParent = serializedObject.FindProperty("wallParent");
         boxParent = serializedObject.FindProperty("boxParent");
@@ -281,7 +293,7 @@ public class Canvas_Manager_Editor : Editor
         #region Creator Object Setting
         panelSettingBase = serializedObject.FindProperty("panelSettingBase");
         objButtonMove = serializedObject.FindProperty("objButtonMove");
-        triggerSlot = serializedObject.FindProperty("triggerSlot");
+        slotTrigger = serializedObject.FindProperty("slotTrigger");
         toggleSettingTrigger = serializedObject.FindProperty("toggleSettingTrigger");
         toggleSettingAlwaysActive = serializedObject.FindProperty("toggleSettingAlwaysActive");
         toggleSettingTimer = serializedObject.FindProperty("toggleSettingTimer");
@@ -382,13 +394,22 @@ public class Canvas_Manager_Editor : Editor
 
         #region Level Start Help
         rectLevelHelp = serializedObject.FindProperty("rectLevelHelp");
+        imageLevelHelpPlayerIcon = serializedObject.FindProperty("imageLevelHelpPlayerIcon");
         buttonLevelHelpLife = serializedObject.FindProperty("buttonLevelHelpLife");
         buttonLevelHelpAmount = serializedObject.FindProperty("buttonLevelHelpAmount");
         buttonLevelHelpPower = serializedObject.FindProperty("buttonLevelHelpPower");
         cameraMenu = serializedObject.FindProperty("cameraMenu");
         cameraMap = serializedObject.FindProperty("cameraMap");
         #endregion
+
+        #region Craft
+        buttonCraft = serializedObject.FindProperty("buttonCraft");
+        buttonCraftIcon = serializedObject.FindProperty("buttonCraftIcon");
+        myMaterialList = serializedObject.FindProperty("myMaterialList");
+        myRecipeList = serializedObject.FindProperty("myRecipeList");
+        #endregion
     }
+
     public override void OnInspectorGUI()
     {
         serializedObject.Update();
@@ -444,8 +465,9 @@ public class Canvas_Manager_Editor : Editor
             EditorGUILayout.PropertyField(panelMenu);
             EditorGUILayout.PropertyField(panelShop);
             EditorGUILayout.PropertyField(buttonMyLevel);
-            EditorGUILayout.PropertyField(mapButtonsParent);
+            EditorGUILayout.PropertyField(panelLevelsMap);
             EditorGUILayout.PropertyField(myLevelButtonParent);
+            EditorGUILayout.PropertyField(dailyButtons);
             EditorGUILayout.Space(5);
         }
 
@@ -459,7 +481,7 @@ public class Canvas_Manager_Editor : Editor
             EditorGUILayout.PropertyField(panelProcess);
             EditorGUILayout.PropertyField(inputBoardSizeX);
             EditorGUILayout.PropertyField(inputBoardSizeY);
-            EditorGUILayout.PropertyField(creator_Slot);
+            EditorGUILayout.PropertyField(slotCreator);
             EditorGUILayout.PropertyField(gateParent);
             EditorGUILayout.PropertyField(wallParent);
             EditorGUILayout.PropertyField(boxParent);
@@ -490,7 +512,7 @@ public class Canvas_Manager_Editor : Editor
         {
             EditorGUILayout.PropertyField(panelSettingBase);
             EditorGUILayout.PropertyField(objButtonMove);
-            EditorGUILayout.PropertyField(triggerSlot);
+            EditorGUILayout.PropertyField(slotTrigger);
             EditorGUILayout.PropertyField(toggleSettingTrigger);
             EditorGUILayout.PropertyField(toggleSettingAlwaysActive);
             EditorGUILayout.PropertyField(toggleSettingTimer);
@@ -610,11 +632,22 @@ public class Canvas_Manager_Editor : Editor
         if (showLevelStartHelp)
         {
             EditorGUILayout.PropertyField(rectLevelHelp);
+            EditorGUILayout.PropertyField(imageLevelHelpPlayerIcon);
             EditorGUILayout.PropertyField(buttonLevelHelpLife);
             EditorGUILayout.PropertyField(buttonLevelHelpAmount);
             EditorGUILayout.PropertyField(buttonLevelHelpPower);
             EditorGUILayout.PropertyField(cameraMenu);
             EditorGUILayout.PropertyField(cameraMap);
+        }
+
+        // Craft
+        showCraft = EditorGUILayout.Toggle("Craft", showCraft);
+        if (showCraft)
+        {
+            EditorGUILayout.PropertyField(buttonCraft);
+            EditorGUILayout.PropertyField(buttonCraftIcon);
+            EditorGUILayout.PropertyField(myMaterialList);
+            EditorGUILayout.PropertyField(myRecipeList);
         }
 
         serializedObject.ApplyModifiedProperties();

@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   havuzum: {fileID: 11400000, guid: 96780ba395c620d43ae3e65a02525cf2, type: 2}
-  fireTime: 1
+  fireTime: 0.5
 --- !u!54 &8684380562972249802
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -148,6 +148,21 @@ PrefabInstance:
     - target: {fileID: 4337295711770886, guid: 7ce1cf2537abade4bae7a6789ca2223f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 198011735374995842, guid: 7ce1cf2537abade4bae7a6789ca2223f,
+        type: 3}
+      propertyPath: looping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 198087748724616980, guid: 7ce1cf2537abade4bae7a6789ca2223f,
+        type: 3}
+      propertyPath: looping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 198961280047292388, guid: 7ce1cf2537abade4bae7a6789ca2223f,
+        type: 3}
+      propertyPath: looping
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

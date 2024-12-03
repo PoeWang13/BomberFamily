@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   havuzum: {fileID: 11400000, guid: e468d52fc7577234083ff08e2fa32fd8, type: 2}
-  fireTime: 1
+  fireTime: 0.5
 --- !u!54 &8684380562972249802
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -109,6 +109,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Nucleer
       objectReference: {fileID: 0}
+    - target: {fileID: 1210589541773082, guid: 395a551931a0b5c479c9a0eb8883174e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1797343838938990, guid: 395a551931a0b5c479c9a0eb8883174e, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -156,7 +160,7 @@ PrefabInstance:
     - target: {fileID: 198086070272333474, guid: 395a551931a0b5c479c9a0eb8883174e,
         type: 3}
       propertyPath: looping
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 198086070272333474, guid: 395a551931a0b5c479c9a0eb8883174e,
         type: 3}
@@ -166,7 +170,7 @@ PrefabInstance:
     - target: {fileID: 198199555026231770, guid: 395a551931a0b5c479c9a0eb8883174e,
         type: 3}
       propertyPath: looping
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 198199555026231770, guid: 395a551931a0b5c479c9a0eb8883174e,
         type: 3}
@@ -176,7 +180,7 @@ PrefabInstance:
     - target: {fileID: 198228087042579892, guid: 395a551931a0b5c479c9a0eb8883174e,
         type: 3}
       propertyPath: looping
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 198228087042579892, guid: 395a551931a0b5c479c9a0eb8883174e,
         type: 3}
@@ -186,7 +190,7 @@ PrefabInstance:
     - target: {fileID: 198273208475371820, guid: 395a551931a0b5c479c9a0eb8883174e,
         type: 3}
       propertyPath: looping
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 198273208475371820, guid: 395a551931a0b5c479c9a0eb8883174e,
         type: 3}

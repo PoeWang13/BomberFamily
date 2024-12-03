@@ -15,6 +15,7 @@ public class Enemy_Base : Character_Base
     private int buzBombAmount;
     private int sisBombAmount;
     private int zehirBombAmount;
+    private int lootDeneme = 3;
     private List<Vector2Int> possibleLootPos = new List<Vector2Int>();
 
     public Item_Enemy MyItem { get { return myItem; } }
@@ -25,6 +26,7 @@ public class Enemy_Base : Character_Base
         SetMyLife(CharacterStat.myLife);
         SetMySpeed(CharacterStat.mySpeed);
         SetCharacterStat(myItem.MyStartingStat);
+        lootDeneme = 3;
     }
     public override void SetMouseButton()
     {
@@ -51,39 +53,73 @@ public class Enemy_Base : Character_Base
             {
                 Audio_Manager.Instance.PlayGameDrop();
             }
-            while (allLoot.Count != 0)
+            while (allLoot.Count > 0)
             {
-                while (possibleLootPos.Count != 0)
+                while (possibleLootPos.Count > 0)
                 {
                     int rndOrder = Random.Range(0, possibleLootPos.Count);
-                    Vector2Int randomDirec = possibleLootPos[rndOrder];
+                    Vector2Int randomDirec = possibleLootPos[rndOrder] + MyCoor;
                     possibleLootPos.RemoveAt(rndOrder);
-                    if (Map_Holder.Instance.GameBoard[randomDirec.x, randomDirec.y] == null)
+
+                    if (randomDirec.x < 0 || randomDirec.x >= Map_Holder.Instance.BoardSize.x)
                     {
-                        PoolObje poolObje = allLoot[0].HavuzdanObjeIste(new Vector3Int(randomDirec.x, 0, randomDirec.y));
-                        Map_Holder.Instance.LootObjects.Add(poolObje);
-                        Game_Manager.Instance.AddLootObhjectList(poolObje);
-                        allLoot.RemoveAt(0);
+                        continue;
+                    }
+                    if (randomDirec.y < 0 || randomDirec.y >= Map_Holder.Instance.BoardSize.y)
+                    {
+                        continue;
+                    }
+                    if (Map_Holder.Instance.GameBoard[randomDirec.x, MyCoor.y].board_Game.boardType == BoardType.Wall && Map_Holder.Instance.GameBoard[randomDirec.x, randomDirec.y].board_Object.activeSelf)
+                    {
+                        continue;
+                    }
+                    if (Map_Holder.Instance.GameBoard[randomDirec.x, randomDirec.y].board_Game.boardType == BoardType.Box && Map_Holder.Instance.GameBoard[randomDirec.x, randomDirec.y].board_Object.activeSelf)
+                    {
+                        continue;
+                    }
+                    if (Map_Holder.Instance.GameBoard[randomDirec.x, randomDirec.y].board_Game.boardType == BoardType.Trap)
+                    {
+                        continue;
+                    }
+                    if (Map_Holder.Instance.GameBoard[randomDirec.x, randomDirec.y].board_Game.boardType == BoardType.Gate)
+                    {
+                        continue;
+                    }
+                    if (Map_Holder.Instance.GameBoard[randomDirec.x, randomDirec.y].board_Game.boardType == BoardType.Bomb && Map_Holder.Instance.GameBoard[randomDirec.x, randomDirec.y].board_Object.activeSelf)
+                    {
+                        continue;
+                    }
+                    PoolObje poolObje = allLoot[0].HavuzdanObjeIste(new Vector3Int(randomDirec.x, 0, randomDirec.y));
+                    Map_Holder.Instance.LootObjects.Add(poolObje);
+                    Game_Manager.Instance.AddLootObhjectList(poolObje);
+                    allLoot.RemoveAt(0);
+                }
+                if (lootDeneme > 0)
+                {
+                    if (allLoot.Count > 0)
+                    {
+                        // Potansiyel item koyma koordinatlarýný tekrar doldur
+                        oldStart = newStart;
+                        oldFinish = newFinish;
+                        newStart = newStart - 1;
+                        newFinish = newFinish + 1;
+                        PotansiyelKoordinatlar(oldStart, oldFinish, newStart, newFinish);
                     }
                 }
-                if (allLoot.Count != 0)
+                else
                 {
-                    // Potansiyel item koyma koordinatlarýný tekrar doldur
-                    oldStart = newStart;
-                    oldFinish = newFinish;
-                    newStart = newStart - 1;
-                    newFinish = newFinish + 1;
-                    PotansiyelKoordinatlar(oldStart, oldFinish, newStart, newFinish);
+                    allLoot.Clear();
                 }
             }
         }
         Game_Manager.Instance.AddEnemyAmount();
         Game_Manager.Instance.AddExpAmount(myItem.LearnExp());
-        
+        lootDeneme = 3;
         EnterHavuz();
     }
     private void PotansiyelKoordinatlar(int oldStart, int oldFinish, int newStart, int newFinish)
     {
+        lootDeneme--;
         possibleLootPos.Clear();
 
         for (int x = newStart; x < newFinish; x++)
@@ -199,13 +235,12 @@ public class Enemy_Base : Character_Base
         if (other.CompareTag("Player"))
         {
             StopMovingForXTime();
-            Game_Manager.Instance.AddLoseLifeAmount(CharacterStat.myBombPower);
             Character_Base character_Base = other.GetComponent<Character_Base>();
             character_Base.TakeDamage(CharacterStat.myBombPower);
         }
         else if (other.CompareTag("Enemy"))
         {
-            Physics.IgnoreCollision(MyCollider, other.GetComponent<Board_Object>().MyCollider);
+            Physics.IgnoreCollision(MyNotTriggeredCollider, other.GetComponent<Board_Object>().MyNotTriggeredCollider);
         }
     }
 }

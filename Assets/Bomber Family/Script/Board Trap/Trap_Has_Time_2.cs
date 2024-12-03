@@ -12,9 +12,9 @@ public class Trap_Has_Time_2 : Trap_Base, IHasTrigger, IAlwaysActivite, ISetEffe
     public List<Character_Base> myCharacterList = new List<Character_Base>();
     public override void OnStart()
     {
-        if (MyCollider != null)
+        if (MyNotTriggeredCollider != null)
         {
-            Physics.IgnoreCollision(MyCollider, Player_Base.Instance.MyCollider);
+            Physics.IgnoreCollision(MyNotTriggeredCollider, Player_Base.Instance.MyNotTriggeredCollider);
         }
     }
     private void Update()

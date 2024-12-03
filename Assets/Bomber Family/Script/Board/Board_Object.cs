@@ -3,8 +3,9 @@
 public class Board_Object : PoolObje
 {
     [SerializeField] private BoardType myBoardType;
-    [SerializeField] private Collider myCollider;
-
+    
+    private Collider myTriggeredCollider;
+    private Collider myNotTriggeredCollider;
     private bool isStuck;
     private bool isEnter;
     private int myBoardOrder;
@@ -14,12 +15,26 @@ public class Board_Object : PoolObje
     public bool IsStuck { get { return isStuck; } }
     public int MyBoardOrder { get { return myBoardOrder; } }
     public BoardType MyBoardType { get { return myBoardType; } }
-    public Collider MyCollider { get { return myCollider; } }
+    public Collider MyNotTriggeredCollider { get { return myNotTriggeredCollider; } }
+    public Collider MyTriggeredCollider { get { return myTriggeredCollider; } }
 
     private void Start()
     {
         Canvas_Manager.Instance.OnGameWin += Instance_OnGameWin;
         Canvas_Manager.Instance.OnGameLost += Instance_OnGameLost;
+        Collider[] colliders = GetComponentsInChildren<Collider>();
+
+        for (int e = 0; e < colliders.Length; e++)
+        {
+            if (colliders[e].isTrigger)
+            {
+                myTriggeredCollider = colliders[e];
+            }
+            if (!colliders[e].isTrigger)
+            {
+                myNotTriggeredCollider = colliders[e];
+            }
+        }
         OnStart();
     }
     public virtual void OnStart()
@@ -83,9 +98,9 @@ public class Board_Object : PoolObje
     }
     public override void ObjeHavuzEnter()
     {
-        if (myCollider != null)
+        if (myNotTriggeredCollider != null)
         {
-            myCollider.enabled = true;
+            myNotTriggeredCollider.enabled = true;
         }
         base.ObjeHavuzEnter();
     }

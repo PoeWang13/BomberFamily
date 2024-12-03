@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using Unity.Jobs.LowLevel.Unsafe;
 
 public class Player_Base : Character_Base
 {
@@ -49,12 +48,12 @@ public class Player_Base : Character_Base
     public override void Move()
     {
         SetDirectionPlayer(joystickMove.Direction());
-        if (Input.GetKey(KeyCode.Space))
-        {
-            // Bomb bırak
-            Bomb_Base bomb = player_Source.MyBombPooler.HavuzdanObjeIste(transform.position).GetComponent<Bomb_Base>();
-            bomb.SetBomb(this);
-        }
+        //if (Input.GetKey(KeyCode.Space))
+        //{
+        //    // Bomb bırak
+        //    Bomb_Base bomb = player_Source.MyBombPooler.HavuzdanObjeIste(transform.position).GetComponent<Bomb_Base>();
+        //    bomb.SetBomb(this);
+        //}
     }
     private void FixedUpdate()
     {
@@ -116,7 +115,7 @@ public class Player_Base : Character_Base
             }
             UseBomb();
             // Bomb bırak
-            Bomb_Base bomb = player_Source.MyBombPooler.HavuzdanObjeIste(transform.position).GetComponent<Bomb_Base>();
+            Bomb_Base bomb = player_Source.MyBombPooler.HavuzdanObjeIste(LearnIntDirection(transform.position)).GetComponent<Bomb_Base>();
             SetBomb(bomb);
             Canvas_Manager.Instance.SetPlayerBombAmountText();
         }
@@ -163,86 +162,106 @@ public class Player_Base : Character_Base
         base.IncreaseBombFireLimit();
         Canvas_Manager.Instance.SetPlayerBombFireLimitText();
     }
+    public override void IncreaseBoxPassing()
+    {
+        base.IncreaseBoxPassing();
+        Canvas_Manager.Instance.SetPlayerBoxPassingText();
+    }
+    public override void IncreasePushingTime()
+    {
+        base.IncreasePushingTime();
+        Canvas_Manager.Instance.SetPlayerBoxPushingTimeText();
+    }
     #endregion
 
     #region Use Special Bomb
     public override void UseAntiBomb()
     {
-        if (Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Anti] > 0)
+        if (Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Anti].bombAmount > 0)
         {
-            Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Anti]--;
+            Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Anti].bombAmount--;
+            Canvas_Manager.Instance.SetBomb(BombType.Anti);
             base.UseAntiBomb();
         }
     }
     public override void UseAreaBomb()
     {
-        if (Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Anti] > 0)
+        if (Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Area].bombAmount > 0)
         {
-            Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Anti]--;
-            base.UseAntiBomb();
+            Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Area].bombAmount--;
+            Canvas_Manager.Instance.SetBomb(BombType.Area);
+            base.UseAreaBomb();
         }
     }
     public override void UseClockBomb()
     {
-        if (Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Clock] > 0)
+        if (Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Clock].bombAmount > 0)
         {
-            Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Clock]--;
+            Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Clock].bombAmount--;
+            Canvas_Manager.Instance.SetBomb(BombType.Clock);
             base.UseClockBomb();
         }
     }
     public override void UseNucleerBomb()
     {
-        if (Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Nucleer] > 0)
+        if (Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Nucleer].bombAmount > 0)
         {
-            Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Nucleer]--;
+            Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Nucleer].bombAmount--;
+            Canvas_Manager.Instance.SetBomb(BombType.Nucleer);
             base.UseNucleerBomb();
         }
     }
     public override void UseSearcherBomb()
     {
-        if (Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Searcher] > 0)
+        if (Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Searcher].bombAmount > 0)
         {
-            Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Searcher]--;
+            Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Searcher].bombAmount--;
+            Canvas_Manager.Instance.SetBomb(BombType.Searcher);
             base.UseSearcherBomb();
         }
     }
     public override void UseElektroBomb()
     {
-        if (Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Elektro] > 0)
+        if (Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Elektro].bombAmount > 0)
         {
-            Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Elektro]--;
+            Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Elektro].bombAmount--;
+            Canvas_Manager.Instance.SetBomb(BombType.Elektro);
             base.UseElektroBomb();
         }
     }
     public override void UseLavBomb()
     {
-        if (Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Lav] > 0)
+        if (Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Lav].bombAmount > 0)
         {
-            Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Lav]--;
+            Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Lav].bombAmount--;
+            Canvas_Manager.Instance.SetBomb(BombType.Lav);
             base.UseLavBomb();
         }
     }
     public override void UseBuzBomb()
     {
-        if (Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Buz] > 0)
+        if (Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Buz].bombAmount > 0)
         {
-            Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Buz]--;
+            Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Buz].bombAmount--;
+            Canvas_Manager.Instance.SetBomb(BombType.Buz);
             base.UseBuzBomb();
         }
     }
     public override void UseSisBomb()
     {
-        if (Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Sis] > 0)
+        if (Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Sis].bombAmount > 0)
         {
-            Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Sis]--;
+            Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Sis].bombAmount--;
+            Canvas_Manager.Instance.SetBomb(BombType.Sis);
             base.UseSisBomb();
         }
     }
     public override void UseZehirBomb()
     {
-        if (Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Zehir] > 0)
+        if (Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Zehir].bombAmount > 0)
         {
-            Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Zehir]--;
+            Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Zehir].bombAmount--;
+            Canvas_Manager.Instance.SetBomb(BombType.Zehir);
             base.UseZehirBomb();
         }
     }

@@ -26,7 +26,7 @@ public enum WorldType
 
 }
 [CreateAssetMenu(menuName = "Item/Character")]
-public class Item_Character : Item
+public class Item_Character : Item_Board
 {
     [SerializeField] private WorldType myWorldType;
     [SerializeField] private string myName;

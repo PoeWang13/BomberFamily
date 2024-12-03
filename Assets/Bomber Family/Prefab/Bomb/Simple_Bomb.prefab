@@ -47,7 +47,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   havuzum: {fileID: 11400000, guid: 799287bb672f95a47a4697866c0ae97d, type: 2}
   myBoardType: 7
-  myCollider: {fileID: 0}
+  myTriggeredCollider: {fileID: 0}
+  myNotTriggeredCollider: {fileID: 0}
   bombFirePool: {fileID: 11400000, guid: 358b4c0c00d9ef7409637014c9a1e7a8, type: 2}
   bombFireTime: 3
 --- !u!1 &8468546474406048420
@@ -146,6 +147,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Sparks_FX 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1793199471691246, guid: 20d27f7c01ea0da4eb67f358f5674697, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4706995819081034, guid: 20d27f7c01ea0da4eb67f358f5674697, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.122
@@ -198,8 +203,38 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 198377204627451386, guid: 20d27f7c01ea0da4eb67f358f5674697,
         type: 3}
+      propertyPath: VelocityModule.x.scalar
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 198377204627451386, guid: 20d27f7c01ea0da4eb67f358f5674697,
+        type: 3}
       propertyPath: ShapeModule.radius.value
       value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 198377204627451386, guid: 20d27f7c01ea0da4eb67f358f5674697,
+        type: 3}
+      propertyPath: VelocityModule.x.minScalar
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 198377204627451386, guid: 20d27f7c01ea0da4eb67f358f5674697,
+        type: 3}
+      propertyPath: ShapeModule.radiusThickness
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 198377204627451386, guid: 20d27f7c01ea0da4eb67f358f5674697,
+        type: 3}
+      propertyPath: InitialModule.maxNumParticles
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 198377204627451386, guid: 20d27f7c01ea0da4eb67f358f5674697,
+        type: 3}
+      propertyPath: InitialModule.startSpeed.scalar
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 198377204627451386, guid: 20d27f7c01ea0da4eb67f358f5674697,
+        type: 3}
+      propertyPath: InitialModule.startSpeed.minScalar
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 199659386964595174, guid: 20d27f7c01ea0da4eb67f358f5674697,
         type: 3}

@@ -12,6 +12,7 @@ public class Loot_Bomb_Anti : PoolObje
     private void Awake()
     {
         lootEffect = transform.Find("Loot_Effect").gameObject;
+        bombTrail = transform.Find("Bomb_Anti_Trail").GetComponent<ParticleSystem>();
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -22,7 +23,7 @@ public class Loot_Bomb_Anti : PoolObje
                 isTaked = true;
                 bombTrail.Play();
                 lootEffect.SetActive(false);
-                Save_Load_Manager.Instance.gameData.allBombAmount[(int)myBombType]++;
+                Save_Load_Manager.Instance.gameData.allBombAmount[(int)myBombType].bombAmount++;
                 Canvas_Manager.Instance.SetBomb(myBombType);
                 transform.DOLocalMoveY(10, 1).OnComplete(() =>
                 {

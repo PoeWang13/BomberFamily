@@ -4,6 +4,9 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.Networking;
 using System.Collections.Generic;
+using Random = UnityEngine.Random;
+using UnityEditor;
+using UnityEngine.Playables;
 
 [Serializable]
 public class LevelBoard
@@ -78,6 +81,62 @@ public class PlayerData
         playerStat.myBombPushingTime = 3;
     }
 }
+public enum DailyType
+{
+    Gold = 0,
+    Exp = 1,
+    Malzeme = 2,
+    Alet = 3,
+    Bomb = 4,
+    Bilet = 5,
+}
+[Serializable]
+public class DailyReward
+{
+    public bool dailyTaked;
+    public DailyType dailyType;
+    public int dailyRewardOrder;
+    public int dailyRewardAmount;
+
+    public DailyReward(DailyType daily, bool taked, int rewardOrder, int rewardAmount)
+    {
+        dailyType = daily;
+        dailyTaked = taked;
+        dailyRewardOrder = rewardOrder;
+        dailyRewardAmount = rewardAmount;
+    }
+}
+[Serializable]
+public class BombAmount
+{
+    public BombType bombType;
+    public int bombAmount;
+
+    public BombAmount(BombType bombType, int bombAmount)
+    {
+        this.bombType = bombType;
+        this.bombAmount = bombAmount;
+    }
+}
+public enum InventoryType
+{
+    Material = 0,
+    Alet = 1,
+}
+[Serializable]
+public class Inventory
+{
+    public int inventoryOrder;
+    public int inventoryAmount;
+    public InventoryType inventoryType;
+
+    public Inventory(int inventoryOrder, int inventoryAmount, InventoryType inventoryType)
+    {
+        this.inventoryOrder = inventoryOrder;
+        this.inventoryAmount = inventoryAmount;
+        this.inventoryType = inventoryType;
+    }
+}
 [Serializable]
 public class GameData
 {
@@ -86,14 +145,37 @@ public class GameData
     public int lastLevel;
     public int maxMyLevel;
     public int maxGameLevel;
+    public int lastDay;
+    public int year;
 
     [Header("Player Account")]
     public int playerOrder;
+    public int inventorySlotAmount;
     public string accountName;
-    public List<int> allBombAmount = new List<int>();
+    public List<Inventory> inventory = new List<Inventory>();
+    public List<BombAmount> allBombAmount = new List<BombAmount>();
+    public List<DailyReward> dailyReward = new List<DailyReward>();
     public List<PlayerData> allPlayers = new List<PlayerData>();
     public GameData()
     {
+        lastDay = -9999;
+
+        inventorySlotAmount = 10;
+
+        // 1 gün -> Altın -> 100 - 500
+        dailyReward.Add(new DailyReward(DailyType.Gold, false, 0, 100));
+        // 2 gün -> Exp -> 50 - 250
+        dailyReward.Add(new DailyReward(DailyType.Exp, false, 0, 50));
+        // 3 gün -> Malzeme -> 1 - 10 Malzeme
+        dailyReward.Add(new DailyReward(DailyType.Gold, false, 0, 200));
+        // 4 gün -> Altın -> 500 - 1000
+        dailyReward.Add(new DailyReward(DailyType.Exp, false, 0, 100));
+        // 5 gün -> Exp -> 250 - 500
+        dailyReward.Add(new DailyReward(DailyType.Gold, false, 0, 400));
+        // 6 gün -> Malzeme -> 1 - 2 Alet
+        dailyReward.Add(new DailyReward(DailyType.Exp, false, 0, 200));
+        // 7 gün -> Bomba
+        dailyReward.Add(new DailyReward(DailyType.Bomb, false, 1, 1));
     }
 }
 [Serializable]
@@ -178,7 +260,7 @@ public class Save_Load_Manager : Singletion<Save_Load_Manager>
             }
             catch
             {
-                Debug.Log(gameData.lastLevel);
+                Debug.LogError(gameData.lastLevel + " nolu level bulunmuyor. Bu sorunu düzeltmen lazım.");
                 //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             }
         }
@@ -354,13 +436,13 @@ public class Save_Load_Manager : Singletion<Save_Load_Manager>
             }
             else
             {
-                Warning_Manager.Instance.ShowMessage("We can not found your Level so we give Last Your Level. Check save data files..", 2);
+                Warning_Manager.Instance.ShowMessage("We can not found your Level so we give Last Your Level. Check save data files.", 2);
                 string levelJson = File.ReadAllText(Application.persistentDataPath + "/My-Level/My-Level-" + gameData.maxMyLevel + ".kimex");
                 LevelBoard levelBoard = JsonUtility.FromJson<LevelBoard>(levelJson);
                 return levelBoard;
             }
         }
-        else if (saveType == BoardSaveType.SecretLevel)
+        else if (boardSaveType == BoardSaveType.SecretLevel)
         {
             if (File.Exists(Application.persistentDataPath + "/Secret-Level/Secret-Level-" + order + ".kimex"))
             {
@@ -371,13 +453,13 @@ public class Save_Load_Manager : Singletion<Save_Load_Manager>
             }
             else
             {
-                Warning_Manager.Instance.ShowMessage("We can not found your Level so we give Last Secret Level. Check save data files..", 2);
+                Warning_Manager.Instance.ShowMessage("We can not found your Level so we give Last Secret Level. Check save data files.", 2);
                 string levelJson = File.ReadAllText(Application.persistentDataPath + "/Secret-Level/Secret-Level-" + order + ".kimex");
                 LevelBoard levelBoard = JsonUtility.FromJson<LevelBoard>(levelJson);
                 return levelBoard;
             }
         }
-        else if (saveType == BoardSaveType.GameLevel)
+        else if (boardSaveType == BoardSaveType.GameLevel)
         {
             if (File.Exists(Application.persistentDataPath + "/Game-Level/Game-Level-" + order + ".kimex"))
             {
@@ -388,8 +470,8 @@ public class Save_Load_Manager : Singletion<Save_Load_Manager>
             }
             else
             {
-                Warning_Manager.Instance.ShowMessage("We can not found your Level so we give Last Game Level. Check save data files..", 2);
-                string levelJson = File.ReadAllText(Application.persistentDataPath + "/Game-Level/Game-Level-" + gameData.maxGameLevel + ".kimex");
+                Warning_Manager.Instance.ShowMessage("You have finished the game. The last level has been reloaded.", 2);
+                string levelJson = File.ReadAllText(Application.persistentDataPath + "/Game-Level/Game-Level-" + (gameData.maxGameLevel - 1) + ".kimex");
                 LevelBoard levelBoard = JsonUtility.FromJson<LevelBoard>(levelJson);
                 return levelBoard;
             }
@@ -401,6 +483,7 @@ public class Save_Load_Manager : Singletion<Save_Load_Manager>
     #region Save-Load Game Fonksiyon
     private void LoadGame()
     {
+        int bombTypeAmount = Enum.GetValues(typeof(BombType)).Length;
         gameData = save_Load_File_Data_Handler.LoadGame();
         if (gameData == null)
         {
@@ -408,12 +491,35 @@ public class Save_Load_Manager : Singletion<Save_Load_Manager>
             Directory.CreateDirectory(Application.persistentDataPath + "/Game-Level");
             Directory.CreateDirectory(Application.persistentDataPath + "/My-Level");
             Directory.CreateDirectory(Application.persistentDataPath + "/Secret-Level");
+
+            // Karakter tiplerini ekle
             for (int e = 0; e < all_Item_Holder.PlayerSourceList.Count; e++)
             {
                 gameData.allPlayers.Add(new PlayerData());
             }
+
+            // Bomb Tiplerini ekle
+            for (int e = 0; e < bombTypeAmount; e++)
+            {
+                gameData.allBombAmount.Add(new BombAmount((BombType)e, 0));
+            }
             gameData.allPlayers[0].playerBuyed = true;
+
             saveType = BoardSaveType.MyLevel;
+        }
+        else
+        {
+            // Karakter tiplerini ekle
+            for (int e = gameData.allPlayers.Count; e < all_Item_Holder.PlayerSourceList.Count; e++)
+            {
+                gameData.allPlayers.Add(new PlayerData());
+            }
+
+            // Bomb Tiplerini ekle
+            for (int e = gameData.allBombAmount.Count; e < bombTypeAmount; e++)
+            {
+                gameData.allBombAmount.Add(new BombAmount((BombType)e, 0));
+            }
         }
     }
     [ContextMenu("Save Game")]

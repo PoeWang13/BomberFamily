@@ -4950,10 +4950,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   havuzum: {fileID: 11400000, guid: da0f30f59d2236a43a897d1859d8d764, type: 2}
   myBoardType: 6
-  myCollider: {fileID: 2054231620706997219}
+  myTriggeredCollider: {fileID: 2054231620706997219}
+  myNotTriggeredCollider: {fileID: 0}
   effect1: {fileID: 1382535265301026820}
   effect2: {fileID: 8016464236302262326}
-  magicStoneAmount: 0
 --- !u!65 &2054231620706997219
 BoxCollider:
   m_ObjectHideFlags: 0

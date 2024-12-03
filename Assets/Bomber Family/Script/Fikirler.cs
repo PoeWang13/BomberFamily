@@ -51,9 +51,40 @@ public class Fikirler : MonoBehaviour
     /// - 1 zehir küresi : Sıvı Z + Zehir cam küresi + Zehir kumaşı
     ///
 
-    //[SerializeField] private GameObject panelObjectToogleActivite; // Başkasına mı bağlı yoksa zamansal olay mı
-    //[SerializeField] private GameObject panelObjectToogleActivite; // Zamansal olaysa, sürekli mi dönecek yoksa arada birmi duracak
-    //[SerializeField] private GameObject panelObjectTimer; // Sürekli dönmeyecekse, dönmek ve durmak için zaman
+    /// - Çerçeve :  +  + 
+    /// - Barut :  +  + 
+    /// - Fitil :  +  + 
+    /// 1-Clock Bomb
+    /// - Uzaktan kumanda :  +  + 
+    /// - Alıcı :  +  + 
+    /// 2-Area Bomb
+    /// - Sıvı solüsyon :  + + 
+    /// - Cam beher :  +  + 
+    /// 3-Anti Bomb
+    /// - Bilye :  +  + 
+    /// - Muşamba :  +  + 
+    /// 4-Nucleer Bomb
+    /// - Atom kabı :  +  + 
+    /// - Basınçla açılan kap :  +  + 
+    /// 5-Searcher
+    /// - Radar :  +  + 
+    /// - Batarya :  +  + 
+    /// 6-Elektro -> Öldürmez ama düşmanları felç eder
+    /// - Cam küre :  +  + 
+    /// - Elektrik kablosu :  +  + 
+    /// 7-Lav Bombası -> 10 birim ilerleyene kadar tüm boş yollarda ilerler, kutu veya düşman bulursa onu ortadan kaldırır ve biter.
+    /// - 1 toprak delici :  +  + 
+    /// - 1 lav küresi :  +  + 
+    /// 8-Buz Bombası -> 10 birim ilerleyene kadar tüm boş yollarda ilerler, düşman bulursa onu dondurur ve biter.
+    ///                 -> Donma süresi 30 saniyedir, birisi deyerse yok olurlar.
+    /// - 1 Torba X :  +  + 
+    /// - 1 buz küresi :  +  + 
+    /// 9-Sis Bombası -> 20 birim çevreyi görmeyi engelleyen bir sis oluşturur.
+    /// - 1 hava küresi :  +  + 
+    /// - 1 toz küresi :  +  + 
+    /// 10-Zehir bombası -> 20 birim çevredeki tüm canlıları zehirler.
+    /// - 1 zehir tozu :  +  + 
+    /// - 1 zehir küresi :  +  + 
 
 
 

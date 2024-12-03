@@ -50,7 +50,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   havuzum: {fileID: 11400000, guid: 5b8d32ce97b314e47b7555e9afb8e980, type: 2}
   myBoardType: 8
-  myCollider: {fileID: 8328430796847744211}
+  myTriggeredCollider: {fileID: 1363238867203934641}
+  myNotTriggeredCollider: {fileID: 8328430796847744211}
   characterStat:
     myLife: 1
     mySpeed: 1

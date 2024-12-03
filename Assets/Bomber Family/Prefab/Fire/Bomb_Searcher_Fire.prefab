@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   havuzum: {fileID: 11400000, guid: 358b4c0c00d9ef7409637014c9a1e7a8, type: 2}
-  fireTime: 1
+  fireTime: 0.5
 --- !u!54 &8684380562972249802
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -109,6 +109,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: smoke_fx01
+      objectReference: {fileID: 0}
+    - target: {fileID: 2308651704586126636, guid: d4f0e2c81c428944890cff3970b28bae,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2313940821978161622, guid: d4f0e2c81c428944890cff3970b28bae,
         type: 3}
@@ -174,6 +179,31 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2507502333530794766, guid: d4f0e2c81c428944890cff3970b28bae,
+        type: 3}
+      propertyPath: looping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2507625881286137664, guid: d4f0e2c81c428944890cff3970b28bae,
+        type: 3}
+      propertyPath: looping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2507754960310759850, guid: d4f0e2c81c428944890cff3970b28bae,
+        type: 3}
+      propertyPath: looping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2507907227734160206, guid: d4f0e2c81c428944890cff3970b28bae,
+        type: 3}
+      propertyPath: looping
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2508251708466598328, guid: d4f0e2c81c428944890cff3970b28bae,
+        type: 3}
+      propertyPath: looping
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -7,10 +7,10 @@ public class Slot : MonoBehaviour
     [SerializeField] private Image imageSlotIcon;
     [SerializeField] private TextMeshProUGUI textSlotAmount;
 
-    private Item_Material myItem;
+    private Item myItem;
     private int myAmount;
 
-    public Item_Material MyItem { get { return myItem; } }
+    public Item MyItem { get { return myItem; } }
     public int MyAmount { get { return myAmount; } }
 
     public void SlotRelease()
@@ -19,14 +19,14 @@ public class Slot : MonoBehaviour
         imageSlotIcon.sprite = Canvas_Manager.Instance.EmptySlotIcon;
         textSlotAmount.text = "";
     }
-    public void SlotFull(Item_Material item, int slotAmount)
+    public void SlotFull(Item item, int slotAmount)
     {
         myItem = item;
         myAmount = slotAmount;
         imageSlotIcon.sprite = myItem.MyIcon;
         textSlotAmount.text = myAmount.ToString();
     }
-    public bool CheckSlotForSameItem(Item_Material item)
+    public bool CheckSlotForSameItem(Item item)
     {
         return myItem == item;
     }

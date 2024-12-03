@@ -28,6 +28,14 @@ public class Bomb_Base : Board_Object
     public Character_Base MyOwner { get { return myOwner; } }
     public Pooler BombFirePool { get { return bombFirePool; } }
 
+    private void Awake()
+    {
+        Game_Manager.Instance.OnGameFinish += Instance_OnGameFinish;
+    }
+    private void Instance_OnGameFinish(object sender, System.EventArgs e)
+    {
+        EnterHavuz();
+    }
     public void SetBomb(Character_Base character_Base, bool isUseTime = false)
     {
         isExploded = false;

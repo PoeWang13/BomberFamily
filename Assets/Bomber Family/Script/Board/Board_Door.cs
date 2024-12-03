@@ -60,7 +60,7 @@ public class Board_Door : Board_Box
             {
                 Enemy_Base enemy_Base = bossEnemies[Random.Range(0, bossEnemies.Count)].HavuzdanObjeIste(new Vector3(MyCoor.x, -5, MyCoor.y)).GetComponent<Enemy_Base>();
                 enemy_Base.SetMove(false);
-                enemy_Base.MyCollider.enabled = false;
+                enemy_Base.MyNotTriggeredCollider.enabled = false;
                 SendBossOutSide(enemy_Base, rndDirec);
                 enemy_Base.transform.SetParent(boardBossEnemyParent);
                 enemy_Base.SetBoardCoor(new Vector2Int(boardCoors[rndDirec].x, boardCoors[rndDirec].y));
@@ -77,11 +77,9 @@ public class Board_Door : Board_Box
             {
                 // Bossu serbest bırak
                 enemy_Base.ResetSpeed();
-                enemy_Base.MyCollider.enabled = true;
+                enemy_Base.MyNotTriggeredCollider.enabled = true;
                 enemy_Base.GetComponent<Moving_Base>().OnSet();
                 enemy_Base.SetMove(true);
-                UnityEditor.EditorApplication.isPaused = true;
-                this.enabled = false;
             });
         });
     }

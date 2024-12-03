@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2fe661b22c8ece4683caa8793a67807, type: 3}
+  m_Name: Item_Bomb_Searcher
+  m_EditorClassIdentifier: 
+  myIcon: {fileID: 21300000, guid: 12971272e66e147498e41e3517b11566, type: 3}
+  myRecipeItem: {fileID: 11400000}
+  myRecipePrice: 1000
+  myNeededMaterialList:
+  - recipeItem: {fileID: 11400000, guid: 5ef4088212dc79b4aa275a2d9dd1d746, type: 2}
+    recipeAmount: 10
+  - recipeItem: {fileID: 11400000, guid: c67da3084ea02004fa68cd13e4c20e3c, type: 2}
+    recipeAmount: 10
+  - recipeItem: {fileID: 11400000, guid: f7c0968d84cec3c418f109fa8c0d7980, type: 2}
+    recipeAmount: 30
+  - recipeItem: {fileID: 11400000, guid: 29c41d4e4aa469e48a9c5172ba49df24, type: 2}
+    recipeAmount: 10
+  - recipeItem: {fileID: 11400000, guid: 38b073a0346b47f4799268b32e1b2cc0, type: 2}
+    recipeAmount: 10
+  myBombType: 5
+  myRecipeList:
+  - {fileID: 11400000, guid: 915644c02ac04fe4c99c0fa08b9dadf3, type: 2}
+  - {fileID: 11400000, guid: e15488960dc38ec44b34971b439b32e1, type: 2}
+  - {fileID: 11400000, guid: a432f82adcfd8a946ad354576a264856, type: 2}
+  - {fileID: 11400000, guid: b0c24a2872dfa744bbab94cb1f53aae1, type: 2}
+  - {fileID: 11400000, guid: 5efed1a47fd0d054d9c3fc8d106aa16d, type: 2}
+  - {fileID: 11400000}

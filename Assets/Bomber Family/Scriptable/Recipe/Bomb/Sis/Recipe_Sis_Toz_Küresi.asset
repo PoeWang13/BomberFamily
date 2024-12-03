@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5eee6412e285c614d967efe1ae2afd32, type: 3}
+  m_Name: "Recipe_Sis_Toz_K\xFCresi"
+  m_EditorClassIdentifier: 
+  myIcon: {fileID: 21300000, guid: c9c9971c29e265143a8c20469395fff7, type: 3}
+  myRecipeItem: {fileID: 11400000, guid: 1561b86c2b748b74ca120a868c9e68ee, type: 2}
+  myRecipePrice: 250
+  myNeededMaterialList:
+  - recipeItem: {fileID: 11400000, guid: 34172ab11cb8a2c4e9d4d01f951007dd, type: 2}
+    recipeAmount: 10
+  - recipeItem: {fileID: 11400000, guid: 7c749ce5b7436ca4aa95d8f716e80fb7, type: 2}
+    recipeAmount: 10
+  - recipeItem: {fileID: 11400000, guid: 73b1bf2456949034fa4ae58e3b53877a, type: 2}
+    recipeAmount: 10

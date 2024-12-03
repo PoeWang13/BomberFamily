@@ -64,7 +64,7 @@ public class Screen_Shot_Manager : MonoBehaviour
             yield return new WaitForEndOfFrame();
 
             Destroy(baseIconTexture);
-            UnityEditor.AssetDatabase.Refresh();
+            //UnityEditor.AssetDatabase.Refresh();
         }
         else
         {

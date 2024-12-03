@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5eee6412e285c614d967efe1ae2afd32, type: 3}
+  m_Name: Recipe_Area_Cam_Beher
+  m_EditorClassIdentifier: 
+  myIcon: {fileID: 21300000, guid: 65c2fcd4689a03041b57ad9d6c0ffe24, type: 3}
+  myRecipeItem: {fileID: 11400000, guid: 2f7d29c49c35d2942816ef1ce6869e20, type: 2}
+  myRecipePrice: 100
+  myNeededMaterialList:
+  - recipeItem: {fileID: 11400000, guid: 8e0184bd885754c4382bb764b0a1035e, type: 2}
+    recipeAmount: 10
+  - recipeItem: {fileID: 11400000, guid: a208f0fc2f6f83a4bbc8972cc159a07d, type: 2}
+    recipeAmount: 10
+  - recipeItem: {fileID: 11400000, guid: 65ec0a77a78127f438166574a4e4744c, type: 2}
+    recipeAmount: 10

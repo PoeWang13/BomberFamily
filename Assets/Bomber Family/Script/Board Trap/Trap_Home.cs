@@ -12,7 +12,7 @@ public class Trap_Home : Trap_Has_Time_1
     private List<BoardCoor> boardCoors = new List<BoardCoor>();
     public override void OnStart()
     {
-        Physics.IgnoreCollision(MyCollider, Player_Base.Instance.MyCollider);
+        Physics.IgnoreCollision(MyNotTriggeredCollider, Player_Base.Instance.MyNotTriggeredCollider);
         boardEnemyParent = Utils.MakeChieldForGameElement("Board_Enemy");
         for (int x = -1; x < 2; x++)
         {

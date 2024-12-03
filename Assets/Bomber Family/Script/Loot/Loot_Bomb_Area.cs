@@ -20,7 +20,7 @@ public class Loot_Bomb_Area : PoolObje
             {
                 isTaked = true;
                 lootEffect.SetActive(false);
-                Save_Load_Manager.Instance.gameData.allBombAmount[(int)myBombType]++;
+                Save_Load_Manager.Instance.gameData.allBombAmount[(int)myBombType].bombAmount++;
                 Canvas_Manager.Instance.SetBomb(myBombType);
                 transform.DOLocalMoveY(1, 0.2f).OnComplete(() =>
                 {

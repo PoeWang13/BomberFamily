@@ -5,13 +5,19 @@ public class Board_Gate : Board_Object
 {
     [SerializeField] private GameObject effect1;
     [SerializeField] private GameObject effect2;
-    [SerializeField] private int magicStoneAmount;
 
+    private int magicStoneAmount;
     private bool gameFinish;
 
     private void Awake()
     {
-        Physics.IgnoreCollision(MyCollider, Player_Base.Instance.MyCollider);
+        if (MyTriggeredCollider != null)
+        {
+            if (Player_Base.Instance.MyNotTriggeredCollider != null)
+            {
+                Physics.IgnoreCollision(MyTriggeredCollider, Player_Base.Instance.MyNotTriggeredCollider, true);
+            }
+        }
     }
     public override void SetMouseButton()
     {
@@ -83,7 +89,7 @@ public class Board_Gate : Board_Object
             // Oyun bitti.
             if (Game_Manager.Instance.GameType == GameType.Game)
             {
-                Debug.LogWarning("gameFinish", other.gameObject);
+                //Debug.LogWarning("gameFinish", other.gameObject);
                 if (magicStoneAmount > 0)
                 {
                     Warning_Manager.Instance.ShowMessage("You need " + magicStoneAmount + " more Magic Stones.", 1.5f);
