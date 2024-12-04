@@ -13,12 +13,15 @@ MonoBehaviour:
   m_Name: "Recipe_Nucleer_Atom_Kab\u0131"
   m_EditorClassIdentifier: 
   myIcon: {fileID: 21300000, guid: 615a4a5e4f99bc1419be98b9dfd04fc6, type: 3}
-  myRecipeItem: {fileID: 11400000, guid: 707f548bd75aa934ab122059237f3bc6, type: 2}
+  myRecipeItem: {fileID: 11400000, guid: 8935dfdced880144d95fb3514630abf5, type: 2}
   myRecipePrice: 100
   myNeededMaterialList:
-  - recipeItem: {fileID: 11400000, guid: f0e626f8626e87345b06c4b4cc0ede0c, type: 2}
+  - recipeItem: {fileID: 11400000, guid: 1aefa4da0c7db2b458748b2320cdd782, type: 2}
     recipeAmount: 10
-  - recipeItem: {fileID: 11400000, guid: 4194ed493c505ab428ef88ecd1fee3d8, type: 2}
+    inventoryType: 0
+  - recipeItem: {fileID: 11400000, guid: 679c6b456f93fe747bf56e8b72912a7d, type: 2}
     recipeAmount: 10
-  - recipeItem: {fileID: 11400000, guid: 3d942ce9ff3c29d40bf665ffff7feb3c, type: 2}
+    inventoryType: 0
+  - recipeItem: {fileID: 11400000, guid: 682b3742e6a03a849ae7726ccddd159f, type: 2}
     recipeAmount: 10
+    inventoryType: 0

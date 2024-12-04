@@ -6,17 +6,15 @@ public class Inventory_Manager : Singletion<Inventory_Manager>
     [SerializeField] private Slot inventoryPrefab;
     [SerializeField] private Transform inventoryParent;
     [SerializeField] private All_Item_Holder allItemHolder;
-    [SerializeField] private List<Slot> myInventory = new List<Slot>();
+
+    private List<Slot> myInventory = new List<Slot>();
 
     public List<Slot> MyInventory { get { return myInventory; } }
 
     private void Start()
     {
         // Inventory Slot oluştur
-        for (int e = 0; e < Save_Load_Manager.Instance.gameData.inventorySlotAmount; e++)
-        {
-            myInventory.Add(Instantiate(inventoryPrefab, inventoryParent));
-        }
+        AddInventorySlot(Save_Load_Manager.Instance.gameData.inventorySlotAmount);
 
         // Materialleri ver
         for (int e = 0; e < Save_Load_Manager.Instance.gameData.inventory.Count; e++)
@@ -33,10 +31,13 @@ public class Inventory_Manager : Singletion<Inventory_Manager>
             }
         }
     }
-    [ContextMenu("Add Material")]
-    private void AddMaterial()
+    public void AddInventorySlot(int slotAmount)
     {
-        Save_Load_Manager.Instance.gameData.inventory.Add(new Inventory(0, 5, InventoryType.Material));
+        // Inventory Slot oluştur
+        for (int e = 0; e < slotAmount; e++)
+        {
+            myInventory.Add(Instantiate(inventoryPrefab, inventoryParent));
+        }
     }
     /// <summary>
     /// İstenen itemden istenen kadar varmı diye bakar.
@@ -62,7 +63,7 @@ public class Inventory_Manager : Singletion<Inventory_Manager>
     }
     public void AddItem(MaterialHolder materialHolder)
     {
-        Item_Material itemMaterial = materialHolder.recipeItem as Item_Material;
+        Item_Source itemMaterial = materialHolder.recipeItem as Item_Source;
         int chekingAmount = materialHolder.recipeAmount;
         for (int e = 0; e < myInventory.Count; e++)
         {
@@ -70,13 +71,16 @@ public class Inventory_Manager : Singletion<Inventory_Manager>
             {
                 if (itemMaterial.MyMax - myInventory[e].MyAmount >= chekingAmount)
                 {
+                    Save_Load_Manager.Instance.gameData.inventory[e].inventoryAmount += chekingAmount;
                     myInventory[e].AddItem(chekingAmount);
+                    Save_Load_Manager.Instance.SaveGame();
                     return;
                 }
                 else
                 {
                     int addingAmountToSlot = itemMaterial.MyMax - myInventory[e].MyAmount;
                     chekingAmount -= addingAmountToSlot;
+                    Save_Load_Manager.Instance.gameData.inventory[e].inventoryAmount += addingAmountToSlot;
                     myInventory[e].AddItem(addingAmountToSlot);
                 }
             }
@@ -85,25 +89,30 @@ public class Inventory_Manager : Singletion<Inventory_Manager>
         {
             Warning_Manager.Instance.ShowMessage("Your Inventory is Full. You need buy some slots.", 2);
         }
+        Save_Load_Manager.Instance.SaveGame();
     }
     public void RemoveItem(MaterialHolder materialHolder)
     {
         int chekingAmount = materialHolder.recipeAmount;
-        for (int e = 0; e < myInventory.Count; e++)
+        for (int e = myInventory.Count - 1; e >= 0; e--)
         {
             if (myInventory[e].CheckSlotForSameItem(materialHolder.recipeItem))
             {
                 if (myInventory[e].MyAmount >= chekingAmount)
                 {
+                    Save_Load_Manager.Instance.gameData.inventory[e].inventoryAmount -= chekingAmount;
                     myInventory[e].RemoveItem(chekingAmount);
+                    Save_Load_Manager.Instance.SaveGame();
                     return;
                 }
                 else
                 {
                     chekingAmount -= myInventory[e].MyAmount;
+                    Save_Load_Manager.Instance.gameData.inventory[e] = new Inventory();
                     myInventory[e].SlotRelease();
                 }
             }
         }
+        Save_Load_Manager.Instance.SaveGame();
     }
 }

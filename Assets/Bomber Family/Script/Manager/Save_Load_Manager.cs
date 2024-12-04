@@ -130,6 +130,10 @@ public class Inventory
     public int inventoryAmount;
     public InventoryType inventoryType;
 
+    public Inventory()
+    {
+        this.inventoryOrder = -1;
+    }
     public Inventory(int inventoryOrder, int inventoryAmount, InventoryType inventoryType)
     {
         this.inventoryOrder = inventoryOrder;

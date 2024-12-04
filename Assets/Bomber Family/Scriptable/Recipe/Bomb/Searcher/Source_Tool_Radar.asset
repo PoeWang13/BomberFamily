@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61e9af00ae08bd74cb2f17d4752f166a, type: 3}
+  m_Name: Source_Tool_Radar
+  m_EditorClassIdentifier: 
+  myIcon: {fileID: 21300000, guid: 9df263c2e7488e24d9c694bc6e47a4f0, type: 3}
+  myName: Radar
+  myMax: 10
+  myInventoryType: 1
+  myRecipeItem: {fileID: 11400000, guid: b0c24a2872dfa744bbab94cb1f53aae1, type: 2}

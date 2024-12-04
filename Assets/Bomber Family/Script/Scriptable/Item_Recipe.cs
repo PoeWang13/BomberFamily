@@ -6,11 +6,17 @@ public class MaterialHolder
 {
     public Item recipeItem;
     public int recipeAmount;
+    public InventoryType inventoryType;
 
-    public MaterialHolder(Item recipeItem, int recipeAmount)
+    public MaterialHolder()
+    {
+        this.recipeAmount = 1;
+    }
+    public MaterialHolder(Item recipeItem, int recipeAmount, InventoryType inventoryType)
     {
         this.recipeItem = recipeItem;
         this.recipeAmount = recipeAmount;
+        this.inventoryType = inventoryType;
     }
 }
 [CreateAssetMenu(menuName = "Item/Recipe")]
@@ -23,9 +29,9 @@ public class Item_Recipe : Item
     public Item MyRecipeItem { get { return myRecipeItem; } }
     public int MyRecipePrice { get { return myRecipePrice; } }
     public List<MaterialHolder> MyNeededMaterialList { get { return myNeededMaterialList; } }
-
+    
     public virtual void AddMyItemToInventory()
     {
-        Inventory_Manager.Instance.AddItem(new MaterialHolder(myRecipeItem, 1));
+        Inventory_Manager.Instance.AddItem(new MaterialHolder(myRecipeItem, 1, InventoryType.Alet));
     }
 }

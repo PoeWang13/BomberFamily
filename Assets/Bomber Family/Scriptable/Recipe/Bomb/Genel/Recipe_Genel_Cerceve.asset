@@ -13,12 +13,15 @@ MonoBehaviour:
   m_Name: Recipe_Genel_Cerceve
   m_EditorClassIdentifier: 
   myIcon: {fileID: 21300000, guid: 922e8cde1c904a64d8d5658f87e13ef3, type: 3}
-  myRecipeItem: {fileID: 11400000, guid: c67da3084ea02004fa68cd13e4c20e3c, type: 2}
+  myRecipeItem: {fileID: 11400000, guid: 74b95810dea01a141bdc20392819d793, type: 2}
   myRecipePrice: 50
   myNeededMaterialList:
-  - recipeItem: {fileID: 11400000, guid: 4dbd562de0430a34e8728ca309164801, type: 2}
+  - recipeItem: {fileID: 11400000, guid: eb97341d51317d14089cd9670a5ce886, type: 2}
     recipeAmount: 20
-  - recipeItem: {fileID: 11400000, guid: 07323ff26fbf70e4b83ebdc103a67aa4, type: 2}
+    inventoryType: 0
+  - recipeItem: {fileID: 11400000, guid: 3730b63ce4093ac4889ecce9002716f6, type: 2}
     recipeAmount: 5
-  - recipeItem: {fileID: 11400000, guid: 76f983fec3a00b446928411e9faf2a11, type: 2}
+    inventoryType: 0
+  - recipeItem: {fileID: 11400000, guid: d09fa3020c437344daee5491af384f62, type: 2}
     recipeAmount: 5
+    inventoryType: 0

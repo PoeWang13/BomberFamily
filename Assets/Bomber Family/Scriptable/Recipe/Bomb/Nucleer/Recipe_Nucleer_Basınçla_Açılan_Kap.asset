@@ -13,12 +13,15 @@ MonoBehaviour:
   m_Name: "Recipe_Nucleer_Bas\u0131n\xE7la_A\xE7\u0131lan_Kap"
   m_EditorClassIdentifier: 
   myIcon: {fileID: 21300000, guid: a77eb91bf1eda55409cad2cec81cbf73, type: 3}
-  myRecipeItem: {fileID: 11400000, guid: 9b98f6a1b0486ee45859b75eb32873e1, type: 2}
+  myRecipeItem: {fileID: 11400000, guid: 32553f10f15e73f409a83067b1b160f1, type: 2}
   myRecipePrice: 250
   myNeededMaterialList:
-  - recipeItem: {fileID: 11400000, guid: 384cf12f124b88e4fa710c0cc1060105, type: 2}
+  - recipeItem: {fileID: 11400000, guid: 92e49cf2069341247811017f17611013, type: 2}
     recipeAmount: 10
-  - recipeItem: {fileID: 11400000, guid: 36f1acda9b35b3440bc7dbad064fc7f1, type: 2}
+    inventoryType: 0
+  - recipeItem: {fileID: 11400000, guid: eb1ac1af704db9c43b7503c5bd0e37b3, type: 2}
     recipeAmount: 10
-  - recipeItem: {fileID: 11400000, guid: 93848429f9ab90c47aaf13c329434543, type: 2}
+    inventoryType: 0
+  - recipeItem: {fileID: 11400000, guid: ed2e02160c6d61f4aaf653ecc9c5724b, type: 2}
     recipeAmount: 10
+    inventoryType: 0

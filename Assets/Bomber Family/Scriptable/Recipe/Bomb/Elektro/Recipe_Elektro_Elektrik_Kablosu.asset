@@ -13,12 +13,15 @@ MonoBehaviour:
   m_Name: Recipe_Elektro_Elektrik_Kablosu
   m_EditorClassIdentifier: 
   myIcon: {fileID: 21300000, guid: 80dc2efcc5bc9a045b8c81509e51b8ae, type: 3}
-  myRecipeItem: {fileID: 11400000, guid: e5dcb05842696254784ab2c441cd853c, type: 2}
+  myRecipeItem: {fileID: 11400000, guid: 676941bd195ce4545965af52406225f0, type: 2}
   myRecipePrice: 250
   myNeededMaterialList:
-  - recipeItem: {fileID: 11400000, guid: d404b022fcd2f564c8ef47941a5c9a2a, type: 2}
+  - recipeItem: {fileID: 11400000, guid: 7cdc9e0ab6f2e5146a11733ca4f13ae6, type: 2}
     recipeAmount: 10
-  - recipeItem: {fileID: 11400000, guid: dde92e9835dc2054389c2e1ccc8cee05, type: 2}
+    inventoryType: 0
+  - recipeItem: {fileID: 11400000, guid: ea5bf1272a33bc94ea476f6f46925ea3, type: 2}
     recipeAmount: 10
-  - recipeItem: {fileID: 11400000, guid: 340689a6cefb5a64e93f9b3834e48292, type: 2}
+    inventoryType: 0
+  - recipeItem: {fileID: 11400000, guid: 6746e690cb13d4646a235279d8d0c84c, type: 2}
     recipeAmount: 10
+    inventoryType: 0

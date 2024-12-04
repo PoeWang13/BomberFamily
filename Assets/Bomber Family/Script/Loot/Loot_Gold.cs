@@ -1,24 +1,15 @@
 ﻿using DG.Tweening;
 using UnityEngine;
 
-public class Loot_Gold : PoolObje
+public class Loot_Gold : Loot_Base
 {
-    private bool isTaked;
-    private GameObject lootEffect;
-
-    private void Awake()
-    {
-        transform.localScale = Vector3.one;
-        lootEffect = transform.Find("Loot_Effect").gameObject;
-    }
     private void OnTriggerEnter(Collider other)
     {
-        if (!isTaked)
+        if (!IsTaked)
         {
             if (other.CompareTag("Player"))
             {
-                isTaked = true;
-                lootEffect.SetActive(false);
+                SetTaked(true);
                 int earnGold = Random.Range(2, 20);
                 Canvas_Manager.Instance.SetGoldSmooth(earnGold);
                 Game_Manager.Instance.AddGoldAmount(earnGold);
@@ -31,12 +22,5 @@ public class Loot_Gold : PoolObje
                 });
             }
         }
-    }
-    public override void ObjeHavuzExit()
-    {
-        isTaked = false;
-        lootEffect.SetActive(true);
-        transform.localScale = Vector3.zero;
-        base.ObjeHavuzExit();
     }
 }

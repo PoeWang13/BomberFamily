@@ -13,12 +13,15 @@ MonoBehaviour:
   m_Name: Recipe_Lav_Toprak_Delici
   m_EditorClassIdentifier: 
   myIcon: {fileID: 21300000, guid: e1f3f46e2a0c51c4da186ba04251308d, type: 3}
-  myRecipeItem: {fileID: 11400000, guid: bfbf31913186a6f4ab5aaed6d1613dd7, type: 2}
+  myRecipeItem: {fileID: 11400000, guid: cd42725337df4c540a92833b2ba37643, type: 2}
   myRecipePrice: 250
   myNeededMaterialList:
-  - recipeItem: {fileID: 11400000, guid: cd6554c6dd1e3154580a15c6b782ba30, type: 2}
+  - recipeItem: {fileID: 11400000, guid: 7fab710e1b9f4444382d02e52e297a9b, type: 2}
     recipeAmount: 10
-  - recipeItem: {fileID: 11400000, guid: 99fd1fd47e0f96f49a1bc353c310e14b, type: 2}
+    inventoryType: 0
+  - recipeItem: {fileID: 11400000, guid: 491b23dfe13a73840811e00dd876f88b, type: 2}
     recipeAmount: 10
-  - recipeItem: {fileID: 11400000, guid: b9ef139e6f090234e94997db1e0b8345, type: 2}
+    inventoryType: 0
+  - recipeItem: {fileID: 11400000, guid: 91a42f26ce891514c90477706e56d62e, type: 2}
     recipeAmount: 10
+    inventoryType: 0

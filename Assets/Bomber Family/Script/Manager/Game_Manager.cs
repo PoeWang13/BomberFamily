@@ -195,6 +195,7 @@ public class Game_Manager : Singletion<Game_Manager>
     }
     public void StartLevel()
     {
+        Reklam_Manager.Instance.ShowInterReklam();
         levelStart = true;
         SetLevelStats();
         beginingLevelTime = Time.time;

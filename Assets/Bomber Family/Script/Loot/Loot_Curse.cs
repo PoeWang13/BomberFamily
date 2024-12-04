@@ -1,27 +1,23 @@
 ﻿using DG.Tweening;
 using UnityEngine;
 
-public class Loot_Curse : PoolObje
+public class Loot_Curse : Loot_Base
 {
-    private bool isTaked;
-    private GameObject lootEffect;
     private ParticleSystem curseParticle;
 
-    private void Awake()
+    public override void OnAwake()
     {
-        lootEffect = transform.Find("Loot_Effect").gameObject;
         curseParticle = transform.Find("Curse_Particle").GetComponent<ParticleSystem>();
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (!isTaked)
+        if (!IsTaked)
         {
             if (other.TryGetComponent(out Player_Base player_Base))
             {
-                isTaked = true;
+                SetTaked(true);
                 curseParticle.Play();
                 player_Base.GiveCurse();
-                lootEffect.SetActive(false);
                 // Sağa döner
                 transform.DOLocalRotate(Vector3.up * 30, 0.15f).OnComplete(() =>
                 {
@@ -41,12 +37,5 @@ public class Loot_Curse : PoolObje
                 });
             }
         }
-    }
-    public override void ObjeHavuzExit()
-    {
-        isTaked = false;
-        lootEffect.SetActive(true);
-        transform.localScale = Vector3.zero;
-        base.ObjeHavuzExit();
     }
 }

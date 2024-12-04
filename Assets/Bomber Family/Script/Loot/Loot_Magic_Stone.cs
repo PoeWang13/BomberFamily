@@ -1,23 +1,15 @@
 ﻿using DG.Tweening;
 using UnityEngine;
 
-public class Loot_Magic_Stone : PoolObje
+public class Loot_Magic_Stone : Loot_Base
 {
-    private bool isTaked;
-    private GameObject lootEffect;
-
-    private void Awake()
-    {
-        lootEffect = transform.Find("Loot_Effect").gameObject;
-    }
     private void OnTriggerEnter(Collider other)
     {
-        if (!isTaked)
+        if (!IsTaked)
         {
             if (other.CompareTag("Player"))
             {
-                isTaked = true;
-                lootEffect.SetActive(false);
+                SetTaked(true);
                 // Biraz yukarı çıkar
                 transform.DOMoveY(1, 0.1f).OnComplete(() =>
                 {
@@ -33,13 +25,5 @@ public class Loot_Magic_Stone : PoolObje
                 });
             }
         }
-    }
-    public override void ObjeHavuzExit()
-    {
-        isTaked = false;
-        lootEffect.SetActive(true);
-        transform.eulerAngles = Vector3.zero;
-        transform.localPosition = Vector3.zero;
-        base.ObjeHavuzExit();
     }
 }

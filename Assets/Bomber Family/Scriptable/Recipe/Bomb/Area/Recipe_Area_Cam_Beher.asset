@@ -13,12 +13,15 @@ MonoBehaviour:
   m_Name: Recipe_Area_Cam_Beher
   m_EditorClassIdentifier: 
   myIcon: {fileID: 21300000, guid: 65c2fcd4689a03041b57ad9d6c0ffe24, type: 3}
-  myRecipeItem: {fileID: 11400000, guid: 2f7d29c49c35d2942816ef1ce6869e20, type: 2}
+  myRecipeItem: {fileID: 11400000, guid: 2c5c1d9623a10c740a780dd30a566fe0, type: 2}
   myRecipePrice: 100
   myNeededMaterialList:
-  - recipeItem: {fileID: 11400000, guid: 8e0184bd885754c4382bb764b0a1035e, type: 2}
+  - recipeItem: {fileID: 11400000, guid: fb4506f1ccae88a448e1f1176a06236c, type: 2}
     recipeAmount: 10
-  - recipeItem: {fileID: 11400000, guid: a208f0fc2f6f83a4bbc8972cc159a07d, type: 2}
+    inventoryType: 0
+  - recipeItem: {fileID: 11400000, guid: dfab3fd6f3904f64ea49f47aae3d1917, type: 2}
     recipeAmount: 10
-  - recipeItem: {fileID: 11400000, guid: 65ec0a77a78127f438166574a4e4744c, type: 2}
+    inventoryType: 0
+  - recipeItem: {fileID: 11400000, guid: 97f9a3c20c5811344856411a25daa0a7, type: 2}
     recipeAmount: 10
+    inventoryType: 0

@@ -14,6 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   allLoot:
   - lootChance: 15
+    lootObject: {fileID: 11400000, guid: 8bdab4e39afba114fb31e9ec2ef3f389, type: 2}
+  - lootChance: 15
+    lootObject: {fileID: 11400000, guid: 8d38f875885a622429db1ef96fbbf52f, type: 2}
+  - lootChance: 5
     lootObject: {fileID: 11400000, guid: 25994ffa34583c547a13888c7112c966, type: 2}
   - lootChance: 5
     lootObject: {fileID: 11400000, guid: ba03486efaa9cb94495f9ecc5337345d, type: 2}
@@ -37,5 +41,7 @@ MonoBehaviour:
     lootObject: {fileID: 11400000, guid: 96253c3a732a7bc49ba775ffa1005c03, type: 2}
   - lootChance: 5
     lootObject: {fileID: 11400000, guid: 61fdf287a86e19d4ba192476a91f3700, type: 2}
-  - lootChance: 1
+  - lootChance: 5
+    lootObject: {fileID: 11400000, guid: 2d36f16305d766a4e8b0b3a1fcf5ac89, type: 2}
+  - lootChance: 5
     lootObject: {fileID: 11400000, guid: 2d36f16305d766a4e8b0b3a1fcf5ac89, type: 2}

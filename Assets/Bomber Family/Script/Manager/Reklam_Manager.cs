@@ -1,11 +1,52 @@
-﻿using System;
+﻿using TMPro;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using GoogleMobileAds.Api;
+using UnityEngine.Purchasing;
 using System.Collections.Generic;
+using UnityEngine.Purchasing.Extension;
 
+[Serializable]
+public class ReceiptData
+{
+    public string payload;
+    public string store;
+    public string transactionID;
+}
+[Serializable]
+public class Payload
+{
+    public string json;
+    public string signature;
+    public PaymentData paymentData;
+}
+[Serializable]
+public class PaymentData
+{
+    public string orderId;
+    public string productId;
+    public string packageName;
+    public string purchaseToken;
+    public int purchaseState;
+    public int quantity;
+    public long purchaseTime;
+    public bool acknowledged;
+}
 public class Reklam_Manager : Singletion<Reklam_Manager>
 {
+    [Header("Purchase Buttons")]
+    [SerializeField] private Button goldButton100;
+    [SerializeField] private Button goldButton200;
+    [SerializeField] private Button goldButton300;
+    [SerializeField] private Button goldButton500;
+    [SerializeField] private Button goldButton1500;
+    [SerializeField] private Button goldButton2500;
+    [SerializeField] private Button goldButton5000;
+    [SerializeField] private Button goldButton7500;
+    [SerializeField] private Button goldButton10000;
+
+    [Header("Ads")]
     // Reklam kimliği : ca-app-pub-1398478089736122~7784829166
     // InterRewarded : ca-app-pub-1398478089736122/5005515368
     // Rewarded : ca-app-pub-1398478089736122/3620281509
@@ -27,36 +68,170 @@ public class Reklam_Manager : Singletion<Reklam_Manager>
 
     private int reklamAmount;
 
+    private const string gold100 = "gold100";       // 1
+    private const string gold200 = "gold200";       // 2
+    private const string gold300 = "gold300";       // 3
+    private const string gold500 = "gold500";       // 
+    private const string gold1500 = "gold1500";     // 
+    private const string gold2500 = "gold2500";     // 
+    private const string gold5000 = "gold5000";     // 
+    private const string gold7500 = "gold7500";     // 
+    private const string gold10000 = "gold10000";   // 
+
     private void Start()
     {
         InterLoadAd();
         RewardLoadAd();
     }
-    public void ShowReklam(Action action, bool isVideo)
+    public void AddReklamButton(Button buton)
     {
-        if (isVideo)
+        reklamButtons.Add(buton);
+    }
+    public void OnPurchaseFailed(Product purchase, PurchaseFailureDescription purchaseFailureDescription)
+    {
+        Warning_Manager.Instance.ShowMessage(purchase.definition.id + " Purchase Failure Reason " + purchaseFailureDescription, 2);
+    }
+    public void UpdateButtonForPurchasePRice(Product purchase, Button buton)
+    {
+        TextMeshProUGUI butonText = buton.GetComponentInChildren<TextMeshProUGUI>();
+        butonText.text = purchase.metadata.localizedPrice + " " + purchase.metadata.isoCurrencyCode;
+    }
+    public void OnPurchaseFetched(Product purchase)
+    {
+        if (purchase.definition.id == gold100)
         {
-            RewardShowAd(action);
+            UpdateButtonForPurchasePRice(purchase, goldButton100);
         }
-        else
+        else if (purchase.definition.id == gold200)
         {
-            reklamAmount++;
-            if (reklamAmount >= 5)
+            UpdateButtonForPurchasePRice(purchase, goldButton200);
+        }
+        else if (purchase.definition.id == gold300)
+        {
+            UpdateButtonForPurchasePRice(purchase, goldButton300);
+        }
+        else if (purchase.definition.id == gold500)
+        {
+            UpdateButtonForPurchasePRice(purchase, goldButton500);
+        }
+        else if (purchase.definition.id == gold1500)
+        {
+            UpdateButtonForPurchasePRice(purchase, goldButton1500);
+        }
+        else if (purchase.definition.id == gold2500)
+        {
+            UpdateButtonForPurchasePRice(purchase, goldButton2500);
+        }
+        else if (purchase.definition.id == gold5000)
+        {
+            UpdateButtonForPurchasePRice(purchase, goldButton5000);
+        }
+        else if (purchase.definition.id == gold7500)
+        {
+            UpdateButtonForPurchasePRice(purchase, goldButton7500);
+        }
+        else if (purchase.definition.id == gold10000)
+        {
+            UpdateButtonForPurchasePRice(purchase, goldButton10000);
+        }
+    }
+    public void OnPurchaseComplete(Product purchase)
+    {
+        int quantity = BuyGoldQuantity(purchase);
+        if (purchase.definition.id == gold100)
+        {
+            for (int e = 0; e < quantity; e++)
             {
-                InterShowAd(action);
-                reklamAmount = 0;
+                Canvas_Manager.Instance.SetGoldSmooth(100);
             }
-            else
+        }
+        else if (purchase.definition.id == gold200)
+        {
+            for (int e = 0; e < quantity; e++)
             {
-                action?.Invoke();
+                Canvas_Manager.Instance.SetGoldSmooth(200);
             }
+        }
+        else if (purchase.definition.id == gold300)
+        {
+            for (int e = 0; e < quantity; e++)
+            {
+                Canvas_Manager.Instance.SetGoldSmooth(300);
+            }
+        }
+        else if (purchase.definition.id == gold500)
+        {
+            for (int e = 0; e < quantity; e++)
+            {
+                Canvas_Manager.Instance.SetGoldSmooth(500);
+            }
+        }
+        else if (purchase.definition.id == gold1500)
+        {
+            for (int e = 0; e < quantity; e++)
+            {
+                Canvas_Manager.Instance.SetGoldSmooth(1500);
+            }
+        }
+        else if (purchase.definition.id == gold2500)
+        {
+            for (int e = 0; e < quantity; e++)
+            {
+                Canvas_Manager.Instance.SetGoldSmooth(2500);
+            }
+        }
+        else if (purchase.definition.id == gold5000)
+        {
+            for (int e = 0; e < quantity; e++)
+            {
+                Canvas_Manager.Instance.SetGoldSmooth(5000);
+            }
+        }
+        else if (purchase.definition.id == gold7500)
+        {
+            for (int e = 0; e < quantity; e++)
+            {
+                Canvas_Manager.Instance.SetGoldSmooth(7500);
+            }
+        }
+        else if (purchase.definition.id == gold10000)
+        {
+            for (int e = 0; e < quantity; e++)
+            {
+                Canvas_Manager.Instance.SetGoldSmooth(10000);
+            }
+        }
+    }
+    public int BuyGoldQuantity(Product purchase)
+    {
+        int quantity = 1;
+        if (purchase.hasReceipt)
+        {
+            var receipt = purchase.receipt;
+            ReceiptData data = JsonUtility.FromJson<ReceiptData>(receipt);
+            if (data.store != "fake")
+            {
+                Payload payload = JsonUtility.FromJson<Payload>(data.payload);
+                PaymentData paymentData = JsonUtility.FromJson<PaymentData>(payload.json);
+                quantity = paymentData.quantity;
+            }
+        }
+        return quantity;
+    }
+    public void ShowInterReklam()
+    {
+        reklamAmount++;
+        if (reklamAmount >= 5)
+        {
+            InterShowAd();
+            reklamAmount = 0;
         }
     }
     /// <summary>
     /// Shows the ad.
     /// </summary>
     [ContextMenu("Show Inter Reklam")]
-    public void InterShowAd(Action action)
+    public void InterShowAd()
     {
         if (_rewardedInterstitialAd == null)
         {
@@ -70,7 +245,6 @@ public class Reklam_Manager : Singletion<Reklam_Manager>
                 _rewardedInterstitialAd.Show((Reward reward) =>
                 {
                     InterLoadAd();
-                    action?.Invoke();
                     interLoadingTime = Time.time;
                     //Debug.LogWarning("Inter Reklam gösterildi." + reward.Amount);
                 });

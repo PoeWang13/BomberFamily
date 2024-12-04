@@ -41,6 +41,10 @@ public class Warning_Manager : Singletion<Warning_Manager>
         }
         rectMesajKutusu = mesajKutusu.GetComponent<RectTransform>();
     }
+    public void NotHaveGold()
+    {
+        ShowMessage("You dont have enough Gold.", 2);
+    }
     public void ShowMessage(string msg, float duration = 1)
     {
         if (allWarnings.Count == 0)

@@ -1,29 +1,34 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public enum GenelIcon
-{
-    Gold = 0,
-    Exp = 1,
-}
 [CreateAssetMenu(menuName = "Genel/All Item Holder")]
 public class All_Item_Holder : ScriptableObject
 {
     [Header("Items")]
     [SerializeField] private List<Item> genelList = new List<Item>();
-    [SerializeField] private List<Item> malzemeList = new List<Item>();
-    [SerializeField] private List<Item> aletList = new List<Item>();
+
+    [Header("Recipe Items")]
+    [SerializeField] private List<Item_Source> malzemeList = new List<Item_Source>();
+    [SerializeField] private List<Item_Tool> aletList = new List<Item_Tool>();
     [SerializeField] private List<Item> bombList = new List<Item>();
+
+    [Header("Creator Items")]
     [SerializeField] private List<Item_Board> wallList = new List<Item_Board>();
     [SerializeField] private List<Item_Board> boxList = new List<Item_Board>();
     [SerializeField] private List<Item_Board> trapList = new List<Item_Board>();
     [SerializeField] private List<Item_Board> enemyList = new List<Item_Board>();
     [SerializeField] private List<Item_Board> bossEnemyList = new List<Item_Board>();
     [SerializeField] private List<Item_Board> gateList = new List<Item_Board>();
+
+    // Items
     public List<Item> GenelList { get { return genelList; } }
-    public List<Item> MalzemeList { get { return malzemeList; } }
-    public List<Item> AletList { get { return aletList; } }
+
+    // Recipe Items
+    public List<Item_Source> MalzemeList { get { return malzemeList; } }
+    public List<Item_Tool> AletList { get { return aletList; } }
     public List<Item> BombList { get { return bombList; } }
+
+    // Creator Items
     public List<Item_Board> WallList { get { return wallList; } }
     public List<Item_Board> BoxList { get { return boxList; } }
     public List<Item_Board> TrapList { get { return trapList; } }

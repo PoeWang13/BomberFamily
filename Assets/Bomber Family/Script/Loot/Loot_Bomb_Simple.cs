@@ -1,26 +1,17 @@
 ﻿using DG.Tweening;
 using UnityEngine;
 
-public class Loot_Bomb_Simple : PoolObje
+public class Loot_Bomb_Simple : Loot_Base
 {
     [SerializeField] private BombType myBombType;
 
-    private bool isTaked;
-    private GameObject lootEffect;
-
-    private void Awake()
-    {
-        transform.localScale = Vector3.one;
-        lootEffect = transform.Find("Loot_Effect").gameObject;
-    }
     private void OnTriggerEnter(Collider other)
     {
-        if (!isTaked)
+        if (!IsTaked)
         {
             if (other.TryGetComponent(out Player_Base player_Base))
             {
-                isTaked = true;
-                lootEffect.SetActive(false);
+                SetTaked(true);
                 player_Base.IncreaseBombAmount();
                 transform.DOScale(Vector3.one * 1.5f, 0.1f).OnComplete(() =>
                 {
@@ -37,12 +28,5 @@ public class Loot_Bomb_Simple : PoolObje
                 });
             }
         }
-    }
-    public override void ObjeHavuzExit()
-    {
-        isTaked = false;
-        lootEffect.SetActive(true);
-        transform.localScale = Vector3.zero;
-        base.ObjeHavuzExit();
     }
 }

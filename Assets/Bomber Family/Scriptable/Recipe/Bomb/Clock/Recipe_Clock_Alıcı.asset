@@ -13,12 +13,15 @@ MonoBehaviour:
   m_Name: "Recipe_Clock_Al\u0131c\u0131"
   m_EditorClassIdentifier: 
   myIcon: {fileID: 21300000, guid: 729c7072ed0be7948b8df3a1fd14c6ce, type: 3}
-  myRecipeItem: {fileID: 11400000, guid: 6d9f692e704284e49b4b136dd68bba35, type: 2}
+  myRecipeItem: {fileID: 11400000, guid: 2a9aec9bcabf2f64a845b1f41b03c832, type: 2}
   myRecipePrice: 100
   myNeededMaterialList:
-  - recipeItem: {fileID: 11400000, guid: 8c8c9de55129d924e93e781846670f80, type: 2}
+  - recipeItem: {fileID: 11400000, guid: 26fd92d3c5025434c9f1b2d2f541b909, type: 2}
     recipeAmount: 10
-  - recipeItem: {fileID: 11400000, guid: aa7f59620febdf14cab24a75d815172d, type: 2}
+    inventoryType: 0
+  - recipeItem: {fileID: 11400000, guid: 2dd001c2df79bc54ea4e5f537fdfa422, type: 2}
     recipeAmount: 10
-  - recipeItem: {fileID: 11400000, guid: d268833b7a5acd945b86b098acd57dee, type: 2}
+    inventoryType: 0
+  - recipeItem: {fileID: 11400000, guid: 291062d6a6802294f83582564b8f0b88, type: 2}
     recipeAmount: 10
+    inventoryType: 0

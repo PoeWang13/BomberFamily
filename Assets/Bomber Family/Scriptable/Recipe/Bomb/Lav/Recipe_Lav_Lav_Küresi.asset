@@ -13,12 +13,15 @@ MonoBehaviour:
   m_Name: "Recipe_Lav_Lav_K\xFCresi"
   m_EditorClassIdentifier: 
   myIcon: {fileID: 21300000, guid: 2677d2e82ff070b4abc384b7a8d795bf, type: 3}
-  myRecipeItem: {fileID: 11400000, guid: f5cc9718a16580d45aebcc51bcb61d39, type: 2}
+  myRecipeItem: {fileID: 11400000, guid: 20acf32d9d0ed2b4fa9d8980fdb632c9, type: 2}
   myRecipePrice: 100
   myNeededMaterialList:
-  - recipeItem: {fileID: 11400000, guid: b9728231d65589345b068671dc1dac58, type: 2}
+  - recipeItem: {fileID: 11400000, guid: 6f080036506ce5044aef00e61d34130a, type: 2}
     recipeAmount: 10
-  - recipeItem: {fileID: 11400000, guid: 9baf1043dbfcde64980c5e7aa7275c70, type: 2}
+    inventoryType: 0
+  - recipeItem: {fileID: 11400000, guid: 725010a6be02eb7458b401373426a8a5, type: 2}
     recipeAmount: 10
-  - recipeItem: {fileID: 11400000, guid: e175f5b5310bf204386bff0da4ddebfa, type: 2}
+    inventoryType: 0
+  - recipeItem: {fileID: 11400000, guid: a2018735a0d70d74cb8637c8aa819215, type: 2}
     recipeAmount: 10
+    inventoryType: 0

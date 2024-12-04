@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61e9af00ae08bd74cb2f17d4752f166a, type: 3}
+  m_Name: Source_Tool_Toprak_Delici
+  m_EditorClassIdentifier: 
+  myIcon: {fileID: 21300000, guid: e1f3f46e2a0c51c4da186ba04251308d, type: 3}
+  myName: Soil Driller
+  myMax: 10
+  myInventoryType: 1
+  myRecipeItem: {fileID: 11400000, guid: 19724bcb91d7c4448b6b561ab085afe5, type: 2}

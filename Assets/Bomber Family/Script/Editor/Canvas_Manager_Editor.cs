@@ -45,7 +45,6 @@ public class Canvas_Manager_Editor : Editor
     #region Menu
     private bool showMenu;
     private SerializedProperty panelMenu;
-    private SerializedProperty panelShop;
     private SerializedProperty buttonMyLevel;
     private SerializedProperty panelLevelsMap;
     private SerializedProperty myLevelButtonParent;
@@ -209,6 +208,16 @@ public class Canvas_Manager_Editor : Editor
     private SerializedProperty myMaterialList;
     private SerializedProperty myRecipeList;
     #endregion
+
+    #region Shop
+    private bool showShop;
+    private SerializedProperty panelShop;
+    private SerializedProperty objTool;
+    private SerializedProperty objToolParent;
+    private SerializedProperty objMaterial;
+    private SerializedProperty objMaterialParent;
+    private SerializedProperty shopPanelList;
+    #endregion
     #endregion
 
     private void OnEnable()
@@ -252,7 +261,6 @@ public class Canvas_Manager_Editor : Editor
 
         #region Menu
         panelMenu = serializedObject.FindProperty("panelMenu");
-        panelShop = serializedObject.FindProperty("panelShop");
         buttonMyLevel = serializedObject.FindProperty("buttonMyLevel");
         panelLevelsMap = serializedObject.FindProperty("panelLevelsMap");
         myLevelButtonParent = serializedObject.FindProperty("myLevelButtonParent");
@@ -408,6 +416,15 @@ public class Canvas_Manager_Editor : Editor
         myMaterialList = serializedObject.FindProperty("myMaterialList");
         myRecipeList = serializedObject.FindProperty("myRecipeList");
         #endregion
+
+        #region Shop
+        panelShop = serializedObject.FindProperty("panelShop");
+        objTool = serializedObject.FindProperty("objTool");
+        objToolParent = serializedObject.FindProperty("objToolParent");
+        objMaterial = serializedObject.FindProperty("objMaterial");
+        objMaterialParent = serializedObject.FindProperty("objMaterialParent");
+        shopPanelList = serializedObject.FindProperty("shopPanelList");
+        #endregion
     }
 
     public override void OnInspectorGUI()
@@ -463,7 +480,6 @@ public class Canvas_Manager_Editor : Editor
         if (showMenu)
         {
             EditorGUILayout.PropertyField(panelMenu);
-            EditorGUILayout.PropertyField(panelShop);
             EditorGUILayout.PropertyField(buttonMyLevel);
             EditorGUILayout.PropertyField(panelLevelsMap);
             EditorGUILayout.PropertyField(myLevelButtonParent);
@@ -648,6 +664,18 @@ public class Canvas_Manager_Editor : Editor
             EditorGUILayout.PropertyField(buttonCraftIcon);
             EditorGUILayout.PropertyField(myMaterialList);
             EditorGUILayout.PropertyField(myRecipeList);
+        }
+
+        // Shop
+        showShop = EditorGUILayout.Toggle("Shop", showShop);
+        if (showShop)
+        {
+            EditorGUILayout.PropertyField(panelShop);
+            EditorGUILayout.PropertyField(objTool);
+            EditorGUILayout.PropertyField(objToolParent);
+            EditorGUILayout.PropertyField(objMaterial);
+            EditorGUILayout.PropertyField(objMaterialParent);
+            EditorGUILayout.PropertyField(shopPanelList);
         }
 
         serializedObject.ApplyModifiedProperties();

@@ -50,7 +50,6 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
 
     // Menu
     [SerializeField] private GameObject panelMenu;
-    [SerializeField] private GameObject panelShop;
     [SerializeField] private GameObject panelLevelsMap;
     [SerializeField] private Button buttonMyLevel;
     [SerializeField] private Transform myLevelButtonParent;
@@ -198,6 +197,14 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     [SerializeField] private List<Slot_Material> myMaterialList = new List<Slot_Material>();
     [SerializeField] private List<Slot_Recipe> myRecipeList = new List<Slot_Recipe>();
 
+    // Shop
+    [SerializeField] private GameObject panelShop;
+    [SerializeField] private Transform objTool;
+    [SerializeField] private Transform objToolParent;
+    [SerializeField] private Transform objMaterial;
+    [SerializeField] private Transform objMaterialParent;
+    [SerializeField] private List<GameObject> shopPanelList = new List<GameObject>();
+
     private bool isBuyed;
     private bool correctWallAmount;
     private bool correctBoxAmount;
@@ -232,6 +239,15 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     public int AmountMultiple { get { return amountMultiple; } }
 
     #region Menu
+    [ContextMenu("Close Panels")]
+    private void ClosePanels()
+    {
+        panelName.SetActive(false);
+        panelMenu.SetActive(false);
+        panelGame.SetActive(false);
+        panelShop.SetActive(false);
+        panelLevelsMap.SetActive(false);
+    }
     private void Start()
     {
         sceneMaskedImage.gameObject.SetActive(true);
@@ -285,8 +301,6 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
             SetDailyReward(e, Save_Load_Manager.Instance.gameData.dailyReward[e].dailyTaked, Save_Load_Manager.Instance.gameData.dailyReward[e].dailyRewardAmount, Save_Load_Manager.Instance.gameData.dailyReward[e].dailyRewardOrder,
                 Save_Load_Manager.Instance.gameData.dailyReward[e].dailyType, dailySprite);
         }
-
-
         // Oyuna ilk kez girmişler
         if (Save_Load_Manager.Instance.gameData.lastDay == -9999)
         {
@@ -296,10 +310,13 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         // Oyunla aynı yıldalar
         else if (Game_Manager.Instance.Year == Save_Load_Manager.Instance.gameData.year)
         {
-            // LastDay dünden önceki günlerden birine ait
-            if (Game_Manager.Instance.DayOfYear > Save_Load_Manager.Instance.gameData.lastDay - 1)
+            Debug.LogWarning(Game_Manager.Instance.DayOfYear);
+            Debug.LogWarning(Save_Load_Manager.Instance.gameData.lastDay - 1);
+            // LastDay bugüne ait
+            if (Game_Manager.Instance.DayOfYear == Save_Load_Manager.Instance.gameData.lastDay)
             {
-                int dailyOrder = -1;
+                Debug.LogWarning("4444");
+                // Ödül alınmış
                 bool finded = false;
                 for (int e = 0; e < Save_Load_Manager.Instance.gameData.dailyReward.Count && !finded; e++)
                 {
@@ -309,33 +326,14 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
                     }
                     else
                     {
-                        Transform tr = dailyButtons[e].transform.parent.Find("Button-Daily-Missing");
-                        tr.gameObject.SetActive(true);
-                        tr.GetComponent<Button>().onClick.RemoveAllListeners();
-                        tr.GetComponent<Button>().onClick.AddListener(() =>
-                        {
-                            Reklam_Manager.Instance.ShowReklam(() =>
-                            {
-                                dailyButtons[dailyOrder].transform.parent.Find("Button-Daily-Missing").gameObject.SetActive(false);
-                                dailyButtons[dailyOrder].interactable = true;
-                            }, true);
-                        });
-                        dailyOrder = e;
                         finded = true;
                     }
                 }
-                // Son 7 günün tamamı alınmış yeni haftaya geçmişiz
-                if (!finded)
-                {
-                    // Haftayı yenile
-                    ResetDailyReward();
-                    // İlk gün butonu aç
-                    dailyButtons[0].interactable = true;
-                }
             }
             // LastDay düne ait
-            else if (Game_Manager.Instance.DayOfYear == Save_Load_Manager.Instance.gameData.lastDay - 1)
+            else if (Game_Manager.Instance.DayOfYear == Save_Load_Manager.Instance.gameData.lastDay + 1)
             {
+                Debug.LogWarning("3333");
                 // Günü gelmiş ödül butonu aç
                 bool finded = false;
                 for (int e = 0; e < Save_Load_Manager.Instance.gameData.dailyReward.Count && !finded; e++)
@@ -359,10 +357,11 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
                     dailyButtons[0].interactable = true;
                 }
             }
-            // LastDay bugüne ait
-            else if (Game_Manager.Instance.DayOfYear == Save_Load_Manager.Instance.gameData.lastDay)
+            // LastDay dünden önceki günlerden birine ait
+            else if(Game_Manager.Instance.DayOfYear > Save_Load_Manager.Instance.gameData.lastDay + 1)
             {
-                // Ödül alınmış
+                Debug.LogWarning("111");
+                int dailyOrder = -1;
                 bool finded = false;
                 for (int e = 0; e < Save_Load_Manager.Instance.gameData.dailyReward.Count && !finded; e++)
                 {
@@ -372,8 +371,28 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
                     }
                     else
                     {
+                        Transform tr = dailyButtons[e].transform.parent.Find("Button-Daily-Missing");
+                        tr.gameObject.SetActive(true);
+                        tr.GetComponent<Button>().onClick.RemoveAllListeners();
+                        tr.GetComponent<Button>().onClick.AddListener(() =>
+                        {
+                            Reklam_Manager.Instance.RewardShowAd(() =>
+                            {
+                                dailyButtons[dailyOrder].transform.parent.Find("Button-Daily-Missing").gameObject.SetActive(false);
+                                dailyButtons[dailyOrder].interactable = true;
+                            });
+                        });
+                        dailyOrder = e;
                         finded = true;
                     }
+                }
+                // Son 7 günün tamamı alınmış yeni haftaya geçmişiz
+                if (!finded)
+                {
+                    // Haftayı yenile
+                    ResetDailyReward();
+                    // İlk gün butonu aç
+                    dailyButtons[0].interactable = true;
                 }
             }
         }
@@ -402,6 +421,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
             }
             Save_Load_Manager.Instance.gameData.year = Game_Manager.Instance.Year;
         }
+        Save_Load_Manager.Instance.SaveGame();
     }
     // Canvas -> Panel-Menu -> Panel-Daily-Holder -> Panel-Daily-Parent -> Panel-Daily -> Button-Daily'larına atandı
     public void DailyReward(int dailyOrder)
@@ -422,11 +442,11 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         }
         else if (Save_Load_Manager.Instance.gameData.dailyReward[dailyOrder].dailyType == DailyType.Malzeme)
         {
-            Inventory_Manager.Instance.AddItem(new MaterialHolder(all_Item_Holder.MalzemeList[dailyOrder], 1));
+            Inventory_Manager.Instance.AddItem(new MaterialHolder(all_Item_Holder.MalzemeList[dailyOrder], 1, InventoryType.Material));
         }
         else if (Save_Load_Manager.Instance.gameData.dailyReward[dailyOrder].dailyType == DailyType.Alet)
         {
-            Inventory_Manager.Instance.AddItem(new MaterialHolder(all_Item_Holder.AletList[dailyOrder], 1));
+            Inventory_Manager.Instance.AddItem(new MaterialHolder(all_Item_Holder.AletList[dailyOrder], 1, InventoryType.Alet));
         }
         else if (Save_Load_Manager.Instance.gameData.dailyReward[dailyOrder].dailyType == DailyType.Bomb)
         {
@@ -437,6 +457,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         {
 
         }
+        Save_Load_Manager.Instance.SaveGame();
     }
     private void ResetDailyReward()
     {
@@ -481,6 +502,8 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         dailyOrder = Random.Range(1, Enum.GetValues(typeof(BombType)).Length);
         dailyIcon = all_Item_Holder.BombList[dailyOrder].MyIcon;
         SetDailyReward(6, false, dailyAmount, dailyOrder, DailyType.Bomb, dailyIcon);
+
+        Save_Load_Manager.Instance.SaveGame();
     }
     private void SetDailyReward(int buttonOrder, bool isTaked, int dailyAmount, int dailyOrder, DailyType dailyType, Sprite icon)
     {
@@ -861,7 +884,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         }
         else
         {
-            Warning_Manager.Instance.ShowMessage("You dont have enough Gold.", 2);
+            Warning_Manager.Instance.NotHaveGold();
         }
     }
     // Canvas -> Panel-Menu -> Panel-Shop -> Panel-Shop-Player-Container -> Button-Player-Choose'a atandı
@@ -911,6 +934,8 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         SetMyLevelButtons();
         SetDungeonSetting();
         SetDaily();
+        SetToolBuyButton();
+        SetMaterialBuyButton();
 
         buttonOffer1.onClick.AddListener(EarnOffer1);
         buttonOffer2.onClick.AddListener(EarnOffer2);
@@ -946,6 +971,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         }, startValue: 0, endValue: goldChangedAmount, duration: 1.5f).SetEase(Ease.Linear).OnComplete(() =>
         {
             goldChangedAmount = 0;
+            Save_Load_Manager.Instance.SaveGame();
         });
     }
     #endregion
@@ -2433,7 +2459,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     {
         if (Save_Load_Manager.Instance.gameData.gold < myRecipeItem.MyRecipePrice)
         {
-            Warning_Manager.Instance.ShowMessage("You dont have enough GOLD.", 2);
+            Warning_Manager.Instance.NotHaveGold();
             return;
         }
         bool canCraft = true;
@@ -2470,6 +2496,196 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         {
             myMaterialList[e].SlotRelease();
         }
+    }
+    #endregion
+
+    #region Shop
+    public void SetShopPanel(GameObject panel)
+    {
+        for (int e = 0; e < shopPanelList.Count; e++)
+        {
+            shopPanelList[e].SetActive(false);
+        }
+        panel.SetActive(true);
+    }
+    // Canvas -> Panel-Menu -> Panel-Shop -> Panel-Shop-Inventory-Slot -> Panel-Button-Slot-X -> Button-Buy-Slot'lara atandı
+    public void BuyInventorySlot(int slotAmount)
+    {
+        if (slotAmount == 1) // 100 Gold
+        {
+            if (Save_Load_Manager.Instance.gameData.gold < 100)
+            {
+                Warning_Manager.Instance.NotHaveGold();
+                return;
+            }
+            SetGoldSmooth(-100);
+        }
+        else if (slotAmount == 2) // 200 Gold
+        {
+            if (Save_Load_Manager.Instance.gameData.gold < 200)
+            {
+                Warning_Manager.Instance.NotHaveGold();
+                return;
+            }
+            SetGoldSmooth(-200);
+        }
+        else if (slotAmount == 3) // 300 Gold
+        {
+            if (Save_Load_Manager.Instance.gameData.gold < 300)
+            {
+                Warning_Manager.Instance.NotHaveGold();
+                return;
+            }
+            SetGoldSmooth(-300);
+        }
+        else if (slotAmount == 5) // 475 Gold
+        {
+            if (Save_Load_Manager.Instance.gameData.gold < 475)
+            {
+                Warning_Manager.Instance.NotHaveGold();
+                return;
+            }
+            SetGoldSmooth(-475);
+        }
+        else if (slotAmount == 15) // 1425 Gold
+        {
+            if (Save_Load_Manager.Instance.gameData.gold < 1425)
+            {
+                Warning_Manager.Instance.NotHaveGold();
+                return;
+            }
+            SetGoldSmooth(-1425);
+        }
+        else if (slotAmount == 25) // 2375 Gold
+        {
+            if (Save_Load_Manager.Instance.gameData.gold < 2375)
+            {
+                Warning_Manager.Instance.NotHaveGold();
+                return;
+            }
+            SetGoldSmooth(-2375);
+        }
+        else if (slotAmount == 50) // 4500 Gold
+        {
+            if (Save_Load_Manager.Instance.gameData.gold < 4500)
+            {
+                Warning_Manager.Instance.NotHaveGold();
+                return;
+            }
+            SetGoldSmooth(-4500);
+        }
+        else if (slotAmount == 75) // 6750 Gold
+        {
+            if (Save_Load_Manager.Instance.gameData.gold < 6750)
+            {
+                Warning_Manager.Instance.NotHaveGold();
+                return;
+            }
+            SetGoldSmooth(-6750);
+        }
+        else if (slotAmount == 100) // 9000 Gold
+        {
+            if (Save_Load_Manager.Instance.gameData.gold < 9000)
+            {
+                Warning_Manager.Instance.NotHaveGold();
+                return;
+            }
+            SetGoldSmooth(-9000);
+        }
+        Inventory_Manager.Instance.AddInventorySlot(slotAmount);
+        Save_Load_Manager.Instance.SaveGame();
+    }
+    // Canvas -> Panel-Menu -> Panel-Shop -> Panel-Shop-Inventory-Slot -> Panel-Button-Slot-1 -> Button-Buy-Advertisement'lere atandı
+    public void BuyInventorySlotWithAds()
+    {
+        Reklam_Manager.Instance.RewardShowAd(() =>
+        {
+            Inventory_Manager.Instance.AddInventorySlot(1);
+            Save_Load_Manager.Instance.SaveGame();
+        });
+    }
+    // Canvas -> Panel-Menu -> Panel-Shop -> Panel-Shop-Gold-Container -> Panel-Shop-Gold-Parent -> Panel-Button-Gold-100 -> Button-Buy-Advertisement'lere atandı
+    public void BuyGoldWithAds()
+    {
+        Reklam_Manager.Instance.RewardShowAd(() =>
+        {
+            SetGoldSmooth(100);
+        });
+    }
+    private void SetToolBuyButton()
+    {
+        for (int e = 0; e < all_Item_Holder.AletList.Count; e++)
+        {
+            Transform obj = Instantiate(objTool, objToolParent);
+            Image image = obj.GetChild(0).GetComponent<Image>();
+            image.sprite = all_Item_Holder.AletList[e].MyIcon;
+
+            TextMeshProUGUI text = obj.GetChild(1).GetComponent<TextMeshProUGUI>();
+            text.text = all_Item_Holder.AletList[e].MyName;
+
+            Button buton = obj.GetChild(2).GetComponent<Button>();
+            int order = e;
+            buton.onClick.AddListener(() => BuyTool(order));
+
+            TextMeshProUGUI butonText = buton.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+            text.text = (all_Item_Holder.AletList[e].MyRecipeItem.MyRecipePrice * 3).ToString();
+        }
+    }
+    private void BuyTool(int order)
+    {
+        int price = all_Item_Holder.AletList[order].MyRecipeItem.MyRecipePrice * 3;
+        if (Save_Load_Manager.Instance.gameData.gold < price)
+        {
+            Warning_Manager.Instance.NotHaveGold();
+            return;
+        }
+        Inventory_Manager.Instance.AddItem(new MaterialHolder(all_Item_Holder.AletList[order].MyRecipeItem.MyRecipeItem, 1, InventoryType.Alet));
+        SetGoldSmooth(-price);
+    }
+    private void SetMaterialBuyButton()
+    {
+        for (int e = 0; e < all_Item_Holder.MalzemeList.Count; e++)
+        {
+            Transform obj = Instantiate(objMaterial, objMaterialParent);
+            Image image = obj.GetChild(0).GetComponent<Image>();
+            image.sprite = all_Item_Holder.MalzemeList[e].MyIcon;
+
+            TextMeshProUGUI text = obj.GetChild(1).GetComponent<TextMeshProUGUI>();
+            text.text = all_Item_Holder.MalzemeList[e].MyName;
+
+            Button buton = obj.GetChild(2).GetComponent<Button>();
+            int order = e;
+            buton.onClick.AddListener(() => BuyMaterialWithGold(order));
+
+            TextMeshProUGUI butonText = buton.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+            text.text = 10.ToString();
+
+
+            Button butonAds = obj.GetChild(3).GetComponent<Button>();
+            Reklam_Manager.Instance.AddReklamButton(butonAds);
+            int orderAds = e;
+            buton.onClick.AddListener(() => BuyMaterialWithAds(order));
+        }
+    }
+    private void BuyMaterialWithGold(int order)
+    {
+        if (Save_Load_Manager.Instance.gameData.gold < 10)
+        {
+            Warning_Manager.Instance.NotHaveGold();
+            return;
+        }
+        Inventory_Manager.Instance.AddItem(new MaterialHolder(all_Item_Holder.MalzemeList[order], 1, InventoryType.Material));
+        SetGoldSmooth(-10);
+
+        Save_Load_Manager.Instance.SaveGame();
+    }
+    private void BuyMaterialWithAds(int order)
+    {
+        Reklam_Manager.Instance.RewardShowAd(() =>
+        {
+            Inventory_Manager.Instance.AddItem(new MaterialHolder(all_Item_Holder.MalzemeList[order], 1, InventoryType.Material));
+            Save_Load_Manager.Instance.SaveGame();
+        });
     }
     #endregion
 }

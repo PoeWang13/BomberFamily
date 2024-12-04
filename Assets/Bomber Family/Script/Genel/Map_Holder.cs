@@ -534,7 +534,7 @@ public class Map_Holder : Singletion<Map_Holder>
                 else
                 {
                     Warning_Manager.Instance.ShowMessage("We were only able to place " + (Canvas_Manager.Instance.AmountMultiple - amount) + " board objects.", 2);
-                    Warning_Manager.Instance.ShowMessage("You dont have enough Gold.", 2);
+                    Warning_Manager.Instance.NotHaveGold();
                     amount = 0;
                 }
             }

@@ -13,12 +13,15 @@ MonoBehaviour:
   m_Name: "Recipe_Sis_Toz_K\xFCresi"
   m_EditorClassIdentifier: 
   myIcon: {fileID: 21300000, guid: c9c9971c29e265143a8c20469395fff7, type: 3}
-  myRecipeItem: {fileID: 11400000, guid: 1561b86c2b748b74ca120a868c9e68ee, type: 2}
+  myRecipeItem: {fileID: 11400000, guid: b7c798bc51fdddb4599ca9b810dcf45c, type: 2}
   myRecipePrice: 250
   myNeededMaterialList:
-  - recipeItem: {fileID: 11400000, guid: 34172ab11cb8a2c4e9d4d01f951007dd, type: 2}
+  - recipeItem: {fileID: 11400000, guid: 4c494735850c08e449a54f1e464d6b90, type: 2}
     recipeAmount: 10
-  - recipeItem: {fileID: 11400000, guid: 7c749ce5b7436ca4aa95d8f716e80fb7, type: 2}
+    inventoryType: 0
+  - recipeItem: {fileID: 11400000, guid: 7b74aa7c12bfa514eb1719b90ff7d26f, type: 2}
     recipeAmount: 10
-  - recipeItem: {fileID: 11400000, guid: 73b1bf2456949034fa4ae58e3b53877a, type: 2}
+    inventoryType: 0
+  - recipeItem: {fileID: 11400000, guid: 4691d4297ddad134d81712f864fefe55, type: 2}
     recipeAmount: 10
+    inventoryType: 0
