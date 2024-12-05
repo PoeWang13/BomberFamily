@@ -1,20 +1,23 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+[System.Serializable]
+public class EnemyBomb
+{
+    public int bombAmount;
+    public BombType bombType;
+
+    public EnemyBomb(int bombAmount, BombType bombType)
+    {
+        this.bombAmount = bombAmount;
+        this.bombType = bombType;
+    }
+}
 public class Enemy_Base : Character_Base
 {
     [SerializeField] private Item_Enemy myItem;
+    [SerializeField] private List<EnemyBomb> enemyBombList = new List<EnemyBomb>();
 
-    private int clockBombAmount;
-    private int areaBombAmount;
-    private int antiBombAmount;
-    private int nucleerBombAmount;
-    private int searcherBombAmount;
-    private int elektroBombAmount;
-    private int lavBombAmount;
-    private int buzBombAmount;
-    private int sisBombAmount;
-    private int zehirBombAmount;
     private int lootDeneme = 3;
     private List<Vector2Int> possibleLootPos = new List<Vector2Int>();
 
@@ -148,84 +151,24 @@ public class Enemy_Base : Character_Base
     #endregion
 
     #region Use Special Bomb
-    public override void UseAntiBomb()
+    public void AddBomb(int bombAmount, BombType bombType)
     {
-        if (antiBombAmount > 0)
-        {
-            antiBombAmount--;
-            base.UseAntiBomb();
-        }
+        enemyBombList.Add(new EnemyBomb(bombAmount, bombType));
     }
-    public override void UseAreaBomb()
+    public override void UseSpecialBomb(BombType bombType)
     {
-        if (areaBombAmount > 0)
+        for (int e = 0; e < enemyBombList.Count; e++)
         {
-            areaBombAmount--;
-            base.UseAntiBomb();
-        }
-    }
-    public override void UseClockBomb()
-    {
-        if (clockBombAmount > 0)
-        {
-            clockBombAmount--;
-            base.UseClockBomb();
-        }
-    }
-    public override void UseNucleerBomb()
-    {
-        if (nucleerBombAmount > 0)
-        {
-            nucleerBombAmount--;
-            base.UseNucleerBomb();
-        }
-    }
-    public override void UseSearcherBomb()
-    {
-        if (searcherBombAmount > 0)
-        {
-            searcherBombAmount--;
-            base.UseSearcherBomb();
-        }
-    }
-    public override void UseElektroBomb()
-    {
-        if (elektroBombAmount > 0)
-        {
-            elektroBombAmount--;
-            base.UseElektroBomb();
-        }
-    }
-    public override void UseLavBomb()
-    {
-        if (lavBombAmount > 0)
-        {
-            lavBombAmount--;
-            base.UseLavBomb();
-        }
-    }
-    public override void UseBuzBomb()
-    {
-        if (buzBombAmount > 0)
-        {
-            buzBombAmount--;
-            base.UseBuzBomb();
-        }
-    }
-    public override void UseSisBomb()
-    {
-        if (sisBombAmount > 0)
-        {
-            sisBombAmount--;
-            base.UseSisBomb();
-        }
-    }
-    public override void UseZehirBomb()
-    {
-        if (zehirBombAmount > 0)
-        {
-            zehirBombAmount--;
-            base.UseZehirBomb();
+            if (enemyBombList[e].bombType != bombType)
+            {
+                continue;
+            }
+            if (enemyBombList[e].bombAmount > 0)
+            {
+                enemyBombList[e].bombAmount--;
+                base.UseSpecialBomb(bombType);
+                return;
+            }
         }
     }
     #endregion

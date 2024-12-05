@@ -991,60 +991,9 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     #endregion
 
     #region Bomb
-    // Canvas -> Panel-Game -> Bomb-Holder -> Panel-Simple-Bomb-Parent -> Button-Simple-Bomb'a atandı.
-    public void UseSimpleBomb()
+    private void UseSimpleBomb()
     {
         player_Base.UseSimpleBomb();
-    }
-    // Canvas -> Panel-Game -> Bomb-Holder -> Panel-Anti-Bomb-Parent -> Button-Anti-Bomb'a atandı.
-    public void UseAntiBomb()
-    {
-        player_Base.UseAntiBomb();
-    }
-    // Canvas -> Panel-Game -> Bomb-Holder -> Panel-Area-Bomb-Parent -> Button-Area-Bomb'a atandı.
-    public void UseAreaBomb()
-    {
-        player_Base.UseAreaBomb();
-    }
-    // Canvas -> Panel-Game -> Bomb-Holder -> Panel-Clock-Bomb-Parent -> Button-Clock-Bomb'a atandı.
-    public void UseClockBomb()
-    {
-        player_Base.UseClockBomb();
-    }
-    // Canvas -> Panel-Game -> Bomb-Holder -> Panel-Nucleer-Bomb-Parent -> Button-Nucleer-Bomb'a atandı.
-    public void UseNucleerBomb()
-    {
-        player_Base.UseNucleerBomb();
-    }
-    // Canvas -> Panel-Game -> Bomb-Holder -> Panel-Searcher-Bomb-Parent -> Button-Searcher-Bomb'a atandı.
-    public void UseSearcherBomb()
-    {
-        player_Base.UseSearcherBomb();
-    }
-    // Canvas -> Panel-Game -> Bomb-Holder -> Panel-Elektro-Bomb-Parent -> Button-Elektro-Bomb'a atandı.
-    public void UseElektroBomb()
-    {
-        player_Base.UseElektroBomb();
-    }
-    // Canvas -> Panel-Game -> Bomb-Holder -> Panel-Lav-Bomb-Parent -> Button-Lav-Bomb'a atandı.
-    public void UseLavBomb()
-    {
-        player_Base.UseLavBomb();
-    }
-    // Canvas -> Panel-Game -> Bomb-Holder -> Panel-Buz-Bomb-Parent -> Button-Buz-Bomb'a atandı.
-    public void UseBuzBomb()
-    {
-        player_Base.UseBuzBomb();
-    }
-    // Canvas -> Panel-Game -> Bomb-Holder -> Panel-Sis-Bomb-Parent -> Button-Sis-Bomb'a atandı.
-    public void UseSisBomb()
-    {
-        player_Base.UseSisBomb();
-    }
-    // Canvas -> Panel-Game -> Bomb-Holder -> Panel-Zehir-Bomb-Parent -> Button-Zehir-Bomb'a atandı.
-    public void UseZehirBomb()
-    {
-        player_Base.UseZehirBomb();
     }
     private void SetBombText()
     {
@@ -1063,7 +1012,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
             buton.name = "Button-Special-Bomb-" + (BombType)order;
             buton.onClick.AddListener(() =>
             {
-                UseSpecialBomb(order);
+                UseSpecialBomb((BombType)order);
             });
 
             TextMeshProUGUI textBomb = rectBomb.GetChild(1).GetComponent<TextMeshProUGUI>();
@@ -1079,9 +1028,9 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
             UseSimpleBomb();
         });
     }
-    private void UseSpecialBomb(int bombOrder)
+    private void UseSpecialBomb(BombType bombType)
     {
-        Debug.Log(bombOrder);
+        player_Base.UseSpecialBomb(bombType);
     }
     // Canvas -> Panel-Game -> Button-Bomb-Clock-Activiter'a atandı
     public void UseBombClockActiviter()
@@ -1151,45 +1100,6 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
                 choosedBomb = rectBombButtonSimple;
                 choosedBomb.DORotate(Vector3.zero, 0.5f).OnComplete(() => changeTime = false);
             }
-            //while (!findedBomb)
-            //{
-            //    bombOrder++;
-            //    if (bombOrder == Save_Load_Manager.Instance.gameData.allBombAmount.Count)
-            //    {
-            //        bombOrder = 0;
-            //        findedBomb = true;
-            //        choosedBomb = rectBombButtonSimple;
-            //        choosedBomb.DORotate(Vector3.zero, 0.5f).OnComplete(() => changeTime = false);
-            //    }
-            //    else
-            //    {
-            //        if (bombOrder == (int)BombType.Clock)
-            //        {
-            //            if (Save_Load_Manager.Instance.gameData.allBombAmount[bombOrder].bombAmount > 0 || player_Base.ClocksAmount > 0)
-            //            {
-            //                findedBomb = true;
-            //                choosedBomb = allBombs[(int)BombType.Clock].rectBombParent;
-            //                choosedBomb.DORotate(Vector3.zero, 0.5f).OnComplete(() =>
-            //                {
-            //                    changeTime = false;
-            //                    bombClockActiviter.SetActive(true);
-            //                });
-            //            }
-            //        }
-            //        else
-            //        {
-            //            if (Save_Load_Manager.Instance.gameData.allBombAmount[bombOrder].bombAmount > 0)
-            //            {
-            //                findedBomb = true;
-            //                choosedBomb = allBombs[bombOrder].rectBombParent;
-            //                choosedBomb.DORotate(Vector3.zero, 0.5f).OnComplete(() =>
-            //                {
-            //                    changeTime = false;
-            //                });
-            //            }
-            //        }
-            //    }
-            //}
         });
     }
     public void SetBomb(BombType bombType)

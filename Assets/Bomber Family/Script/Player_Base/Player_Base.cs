@@ -181,103 +181,13 @@ public class Player_Base : Character_Base
     #endregion
 
     #region Use Special Bomb
-    public override void UseAntiBomb()
+    public override void UseSpecialBomb(BombType bombType)
     {
-        if (Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Anti].bombAmount > 0)
+        if (Save_Load_Manager.Instance.gameData.allBombAmount[(int)bombType].bombAmount > 0)
         {
-            Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Anti].bombAmount--;
-            Canvas_Manager.Instance.SetBomb(BombType.Anti);
-            base.UseAntiBomb();
-            Save_Load_Manager.Instance.SaveGame();
-        }
-    }
-    public override void UseAreaBomb()
-    {
-        if (Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Area].bombAmount > 0)
-        {
-            Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Area].bombAmount--;
-            Canvas_Manager.Instance.SetBomb(BombType.Area);
-            base.UseAreaBomb();
-            Save_Load_Manager.Instance.SaveGame();
-        }
-    }
-    public override void UseClockBomb()
-    {
-        if (Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Clock].bombAmount > 0)
-        {
-            Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Clock].bombAmount--;
-            Canvas_Manager.Instance.SetBomb(BombType.Clock);
-            base.UseClockBomb();
-            Save_Load_Manager.Instance.SaveGame();
-        }
-    }
-    public override void UseNucleerBomb()
-    {
-        if (Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Nucleer].bombAmount > 0)
-        {
-            Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Nucleer].bombAmount--;
-            Canvas_Manager.Instance.SetBomb(BombType.Nucleer);
-            base.UseNucleerBomb();
-            Save_Load_Manager.Instance.SaveGame();
-        }
-    }
-    public override void UseSearcherBomb()
-    {
-        if (Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Searcher].bombAmount > 0)
-        {
-            Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Searcher].bombAmount--;
-            Canvas_Manager.Instance.SetBomb(BombType.Searcher);
-            base.UseSearcherBomb();
-            Save_Load_Manager.Instance.SaveGame();
-        }
-    }
-    public override void UseElektroBomb()
-    {
-        if (Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Elektro].bombAmount > 0)
-        {
-            Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Elektro].bombAmount--;
-            Canvas_Manager.Instance.SetBomb(BombType.Elektro);
-            base.UseElektroBomb();
-            Save_Load_Manager.Instance.SaveGame();
-        }
-    }
-    public override void UseLavBomb()
-    {
-        if (Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Lav].bombAmount > 0)
-        {
-            Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Lav].bombAmount--;
-            Canvas_Manager.Instance.SetBomb(BombType.Lav);
-            base.UseLavBomb();
-            Save_Load_Manager.Instance.SaveGame();
-        }
-    }
-    public override void UseBuzBomb()
-    {
-        if (Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Buz].bombAmount > 0)
-        {
-            Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Buz].bombAmount--;
-            Canvas_Manager.Instance.SetBomb(BombType.Buz);
-            base.UseBuzBomb();
-            Save_Load_Manager.Instance.SaveGame();
-        }
-    }
-    public override void UseSisBomb()
-    {
-        if (Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Sis].bombAmount > 0)
-        {
-            Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Sis].bombAmount--;
-            Canvas_Manager.Instance.SetBomb(BombType.Sis);
-            base.UseSisBomb();
-            Save_Load_Manager.Instance.SaveGame();
-        }
-    }
-    public override void UseZehirBomb()
-    {
-        if (Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Zehir].bombAmount > 0)
-        {
-            Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Zehir].bombAmount--;
-            Canvas_Manager.Instance.SetBomb(BombType.Zehir);
-            base.UseZehirBomb();
+            Save_Load_Manager.Instance.gameData.allBombAmount[(int)bombType].bombAmount--;
+            Canvas_Manager.Instance.SetBomb(bombType);
+            base.UseSpecialBomb(bombType);
             Save_Load_Manager.Instance.SaveGame();
         }
     }

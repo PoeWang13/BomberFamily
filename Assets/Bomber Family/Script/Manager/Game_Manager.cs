@@ -6,6 +6,8 @@ using System.Globalization;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
+using static UnityEngine.UI.GridLayoutGroup;
+using Unity.Jobs.LowLevel.Unsafe;
 
 public enum GameType
 {
@@ -32,19 +34,10 @@ public class Game_Manager : Singletion<Game_Manager>
     [SerializeField] private All_Item_Holder all_Item_Holder;
     [SerializeField] private Level_Exp_Holder level_Exp_Holder;
     [SerializeField] private List<GameObject> finishParticles = new List<GameObject>();
-    public List<Level_Opener> levelOpenerList = new List<Level_Opener>();
+    [SerializeField] private List<Level_Opener> levelOpenerList = new List<Level_Opener>();
 
     [Header("Pooler")]
-    [SerializeField] private Pooler antiPooler;
-    [SerializeField] private Pooler areaPooler;
-    [SerializeField] private Pooler clockPooler;
-    [SerializeField] private Pooler nucleerPooler;
-    [SerializeField] private Pooler searcherPooler;
-    [SerializeField] private Pooler elektroPooler;
-    [SerializeField] private Pooler lavPooler;
-    [SerializeField] private Pooler buzPooler;
-    [SerializeField] private Pooler sisPooler;
-    [SerializeField] private Pooler zehirPooler;
+    [SerializeField] private List<Pooler> allSpecialBombPool = new List<Pooler>();
 
     private bool levelStart;
     private bool areWeOnline;
@@ -318,58 +311,22 @@ public class Game_Manager : Singletion<Game_Manager>
     #endregion
 
     #region Use Special Bomb
-    public void UseAntiBomb(Character_Base owner)
+    public void UseSpecialBomb(Character_Base owner, BombType bombType)
     {
-        SetBomb(owner, antiPooler);
+        SetBomb(owner, allSpecialBombPool[(int)bombType], (bombType == BombType.Clock || bombType == BombType.Searcher));
     }
-    public void UseAreaBomb(Character_Base owner)
-    {
-        SetBomb(owner, areaPooler);
-    }
-    public void UseClockBomb(Character_Base owner)
-    {
-        SetBomb(owner, clockPooler, true);
-    }
-    public void UseNuckleerBomb(Character_Base owner)
-    {
-        SetBomb(owner, nucleerPooler);
-    }
-    public void UseSearcherBomb(Character_Base owner)
-    {
-        SetBomb(owner, searcherPooler, true);
-    }
-    public void UseElektroBomb(Character_Base owner)
-    {
-        SetBomb(owner, elektroPooler);
-    }
-    public void UseLavBomb(Character_Base owner)
-    {
-        SetBomb(owner, lavPooler);
-    }
-    public void UseBuzBomb(Character_Base owner)
-    {
-        SetBomb(owner, buzPooler);
-    }
-    public void UseSisBomb(Character_Base owner)
-    {
-        SetBomb(owner, sisPooler);
-    }
-    public void UseZehirBomb(Character_Base owner)
-    {
-        SetBomb(owner, zehirPooler);
-    }
-    private void SetBomb(Character_Base owner, Pooler pool, bool isSearcher = false)
+    private void SetBomb(Character_Base owner, Pooler pool, bool dontNeedTime = false)
     {
         Vector3Int ownerPos = owner.LearnIntDirection(owner.transform.position);
         (PoolObje, bool) bombItem = pool.HavuzdanObjeIste_Kontrol(ownerPos);
         Bomb_Base bomb = bombItem.Item1.GetComponent<Bomb_Base>();
-        bomb.SetBomb(owner, isSearcher);
+        bomb.SetBomb(owner, dontNeedTime);
         bomb.SetBoardCoor(new Vector2Int(ownerPos.x, ownerPos.z));
         if (bombItem.Item2)
         {
             bombParent.transform.SetParent(bombParent);
         }
-        if (pool == clockPooler)
+        if (pool == allSpecialBombPool[(int)BombType.Clock])
         {
             Player_Base.Instance.AddBombClock(bomb);
         }

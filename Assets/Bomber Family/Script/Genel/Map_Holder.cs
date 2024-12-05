@@ -16,6 +16,8 @@ public class Board
 
     public Board()
     {
+        boardType = BoardType.Empty;
+        boardOrder = -1;
     }
     public Board(Board board)
     {
@@ -37,8 +39,6 @@ public class GameBoard
     public GameBoard()
     {
         board_Game = new Board();
-        board_Game.boardType = BoardType.Empty;
-        board_Game.boardOrder = -1;
         board_Object = null;
     }
     public GameBoard(Board board_Game, GameObject board_Object)

@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   havuzum: {fileID: 11400000, guid: 96780ba395c620d43ae3e65a02525cf2, type: 2}
-  fireTime: 0.5
+  fireTime: 1
 --- !u!54 &8684380562972249802
 Rigidbody:
   m_ObjectHideFlags: 0
