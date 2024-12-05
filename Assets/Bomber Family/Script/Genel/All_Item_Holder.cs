@@ -9,7 +9,7 @@ public class All_Item_Holder : ScriptableObject
 
     [Header("Recipe Items")]
     [SerializeField] private List<Item_Source> malzemeList = new List<Item_Source>();
-    [SerializeField] private List<Item_Tool> aletList = new List<Item_Tool>();
+    [SerializeField] private List<Item_Tool> toolList = new List<Item_Tool>();
     [SerializeField] private List<Item> bombList = new List<Item>();
 
     [Header("Creator Items")]
@@ -25,7 +25,7 @@ public class All_Item_Holder : ScriptableObject
 
     // Recipe Items
     public List<Item_Source> MalzemeList { get { return malzemeList; } }
-    public List<Item_Tool> AletList { get { return aletList; } }
+    public List<Item_Tool> ToolList { get { return toolList; } }
     public List<Item> BombList { get { return bombList; } }
 
     // Creator Items
@@ -51,6 +51,28 @@ public class All_Item_Holder : ScriptableObject
         for (int e = 0; e < PlayerSourceList.Count; e++)
         {
             if (source == PlayerSourceList[e])
+            {
+                return e;
+            }
+        }
+        return -1;
+    }
+    public int LearnMalzemeOrder(Item_Source source)
+    {
+        for (int e = 0; e < malzemeList.Count; e++)
+        {
+            if (source == malzemeList[e])
+            {
+                return e;
+            }
+        }
+        return -1;
+    }
+    public int LearnToolOrder(Item_Source source)
+    {
+        for (int e = 0; e < toolList.Count; e++)
+        {
+            if (source == toolList[e])
             {
                 return e;
             }

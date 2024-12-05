@@ -13,6 +13,7 @@ public class Canvas_Manager_Editor : Editor
     private SerializedProperty all_Item_Holder;
     private SerializedProperty textMenuGoldAmount;
     private SerializedProperty textCreatorGoldAmount;
+    private SerializedProperty textCraftGoldAmount;
     #endregion
 
     #region Name
@@ -153,7 +154,8 @@ public class Canvas_Manager_Editor : Editor
     #region Bomb Button
     private bool showBombButton;
     private SerializedProperty bombClockActiviter;
-    private SerializedProperty allBombs;
+    private SerializedProperty rectBombButtonSimple;
+    private SerializedProperty objBombButtonHolder;
     #endregion
 
     #region Player Choose
@@ -205,6 +207,7 @@ public class Canvas_Manager_Editor : Editor
     private bool showCraft;
     private SerializedProperty buttonCraft;
     private SerializedProperty buttonCraftIcon;
+    private SerializedProperty craftSlotIcon;
     private SerializedProperty myMaterialList;
     private SerializedProperty myRecipeList;
     #endregion
@@ -232,6 +235,7 @@ public class Canvas_Manager_Editor : Editor
         all_Item_Holder = serializedObject.FindProperty("all_Item_Holder");
         textMenuGoldAmount = serializedObject.FindProperty("textMenuGoldAmount");
         textCreatorGoldAmount = serializedObject.FindProperty("textCreatorGoldAmount");
+        textCraftGoldAmount = serializedObject.FindProperty("textCraftGoldAmount");
         #endregion
 
         #region Name
@@ -364,7 +368,8 @@ public class Canvas_Manager_Editor : Editor
 
         #region Bomb Button
         bombClockActiviter = serializedObject.FindProperty("bombClockActiviter");
-        allBombs = serializedObject.FindProperty("allBombs");
+        rectBombButtonSimple = serializedObject.FindProperty("rectBombButtonSimple");
+        objBombButtonHolder = serializedObject.FindProperty("objBombButtonHolder");
         #endregion
 
         #region Choose
@@ -413,6 +418,7 @@ public class Canvas_Manager_Editor : Editor
         #region Craft
         buttonCraft = serializedObject.FindProperty("buttonCraft");
         buttonCraftIcon = serializedObject.FindProperty("buttonCraftIcon");
+        craftSlotIcon = serializedObject.FindProperty("craftSlotIcon");
         myMaterialList = serializedObject.FindProperty("myMaterialList");
         myRecipeList = serializedObject.FindProperty("myRecipeList");
         #endregion
@@ -439,6 +445,7 @@ public class Canvas_Manager_Editor : Editor
             EditorGUILayout.PropertyField(all_Item_Holder);
             EditorGUILayout.PropertyField(textMenuGoldAmount);
             EditorGUILayout.PropertyField(textCreatorGoldAmount);
+            EditorGUILayout.PropertyField(textCraftGoldAmount);
             EditorGUILayout.Space(5);
         }
 
@@ -603,7 +610,8 @@ public class Canvas_Manager_Editor : Editor
         if (showBombButton)
         {
             EditorGUILayout.PropertyField(bombClockActiviter);
-            EditorGUILayout.PropertyField(allBombs);
+            EditorGUILayout.PropertyField(rectBombButtonSimple);
+            EditorGUILayout.PropertyField(objBombButtonHolder);
             EditorGUILayout.Space(5);
         }
 
@@ -662,6 +670,7 @@ public class Canvas_Manager_Editor : Editor
         {
             EditorGUILayout.PropertyField(buttonCraft);
             EditorGUILayout.PropertyField(buttonCraftIcon);
+            EditorGUILayout.PropertyField(craftSlotIcon);
             EditorGUILayout.PropertyField(myMaterialList);
             EditorGUILayout.PropertyField(myRecipeList);
         }

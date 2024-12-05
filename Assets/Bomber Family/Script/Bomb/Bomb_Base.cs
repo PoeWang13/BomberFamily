@@ -2,17 +2,16 @@
 
 public enum BombType
 {
-    Simple = 0,
-    Area = 1,
-    Anti = 2,
-    Clock = 3,
-    Nucleer = 4,
-    Searcher = 5,
-    Elektro = 6,
-    Lav = 7,
-    Buz = 8,
-    Sis = 9,
-    Zehir = 10,
+    Area = 0,
+    Anti = 1,
+    Clock = 2,
+    Nucleer = 3,
+    Searcher = 4,
+    Elektro = 5,
+    Lav = 6,
+    Buz = 7,
+    Sis = 8,
+    Zehir = 9,
 }
 public class Bomb_Base : Board_Object
 {

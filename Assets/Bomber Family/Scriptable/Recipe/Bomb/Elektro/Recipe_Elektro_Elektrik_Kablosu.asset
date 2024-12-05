@@ -15,7 +15,7 @@ MonoBehaviour:
   myIcon: {fileID: 21300000, guid: 80dc2efcc5bc9a045b8c81509e51b8ae, type: 3}
   myRecipeItem: {fileID: 11400000, guid: 676941bd195ce4545965af52406225f0, type: 2}
   myRecipePrice: 250
-  myNeededMaterialList:
+  myNeededItemList:
   - recipeItem: {fileID: 11400000, guid: 7cdc9e0ab6f2e5146a11733ca4f13ae6, type: 2}
     recipeAmount: 10
     inventoryType: 0

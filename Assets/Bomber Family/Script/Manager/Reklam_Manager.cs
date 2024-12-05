@@ -87,54 +87,94 @@ public class Reklam_Manager : Singletion<Reklam_Manager>
     {
         reklamButtons.Add(buton);
     }
+    // Canvas -> Panel-Menu -> Panel-Shop -> Panel-Shop-Gold-Container -> Panel-Shop-Gold-Parent -> Panel-Button-Gold-X -> Button-Buy-Gold-X'lere atandı
     public void OnPurchaseFailed(Product purchase, PurchaseFailureDescription purchaseFailureDescription)
     {
-        Warning_Manager.Instance.ShowMessage(purchase.definition.id + " Purchase Failure Reason " + purchaseFailureDescription, 2);
+        string goldName = "";
+        if (purchase.definition.id == gold100)
+        {
+            goldName = "100 Gold";
+        }
+        else if (purchase.definition.id == gold200)
+        {
+            goldName = "200 Gold";
+        }
+        else if (purchase.definition.id == gold300)
+        {
+            goldName = "300 Gold";
+        }
+        else if (purchase.definition.id == gold500)
+        {
+            goldName = "500 Gold";
+        }
+        else if (purchase.definition.id == gold1500)
+        {
+            goldName = "1500 Gold";
+        }
+        else if (purchase.definition.id == gold2500)
+        {
+            goldName = "2500 Gold";
+        }
+        else if (purchase.definition.id == gold5000)
+        {
+            goldName = "5000 Gold";
+        }
+        else if (purchase.definition.id == gold7500)
+        {
+            goldName = "7500 Gold";
+        }
+        else if (purchase.definition.id == gold10000)
+        {
+            goldName = "10000 Gold";
+        }
+        Warning_Manager.Instance.ShowMessage(goldName + " purchase was cancelled.", 2);
     }
-    public void UpdateButtonForPurchasePRice(Product purchase, Button buton)
+    public void UpdateButtonForPurchasePrice(Product purchase, Button buton)
     {
         TextMeshProUGUI butonText = buton.GetComponentInChildren<TextMeshProUGUI>();
         butonText.text = purchase.metadata.localizedPrice + " " + purchase.metadata.isoCurrencyCode;
     }
+    // Canvas -> Panel-Menu -> Panel-Shop -> Panel-Shop-Gold-Container -> Panel-Shop-Gold-Parent -> Panel-Button-Gold-X -> Button-Buy-Gold-X'lere atandı
     public void OnPurchaseFetched(Product purchase)
     {
         if (purchase.definition.id == gold100)
         {
-            UpdateButtonForPurchasePRice(purchase, goldButton100);
+            UpdateButtonForPurchasePrice(purchase, goldButton100);
         }
         else if (purchase.definition.id == gold200)
         {
-            UpdateButtonForPurchasePRice(purchase, goldButton200);
+            UpdateButtonForPurchasePrice(purchase, goldButton200);
         }
         else if (purchase.definition.id == gold300)
         {
-            UpdateButtonForPurchasePRice(purchase, goldButton300);
+            UpdateButtonForPurchasePrice(purchase, goldButton300);
         }
         else if (purchase.definition.id == gold500)
         {
-            UpdateButtonForPurchasePRice(purchase, goldButton500);
+            UpdateButtonForPurchasePrice(purchase, goldButton500);
         }
         else if (purchase.definition.id == gold1500)
         {
-            UpdateButtonForPurchasePRice(purchase, goldButton1500);
+            UpdateButtonForPurchasePrice(purchase, goldButton1500);
         }
         else if (purchase.definition.id == gold2500)
         {
-            UpdateButtonForPurchasePRice(purchase, goldButton2500);
+            UpdateButtonForPurchasePrice(purchase, goldButton2500);
         }
         else if (purchase.definition.id == gold5000)
         {
-            UpdateButtonForPurchasePRice(purchase, goldButton5000);
+            UpdateButtonForPurchasePrice(purchase, goldButton5000);
         }
         else if (purchase.definition.id == gold7500)
         {
-            UpdateButtonForPurchasePRice(purchase, goldButton7500);
+            UpdateButtonForPurchasePrice(purchase, goldButton7500);
         }
         else if (purchase.definition.id == gold10000)
         {
-            UpdateButtonForPurchasePRice(purchase, goldButton10000);
+            UpdateButtonForPurchasePrice(purchase, goldButton10000);
         }
     }
+    // Canvas -> Panel-Menu -> Panel-Shop -> Panel-Shop-Gold-Container -> Panel-Shop-Gold-Parent -> Panel-Button-Gold-X -> Button-Buy-Gold-X'lere atandı
     public void OnPurchaseComplete(Product purchase)
     {
         int quantity = BuyGoldQuantity(purchase);

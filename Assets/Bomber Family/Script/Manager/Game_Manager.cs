@@ -328,7 +328,7 @@ public class Game_Manager : Singletion<Game_Manager>
     }
     public void UseClockBomb(Character_Base owner)
     {
-        SetBomb(owner, clockPooler);
+        SetBomb(owner, clockPooler, true);
     }
     public void UseNuckleerBomb(Character_Base owner)
     {
@@ -336,7 +336,7 @@ public class Game_Manager : Singletion<Game_Manager>
     }
     public void UseSearcherBomb(Character_Base owner)
     {
-        SetBomb(owner, searcherPooler);
+        SetBomb(owner, searcherPooler, true);
     }
     public void UseElektroBomb(Character_Base owner)
     {
@@ -368,6 +368,10 @@ public class Game_Manager : Singletion<Game_Manager>
         if (bombItem.Item2)
         {
             bombParent.transform.SetParent(bombParent);
+        }
+        if (pool == clockPooler)
+        {
+            Player_Base.Instance.AddBombClock(bomb);
         }
     }
     #endregion

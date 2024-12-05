@@ -20,6 +20,7 @@ public class Player_Base : Character_Base
     private List<Bomb_Base> clocks = new List<Bomb_Base>();
 
     public Player_Source Player_Source { get { return player_Source; } }
+    public int ClocksAmount { get { return clocks.Count; } }
 
     public void SetInstance()
     {
@@ -133,6 +134,11 @@ public class Player_Base : Character_Base
         {
             clocks[e].Bombed();
         }
+        clocks.Clear();
+    }
+    public void AddBombClock(Bomb_Base bomb)
+    {
+        clocks.Add(bomb);
     }
     #endregion
 
@@ -182,6 +188,7 @@ public class Player_Base : Character_Base
             Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Anti].bombAmount--;
             Canvas_Manager.Instance.SetBomb(BombType.Anti);
             base.UseAntiBomb();
+            Save_Load_Manager.Instance.SaveGame();
         }
     }
     public override void UseAreaBomb()
@@ -191,6 +198,7 @@ public class Player_Base : Character_Base
             Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Area].bombAmount--;
             Canvas_Manager.Instance.SetBomb(BombType.Area);
             base.UseAreaBomb();
+            Save_Load_Manager.Instance.SaveGame();
         }
     }
     public override void UseClockBomb()
@@ -200,6 +208,7 @@ public class Player_Base : Character_Base
             Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Clock].bombAmount--;
             Canvas_Manager.Instance.SetBomb(BombType.Clock);
             base.UseClockBomb();
+            Save_Load_Manager.Instance.SaveGame();
         }
     }
     public override void UseNucleerBomb()
@@ -209,6 +218,7 @@ public class Player_Base : Character_Base
             Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Nucleer].bombAmount--;
             Canvas_Manager.Instance.SetBomb(BombType.Nucleer);
             base.UseNucleerBomb();
+            Save_Load_Manager.Instance.SaveGame();
         }
     }
     public override void UseSearcherBomb()
@@ -218,6 +228,7 @@ public class Player_Base : Character_Base
             Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Searcher].bombAmount--;
             Canvas_Manager.Instance.SetBomb(BombType.Searcher);
             base.UseSearcherBomb();
+            Save_Load_Manager.Instance.SaveGame();
         }
     }
     public override void UseElektroBomb()
@@ -227,6 +238,7 @@ public class Player_Base : Character_Base
             Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Elektro].bombAmount--;
             Canvas_Manager.Instance.SetBomb(BombType.Elektro);
             base.UseElektroBomb();
+            Save_Load_Manager.Instance.SaveGame();
         }
     }
     public override void UseLavBomb()
@@ -236,6 +248,7 @@ public class Player_Base : Character_Base
             Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Lav].bombAmount--;
             Canvas_Manager.Instance.SetBomb(BombType.Lav);
             base.UseLavBomb();
+            Save_Load_Manager.Instance.SaveGame();
         }
     }
     public override void UseBuzBomb()
@@ -245,6 +258,7 @@ public class Player_Base : Character_Base
             Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Buz].bombAmount--;
             Canvas_Manager.Instance.SetBomb(BombType.Buz);
             base.UseBuzBomb();
+            Save_Load_Manager.Instance.SaveGame();
         }
     }
     public override void UseSisBomb()
@@ -254,6 +268,7 @@ public class Player_Base : Character_Base
             Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Sis].bombAmount--;
             Canvas_Manager.Instance.SetBomb(BombType.Sis);
             base.UseSisBomb();
+            Save_Load_Manager.Instance.SaveGame();
         }
     }
     public override void UseZehirBomb()
@@ -263,6 +278,7 @@ public class Player_Base : Character_Base
             Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Zehir].bombAmount--;
             Canvas_Manager.Instance.SetBomb(BombType.Zehir);
             base.UseZehirBomb();
+            Save_Load_Manager.Instance.SaveGame();
         }
     }
     #endregion

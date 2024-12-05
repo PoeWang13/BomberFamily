@@ -11,7 +11,7 @@ public class Item_Bomb : Item_Recipe
 
     public override void AddMyItemToInventory()
     {
-        Debug.Log("Item_Bomb");
+        Warning_Manager.Instance.ShowMessage("You crafted " + myBombType + " Bomb.", 2);
         Save_Load_Manager.Instance.gameData.allBombAmount[(int)myBombType].bombAmount++;
         Canvas_Manager.Instance.SetBomb(myBombType);
     }

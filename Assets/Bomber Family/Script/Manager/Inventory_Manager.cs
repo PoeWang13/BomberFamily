@@ -3,6 +3,15 @@ using System.Collections.Generic;
 
 public class Inventory_Manager : Singletion<Inventory_Manager>
 {
+    [SerializeField] private List<NeededItemHolder> neededItemList = new List<NeededItemHolder>();
+    [ContextMenu("Add New Item")]
+    private void AddNewItem()
+    {
+        for (int i = 0; i < neededItemList.Count; i++)
+        {
+            AddItem(neededItemList[i]);
+        }
+    }
     [SerializeField] private Slot inventoryPrefab;
     [SerializeField] private Transform inventoryParent;
     [SerializeField] private All_Item_Holder allItemHolder;
@@ -14,11 +23,18 @@ public class Inventory_Manager : Singletion<Inventory_Manager>
     private void Start()
     {
         // Inventory Slot oluştur
-        AddInventorySlot(Save_Load_Manager.Instance.gameData.inventorySlotAmount);
+        for (int e = 0; e < Save_Load_Manager.Instance.gameData.inventory.Count; e++)
+        {
+            myInventory.Add(Instantiate(inventoryPrefab, inventoryParent));
+        }
 
         // Materialleri ver
         for (int e = 0; e < Save_Load_Manager.Instance.gameData.inventory.Count; e++)
         {
+            if (Save_Load_Manager.Instance.gameData.inventory[e].inventoryAmount < 1)
+            {
+                continue;
+            }
             if (Save_Load_Manager.Instance.gameData.inventory[e].inventoryType == InventoryType.Material)
             {
                 myInventory[e].SlotFull(allItemHolder.MalzemeList[Save_Load_Manager.Instance.gameData.inventory[e].inventoryOrder],
@@ -26,7 +42,7 @@ public class Inventory_Manager : Singletion<Inventory_Manager>
             }
             else if (Save_Load_Manager.Instance.gameData.inventory[e].inventoryType == InventoryType.Alet)
             {
-                myInventory[e].SlotFull(allItemHolder.AletList[Save_Load_Manager.Instance.gameData.inventory[e].inventoryOrder],
+                myInventory[e].SlotFull(allItemHolder.ToolList[Save_Load_Manager.Instance.gameData.inventory[e].inventoryOrder],
                     Save_Load_Manager.Instance.gameData.inventory[e].inventoryAmount);
             }
         }
@@ -37,6 +53,7 @@ public class Inventory_Manager : Singletion<Inventory_Manager>
         for (int e = 0; e < slotAmount; e++)
         {
             myInventory.Add(Instantiate(inventoryPrefab, inventoryParent));
+            Save_Load_Manager.Instance.gameData.inventory.Add(new Inventory());
         }
     }
     /// <summary>
@@ -61,26 +78,54 @@ public class Inventory_Manager : Singletion<Inventory_Manager>
         }
         return chekingAmount;
     }
-    public void AddItem(MaterialHolder materialHolder)
+    public void AddItem(NeededItemHolder addedItem)
     {
-        Item_Source itemMaterial = materialHolder.recipeItem as Item_Source;
-        int chekingAmount = materialHolder.recipeAmount;
-        for (int e = 0; e < myInventory.Count; e++)
+        Item_Source itemMaterial = addedItem.recipeItem as Item_Source;
+        int chekingAmount = addedItem.recipeAmount;
+        int itemOrder = -1;
+        bool isFinded = false;
+        if (addedItem.inventoryType == InventoryType.Material)
         {
-            if (myInventory[e].CheckSlotForSameItem(itemMaterial))
+            itemOrder = allItemHolder.LearnMalzemeOrder(itemMaterial);
+        }
+        else
+        {
+            itemOrder = allItemHolder.LearnToolOrder(itemMaterial);
+        }
+        for (int e = 0; e < myInventory.Count && !isFinded; e++)
+        {
+            if (myInventory[e].CheckSlotForEmptyItem())
             {
+                Save_Load_Manager.Instance.gameData.inventory[e] = new Inventory(itemOrder, addedItem.inventoryType);
                 if (itemMaterial.MyMax - myInventory[e].MyAmount >= chekingAmount)
                 {
-                    Save_Load_Manager.Instance.gameData.inventory[e].inventoryAmount += chekingAmount;
-                    myInventory[e].AddItem(chekingAmount);
-                    Save_Load_Manager.Instance.SaveGame();
-                    return;
+                    Save_Load_Manager.Instance.gameData.inventory[e].AddAmount(chekingAmount);
+                    myInventory[e].SlotFull(itemMaterial, chekingAmount);
+                    chekingAmount = 0;
+                    isFinded = true;
                 }
                 else
                 {
                     int addingAmountToSlot = itemMaterial.MyMax - myInventory[e].MyAmount;
                     chekingAmount -= addingAmountToSlot;
-                    Save_Load_Manager.Instance.gameData.inventory[e].inventoryAmount += addingAmountToSlot;
+                    Save_Load_Manager.Instance.gameData.inventory[e].AddAmount(addingAmountToSlot);
+                    myInventory[e].SlotFull(itemMaterial, addingAmountToSlot);
+                }
+            }
+            else if (myInventory[e].CheckSlotForSameItem(itemMaterial))
+            {
+                if (itemMaterial.MyMax - myInventory[e].MyAmount >= chekingAmount)
+                {
+                    Save_Load_Manager.Instance.gameData.inventory[e].AddAmount(chekingAmount);
+                    myInventory[e].AddItem(chekingAmount);
+                    chekingAmount = 0;
+                    isFinded = true;
+                }
+                else
+                {
+                    int addingAmountToSlot = itemMaterial.MyMax - myInventory[e].MyAmount;
+                    chekingAmount -= addingAmountToSlot;
+                    Save_Load_Manager.Instance.gameData.inventory[e].AddAmount(addingAmountToSlot);
                     myInventory[e].AddItem(addingAmountToSlot);
                 }
             }
@@ -91,12 +136,12 @@ public class Inventory_Manager : Singletion<Inventory_Manager>
         }
         Save_Load_Manager.Instance.SaveGame();
     }
-    public void RemoveItem(MaterialHolder materialHolder)
+    public void RemoveItem(NeededItemHolder removedHolder)
     {
-        int chekingAmount = materialHolder.recipeAmount;
-        for (int e = myInventory.Count - 1; e >= 0; e--)
+        int chekingAmount = removedHolder.recipeAmount;
+        for (int e = 0; e < myInventory.Count; e++)
         {
-            if (myInventory[e].CheckSlotForSameItem(materialHolder.recipeItem))
+            if (myInventory[e].CheckSlotForSameItem(removedHolder.recipeItem))
             {
                 if (myInventory[e].MyAmount >= chekingAmount)
                 {

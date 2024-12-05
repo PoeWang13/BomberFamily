@@ -4,9 +4,6 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.Networking;
 using System.Collections.Generic;
-using Random = UnityEngine.Random;
-using UnityEditor;
-using UnityEngine.Playables;
 
 [Serializable]
 public class LevelBoard
@@ -134,11 +131,21 @@ public class Inventory
     {
         this.inventoryOrder = -1;
     }
+    public Inventory(int inventoryOrder, InventoryType inventoryType)
+    {
+        this.inventoryOrder = inventoryOrder;
+        this.inventoryAmount = 0;
+        this.inventoryType = inventoryType;
+    }
     public Inventory(int inventoryOrder, int inventoryAmount, InventoryType inventoryType)
     {
         this.inventoryOrder = inventoryOrder;
         this.inventoryAmount = inventoryAmount;
         this.inventoryType = inventoryType;
+    }
+    public void AddAmount(int amount)
+    {
+        inventoryAmount += amount;
     }
 }
 [Serializable]
@@ -165,19 +172,23 @@ public class GameData
         lastDay = -9999;
 
         inventorySlotAmount = 10;
+        for (int e = 0; e < 10; e++)
+        {
+            inventory.Add(new Inventory());
+        }
 
         // 1 gün -> Altın -> 100 - 500
         dailyReward.Add(new DailyReward(DailyType.Gold, false, 0, 100));
         // 2 gün -> Exp -> 50 - 250
         dailyReward.Add(new DailyReward(DailyType.Exp, false, 0, 50));
         // 3 gün -> Malzeme -> 1 - 10 Malzeme
-        dailyReward.Add(new DailyReward(DailyType.Gold, false, 0, 200));
+        dailyReward.Add(new DailyReward(DailyType.Malzeme, false, 0, 1));
         // 4 gün -> Altın -> 500 - 1000
-        dailyReward.Add(new DailyReward(DailyType.Exp, false, 0, 100));
+        dailyReward.Add(new DailyReward(DailyType.Gold, false, 0, 200));
         // 5 gün -> Exp -> 250 - 500
-        dailyReward.Add(new DailyReward(DailyType.Gold, false, 0, 400));
+        dailyReward.Add(new DailyReward(DailyType.Exp, false, 0, 100));
         // 6 gün -> Malzeme -> 1 - 2 Alet
-        dailyReward.Add(new DailyReward(DailyType.Exp, false, 0, 200));
+        dailyReward.Add(new DailyReward(DailyType.Alet, false, 0, 1));
         // 7 gün -> Bomba
         dailyReward.Add(new DailyReward(DailyType.Bomb, false, 1, 1));
     }

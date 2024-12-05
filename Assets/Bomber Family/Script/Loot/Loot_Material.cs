@@ -6,15 +6,15 @@ public class Loot_Material : Loot_Base
     [SerializeField] private All_Item_Holder all_Item_Holder;
     [SerializeField] private SpriteRenderer mySpriteRenderer;
     
-    private MaterialHolder myMaterial = new MaterialHolder();
+    private NeededItemHolder myNeededItem = new NeededItemHolder();
 
     public override void OnAwake()
     {
         int rnd = Random.Range(0, all_Item_Holder.MalzemeList.Count);
         mySpriteRenderer.sprite = all_Item_Holder.MalzemeList[rnd].MyIcon;
-        myMaterial.recipeItem = all_Item_Holder.MalzemeList[rnd];
-        myMaterial.recipeAmount = 1;
-        myMaterial.inventoryType = InventoryType.Material;
+        myNeededItem.recipeItem = all_Item_Holder.MalzemeList[rnd];
+        myNeededItem.recipeAmount = 1;
+        myNeededItem.inventoryType = InventoryType.Material;
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -27,7 +27,7 @@ public class Loot_Material : Loot_Base
                 {
                     transform.DOScale(Vector3.zero, 0.1f).OnComplete(() =>
                     {
-                        Inventory_Manager.Instance.AddItem(myMaterial);
+                        Inventory_Manager.Instance.AddItem(myNeededItem);
                         EnterHavuz();
                     });
                 });

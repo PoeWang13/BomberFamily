@@ -5857,7 +5857,7 @@ GameObject:
   - component: {fileID: 95448628147039386}
   m_Layer: 0
   m_Name: Searcher_Bomb
-  m_TagString: Untagged
+  m_TagString: Bomb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5893,7 +5893,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   havuzum: {fileID: 11400000, guid: 865d2fa53761f344ab62ccf523bc2c2f, type: 2}
   myBoardType: 7
-  myCollider: {fileID: 0}
   bombFirePool: {fileID: 11400000, guid: 4893a44930e886843a50b67a0e2f5eab, type: 2}
   bombFireTime: 1
 --- !u!95 &95448628147039386

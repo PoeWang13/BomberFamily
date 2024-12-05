@@ -15,6 +15,16 @@ MonoBehaviour:
   myIcon: {fileID: 21300000, guid: 615a4a5e4f99bc1419be98b9dfd04fc6, type: 3}
   myRecipeItem: {fileID: 11400000, guid: 8935dfdced880144d95fb3514630abf5, type: 2}
   myRecipePrice: 100
+  myNeededItemList:
+  - recipeItem: {fileID: 11400000, guid: 1aefa4da0c7db2b458748b2320cdd782, type: 2}
+    recipeAmount: 10
+    inventoryType: 0
+  - recipeItem: {fileID: 11400000, guid: 679c6b456f93fe747bf56e8b72912a7d, type: 2}
+    recipeAmount: 10
+    inventoryType: 0
+  - recipeItem: {fileID: 11400000, guid: 682b3742e6a03a849ae7726ccddd159f, type: 2}
+    recipeAmount: 10
+    inventoryType: 0
   myNeededMaterialList:
   - recipeItem: {fileID: 11400000, guid: 1aefa4da0c7db2b458748b2320cdd782, type: 2}
     recipeAmount: 10

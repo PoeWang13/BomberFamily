@@ -15,17 +15,38 @@ MonoBehaviour:
   myIcon: {fileID: 21300000, guid: 8ef96c57f043f2848bb527f5a11be6e0, type: 3}
   myRecipeItem: {fileID: 11400000}
   myRecipePrice: 1000
+  myNeededItemList:
+  - recipeItem: {fileID: 11400000, guid: e9c2a757b4ff20744a102168a2be2592, type: 2}
+    recipeAmount: 20
+    inventoryType: 1
+  - recipeItem: {fileID: 11400000, guid: 74b95810dea01a141bdc20392819d793, type: 2}
+    recipeAmount: 25
+    inventoryType: 1
+  - recipeItem: {fileID: 11400000, guid: 23e6dbf69e7821c45bac82fcae56df91, type: 2}
+    recipeAmount: 5
+    inventoryType: 1
+  - recipeItem: {fileID: 11400000, guid: 4268daefbc31b304f84913ef6159f9b5, type: 2}
+    recipeAmount: 10
+    inventoryType: 1
+  - recipeItem: {fileID: 11400000, guid: be16ecca8d849094097e9b771041f0ae, type: 2}
+    recipeAmount: 10
+    inventoryType: 1
   myNeededMaterialList:
   - recipeItem: {fileID: 11400000, guid: 5ef4088212dc79b4aa275a2d9dd1d746, type: 2}
     recipeAmount: 20
+    inventoryType: 0
   - recipeItem: {fileID: 11400000, guid: c67da3084ea02004fa68cd13e4c20e3c, type: 2}
     recipeAmount: 25
+    inventoryType: 0
   - recipeItem: {fileID: 11400000, guid: f7c0968d84cec3c418f109fa8c0d7980, type: 2}
     recipeAmount: 5
+    inventoryType: 0
   - recipeItem: {fileID: 11400000, guid: 494051979c5236640ad53c0604eeb8de, type: 2}
     recipeAmount: 10
+    inventoryType: 0
   - recipeItem: {fileID: 11400000, guid: eadd92d6b7bb6ab40b816cc872e81822, type: 2}
     recipeAmount: 10
+    inventoryType: 0
   myBombType: 8
   myRecipeList:
   - {fileID: 11400000, guid: 915644c02ac04fe4c99c0fa08b9dadf3, type: 2}

@@ -2,14 +2,17 @@
 
 public class Fikirler : MonoBehaviour
 {
-    /// Günlük giriş
-    /// Kaçırılan günlük giriş
+    /// +Günlük giriş
+    /// +Kaçırılan günlük giriş
     /// +Levele başlama desteği
     /// +2 Kat ödül
     /// Özel level oynama
     /// Özel giysiler
     /// Özel büyü
     /// Levellerden bazen vakitle açılan sandık düşer, bu sandıkları upgrade etmek isteriz.
+    /// BombClock için script yapılacak ve limit belirlenecek
+    /// BombFire lar için zaman ayarlama eklenecek
+    /// Craft sistemine özel bombalar için fireTime, fireLimit, firePower belirleyecek yeni sistem eklenecek
 
     /// Craft System
     /// Her bomba 5 çeşit alet kullanılarak yapılır. Bu aletlerde hammadde kullanılarak yapılır.

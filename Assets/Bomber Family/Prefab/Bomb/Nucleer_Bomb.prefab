@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2682405291173452151}
   m_Layer: 0
   m_Name: Nucleer_Bomb
-  m_TagString: Untagged
+  m_TagString: Bomb
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -47,7 +47,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   havuzum: {fileID: 11400000, guid: c8b369ae12b1e3a42b109847994bcf61, type: 2}
   myBoardType: 7
-  myCollider: {fileID: 0}
   bombFirePool: {fileID: 11400000, guid: e468d52fc7577234083ff08e2fa32fd8, type: 2}
   bombFireTime: 1
 --- !u!1 &8449032166251923346

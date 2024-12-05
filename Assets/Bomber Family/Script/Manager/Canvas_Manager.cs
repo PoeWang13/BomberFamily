@@ -6,12 +6,18 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
+using Unity.Jobs.LowLevel.Unsafe;
 
 [Serializable]
 public class BombList
 {
     public RectTransform rectBombParent;
     public TextMeshProUGUI textBombAmount;
+    public BombList(RectTransform rectBombParent, TextMeshProUGUI textBombAmount)
+    {
+        this.rectBombParent = rectBombParent;
+        this.textBombAmount = textBombAmount;
+    }
 }
 public class Canvas_Manager : Singletion<Canvas_Manager>
 {
@@ -23,6 +29,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     [SerializeField] private Transform sceneMaskedImage;
     [SerializeField] private All_Item_Holder all_Item_Holder;
     [SerializeField] private TextMeshProUGUI textMenuGoldAmount;
+    [SerializeField] private TextMeshProUGUI textCraftGoldAmount;
     [SerializeField] private TextMeshProUGUI textCreatorGoldAmount;
 
     // Name
@@ -148,7 +155,8 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
 
     // Bomb
     [SerializeField] private GameObject bombClockActiviter;
-    [SerializeField] private List<BombList> allBombs = new List<BombList>();
+    [SerializeField] private RectTransform rectBombButtonSimple;
+    [SerializeField] private Transform objBombButtonHolder;
 
     // Player Choose
     [SerializeField] private Joystick joystickMove;
@@ -194,6 +202,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     // Craft
     [SerializeField] private Button buttonCraft;
     [SerializeField] private Image buttonCraftIcon;
+    [SerializeField] private Sprite craftSlotIcon;
     [SerializeField] private List<Slot_Material> myMaterialList = new List<Slot_Material>();
     [SerializeField] private List<Slot_Recipe> myRecipeList = new List<Slot_Recipe>();
 
@@ -214,6 +223,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     private bool correctMagicStoneAmount;
     private bool correctDungeonSize;
     private bool isMultiple;
+    private bool changeTime = false;
 
     private int amountMultiple;
     private int bombOrder;
@@ -226,7 +236,9 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     private Image imageLevelHelpPower;
     private Image imageLevelHelpAmount;
     private Item_Recipe myRecipeItem;
+    private RectTransform choosedBomb;
 
+    private List<BombList> allBombs = new List<BombList>();
     private List<bool> buttonCreaterWallList = new List<bool>();
     private List<bool> buttonCreaterBoxList = new List<bool>();
     private List<bool> buttonCreaterTrapList = new List<bool>();
@@ -273,6 +285,11 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     {
         for (int e = 0; e < Save_Load_Manager.Instance.gameData.dailyReward.Count; e++)
         {
+            int dailyOrder = e;
+            dailyButtons[dailyOrder].onClick.AddListener(() =>
+            {
+                DailyReward(dailyOrder);
+            });
             Sprite dailySprite = null;
             if (Save_Load_Manager.Instance.gameData.dailyReward[e].dailyType == DailyType.Gold)
             {
@@ -288,7 +305,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
             }
             if (Save_Load_Manager.Instance.gameData.dailyReward[e].dailyType == DailyType.Alet)
             {
-                dailySprite = all_Item_Holder.AletList[Save_Load_Manager.Instance.gameData.dailyReward[e].dailyRewardOrder].MyIcon;
+                dailySprite = all_Item_Holder.ToolList[Save_Load_Manager.Instance.gameData.dailyReward[e].dailyRewardOrder].MyIcon;
             }
             if (Save_Load_Manager.Instance.gameData.dailyReward[e].dailyType == DailyType.Bomb)
             {
@@ -298,8 +315,8 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
             {
                 dailySprite = all_Item_Holder.BiletIcons[Save_Load_Manager.Instance.gameData.dailyReward[e].dailyRewardOrder];
             }
-            SetDailyReward(e, Save_Load_Manager.Instance.gameData.dailyReward[e].dailyTaked, Save_Load_Manager.Instance.gameData.dailyReward[e].dailyRewardAmount, Save_Load_Manager.Instance.gameData.dailyReward[e].dailyRewardOrder,
-                Save_Load_Manager.Instance.gameData.dailyReward[e].dailyType, dailySprite);
+            SetDailyReward(e, Save_Load_Manager.Instance.gameData.dailyReward[e].dailyTaked, Save_Load_Manager.Instance.gameData.dailyReward[e].dailyRewardAmount, 
+                Save_Load_Manager.Instance.gameData.dailyReward[e].dailyRewardOrder, Save_Load_Manager.Instance.gameData.dailyReward[e].dailyType, dailySprite);
         }
         // Oyuna ilk kez girmişler
         if (Save_Load_Manager.Instance.gameData.lastDay == -9999)
@@ -310,12 +327,9 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         // Oyunla aynı yıldalar
         else if (Game_Manager.Instance.Year == Save_Load_Manager.Instance.gameData.year)
         {
-            Debug.LogWarning(Game_Manager.Instance.DayOfYear);
-            Debug.LogWarning(Save_Load_Manager.Instance.gameData.lastDay - 1);
             // LastDay bugüne ait
             if (Game_Manager.Instance.DayOfYear == Save_Load_Manager.Instance.gameData.lastDay)
             {
-                Debug.LogWarning("4444");
                 // Ödül alınmış
                 bool finded = false;
                 for (int e = 0; e < Save_Load_Manager.Instance.gameData.dailyReward.Count && !finded; e++)
@@ -333,7 +347,6 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
             // LastDay düne ait
             else if (Game_Manager.Instance.DayOfYear == Save_Load_Manager.Instance.gameData.lastDay + 1)
             {
-                Debug.LogWarning("3333");
                 // Günü gelmiş ödül butonu aç
                 bool finded = false;
                 for (int e = 0; e < Save_Load_Manager.Instance.gameData.dailyReward.Count && !finded; e++)
@@ -360,7 +373,6 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
             // LastDay dünden önceki günlerden birine ait
             else if(Game_Manager.Instance.DayOfYear > Save_Load_Manager.Instance.gameData.lastDay + 1)
             {
-                Debug.LogWarning("111");
                 int dailyOrder = -1;
                 bool finded = false;
                 for (int e = 0; e < Save_Load_Manager.Instance.gameData.dailyReward.Count && !finded; e++)
@@ -423,8 +435,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         }
         Save_Load_Manager.Instance.SaveGame();
     }
-    // Canvas -> Panel-Menu -> Panel-Daily-Holder -> Panel-Daily-Parent -> Panel-Daily -> Button-Daily'larına atandı
-    public void DailyReward(int dailyOrder)
+    private void DailyReward(int dailyOrder)
     {
         Save_Load_Manager.Instance.gameData.dailyReward[dailyOrder].dailyTaked = true;
         dailyButtons[dailyOrder].interactable = false;
@@ -442,11 +453,11 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         }
         else if (Save_Load_Manager.Instance.gameData.dailyReward[dailyOrder].dailyType == DailyType.Malzeme)
         {
-            Inventory_Manager.Instance.AddItem(new MaterialHolder(all_Item_Holder.MalzemeList[dailyOrder], 1, InventoryType.Material));
+            Inventory_Manager.Instance.AddItem(new NeededItemHolder(all_Item_Holder.MalzemeList[Save_Load_Manager.Instance.gameData.dailyReward[dailyOrder].dailyRewardOrder], 1, InventoryType.Material));
         }
         else if (Save_Load_Manager.Instance.gameData.dailyReward[dailyOrder].dailyType == DailyType.Alet)
         {
-            Inventory_Manager.Instance.AddItem(new MaterialHolder(all_Item_Holder.AletList[dailyOrder], 1, InventoryType.Alet));
+            Inventory_Manager.Instance.AddItem(new NeededItemHolder(all_Item_Holder.ToolList[Save_Load_Manager.Instance.gameData.dailyReward[dailyOrder].dailyRewardOrder], 1, InventoryType.Alet));
         }
         else if (Save_Load_Manager.Instance.gameData.dailyReward[dailyOrder].dailyType == DailyType.Bomb)
         {
@@ -925,6 +936,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         SetPlayerInfo();
         SetLevel();
         SetGold();
+        SetBombText();
         SetGateCreatorSlot();
         SetWallCreatorSlot();
         SetBoxCreatorSlot();
@@ -954,6 +966,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         Audio_Manager.Instance.PlayGoldChance();
         textMenuGoldAmount.text = Save_Load_Manager.Instance.gameData.gold.ToString();
         textCreatorGoldAmount.text = Save_Load_Manager.Instance.gameData.gold.ToString();
+        textCraftGoldAmount.text = Save_Load_Manager.Instance.gameData.gold.ToString();
     }
     public void SetGoldSmooth(int amount)
     {
@@ -968,6 +981,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
             // goldu arttır
             textMenuGoldAmount.text = (goldChangedStaertedAmount + (int)value).ToString();
             textCreatorGoldAmount.text = (goldChangedStaertedAmount + (int)value).ToString();
+            textCraftGoldAmount.text = (goldChangedStaertedAmount + (int)value).ToString();
         }, startValue: 0, endValue: goldChangedAmount, duration: 1.5f).SetEase(Ease.Linear).OnComplete(() =>
         {
             goldChangedAmount = 0;
@@ -977,37 +991,6 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     #endregion
 
     #region Bomb
-    // Canvas -> Panel-Game -> Button-Bomb-Clock-Activiter'a atandı
-    public void UseBombClockActiviter()
-    {
-        Player_Base.Instance.UseBombClockActiviter();
-    }
-    // Canvas -> Panel-Game -> Button-Bomb-Change'a atandı.
-    public void ChangeBomb()
-    {
-        allBombs[bombOrder].rectBombParent.DORotate(Vector3.forward * 180, 0.5f).OnComplete(() =>
-        {
-            bool findedBomb = false;
-            while (!findedBomb)
-            {
-                bombOrder++;
-                if (bombOrder == Save_Load_Manager.Instance.gameData.allBombAmount.Count)
-                {
-                    bombOrder = 0;
-                    findedBomb = true;
-                    allBombs[bombOrder].rectBombParent.DORotate(Vector3.zero, 0.5f);
-                }
-                else
-                {
-                    if (Save_Load_Manager.Instance.gameData.allBombAmount[bombOrder].bombAmount > 0)
-                    {
-                        findedBomb = true;
-                        allBombs[bombOrder].rectBombParent.DORotate(Vector3.zero, 0.5f);
-                    }
-                }
-            }
-        });
-    }
     // Canvas -> Panel-Game -> Bomb-Holder -> Panel-Simple-Bomb-Parent -> Button-Simple-Bomb'a atandı.
     public void UseSimpleBomb()
     {
@@ -1063,27 +1046,169 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     {
         player_Base.UseZehirBomb();
     }
-    public void SetBomb(BombType bombType)
+    private void SetBombText()
     {
-        allBombs[(int)bombType].textBombAmount.text = Save_Load_Manager.Instance.gameData.allBombAmount[(int)bombType].ToString();
         int bombTypeAmount = Enum.GetValues(typeof(BombType)).Length;
-        bool finded = false;
-        for (int e = 0; e < bombTypeAmount && !finded; e++)
+        for (int e = 0; e < bombTypeAmount; e++)
         {
-            if (Save_Load_Manager.Instance.gameData.allBombAmount[e].bombType == bombType)
+            int order = e;
+            RectTransform rectBomb = Instantiate(rectBombButtonSimple, objBombButtonHolder);
+            rectBomb.name = "Panel-Special-Bomb-" + (BombType)order;
+            rectBomb.DORotate(Vector3.forward * 180, 0.5f);
+
+            Image image = rectBomb.GetChild(0).GetComponent<Image>();
+            image.sprite = all_Item_Holder.BombList[e].MyIcon;
+
+            Button buton = rectBomb.GetChild(0).GetComponent<Button>();
+            buton.name = "Button-Special-Bomb-" + (BombType)order;
+            buton.onClick.AddListener(() =>
             {
-                finded = true;
-                if (Save_Load_Manager.Instance.gameData.allBombAmount[e].bombAmount == 0)
+                UseSpecialBomb(order);
+            });
+
+            TextMeshProUGUI textBomb = rectBomb.GetChild(1).GetComponent<TextMeshProUGUI>();
+            textBomb.name = "Text-Special-Bomb-" + (BombType)order;
+            textBomb.text = Save_Load_Manager.Instance.gameData.allBombAmount[e].bombAmount.ToString();
+
+            allBombs.Add(new BombList(rectBomb, textBomb));
+        }
+        choosedBomb = rectBombButtonSimple;
+        Button butonSimple = rectBombButtonSimple.GetChild(0).GetComponent<Button>();
+        butonSimple.onClick.AddListener(() =>
+        {
+            UseSimpleBomb();
+        });
+    }
+    private void UseSpecialBomb(int bombOrder)
+    {
+        Debug.Log(bombOrder);
+    }
+    // Canvas -> Panel-Game -> Button-Bomb-Clock-Activiter'a atandı
+    public void UseBombClockActiviter()
+    {
+        Player_Base.Instance.UseBombClockActiviter();
+        if (Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Clock].bombAmount == 0)
+        {
+            bombOrder = 0;
+            changeTime = true;
+            bombClockActiviter.SetActive(false);
+            allBombs[(int)BombType.Clock].rectBombParent.DORotate(Vector3.forward * 180, 0.5f).OnComplete(() =>
+            {
+                choosedBomb = rectBombButtonSimple;
+                choosedBomb.DORotate(Vector3.zero, 0.5f).OnComplete(() =>
                 {
-                    allBombs[(int)bombType].rectBombParent.DORotate(Vector3.forward * 180, 0.5f).OnComplete(() =>
+                    changeTime = false;
+                });
+            });
+        }
+    }
+    // Canvas -> Panel-Game -> Button-Bomb-Change'a atandı.
+    public void ChangeBomb()
+    {
+        if (changeTime)
+        {
+            return;
+        }
+        changeTime = true;
+        bombClockActiviter.SetActive(false);
+        choosedBomb.DORotate(Vector3.forward * 180, 0.5f).OnComplete(() =>
+        {
+            bool findedBomb = false;
+            for (int e = bombOrder; e < allBombs.Count && !findedBomb; e++)
+            {
+                if (e == (int)BombType.Clock)
+                {
+                    if (Save_Load_Manager.Instance.gameData.allBombAmount[e].bombAmount > 0 || player_Base.ClocksAmount > 0)
                     {
-                        allBombs[(int)BombType.Simple].rectBombParent.DORotate(Vector3.zero, 0.5f);
-                    });
+                        bombOrder = e + 1;
+                        findedBomb = true;
+                        choosedBomb = allBombs[(int)BombType.Clock].rectBombParent;
+                        choosedBomb.DORotate(Vector3.zero, 0.5f).OnComplete(() =>
+                        {
+                            changeTime = false;
+                            bombClockActiviter.SetActive(true);
+                        });
+                    }
                 }
                 else
                 {
-                    allBombs[(int)bombType].rectBombParent.gameObject.SetActive(true);
+                    if (Save_Load_Manager.Instance.gameData.allBombAmount[e].bombAmount > 0)
+                    {
+                        bombOrder = e + 1;
+                        findedBomb = true;
+                        choosedBomb = allBombs[e].rectBombParent;
+                        choosedBomb.DORotate(Vector3.zero, 0.5f).OnComplete(() =>
+                        {
+                            changeTime = false;
+                        });
+                    }
                 }
+            }
+            if (!findedBomb)
+            {
+                bombOrder = 0;
+                findedBomb = true;
+                choosedBomb = rectBombButtonSimple;
+                choosedBomb.DORotate(Vector3.zero, 0.5f).OnComplete(() => changeTime = false);
+            }
+            //while (!findedBomb)
+            //{
+            //    bombOrder++;
+            //    if (bombOrder == Save_Load_Manager.Instance.gameData.allBombAmount.Count)
+            //    {
+            //        bombOrder = 0;
+            //        findedBomb = true;
+            //        choosedBomb = rectBombButtonSimple;
+            //        choosedBomb.DORotate(Vector3.zero, 0.5f).OnComplete(() => changeTime = false);
+            //    }
+            //    else
+            //    {
+            //        if (bombOrder == (int)BombType.Clock)
+            //        {
+            //            if (Save_Load_Manager.Instance.gameData.allBombAmount[bombOrder].bombAmount > 0 || player_Base.ClocksAmount > 0)
+            //            {
+            //                findedBomb = true;
+            //                choosedBomb = allBombs[(int)BombType.Clock].rectBombParent;
+            //                choosedBomb.DORotate(Vector3.zero, 0.5f).OnComplete(() =>
+            //                {
+            //                    changeTime = false;
+            //                    bombClockActiviter.SetActive(true);
+            //                });
+            //            }
+            //        }
+            //        else
+            //        {
+            //            if (Save_Load_Manager.Instance.gameData.allBombAmount[bombOrder].bombAmount > 0)
+            //            {
+            //                findedBomb = true;
+            //                choosedBomb = allBombs[bombOrder].rectBombParent;
+            //                choosedBomb.DORotate(Vector3.zero, 0.5f).OnComplete(() =>
+            //                {
+            //                    changeTime = false;
+            //                });
+            //            }
+            //        }
+            //    }
+            //}
+        });
+    }
+    public void SetBomb(BombType bombType)
+    {
+        allBombs[(int)bombType].textBombAmount.text = Save_Load_Manager.Instance.gameData.allBombAmount[(int)bombType].bombAmount.ToString();
+        if (Save_Load_Manager.Instance.gameData.allBombAmount[(int)bombType].bombAmount == 0)
+        {
+            if (bombType != BombType.Clock)
+            {
+                changeTime = true;
+                choosedBomb.DORotate(Vector3.forward * 180, 0.5f).OnComplete(() =>
+                {
+                    choosedBomb = rectBombButtonSimple;
+                    choosedBomb.DORotate(Vector3.zero, 0.5f).OnComplete(() =>
+                    {
+                        changeTime = false;
+                        bombOrder = 0;
+                    });
+                });
             }
         }
     }
@@ -2427,7 +2552,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     public void SetRecipeList(Item_Bomb bombItem)
     {
         myRecipeItem = null;
-        buttonCraftIcon.sprite = null;
+        buttonCraftIcon.sprite = craftSlotIcon;
         for (int e = 0; e < myMaterialList.Count; e++)
         {
             myMaterialList[e].SlotRelease();
@@ -2449,9 +2574,9 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         {
             myMaterialList[e].SlotRelease();
         }
-        for (int e = 0; e < recipeItem.MyNeededMaterialList.Count; e++)
+        for (int e = 0; e < recipeItem.MyNeededItemList.Count; e++)
         {
-            myMaterialList[e].SetMaterialSlot(recipeItem.MyNeededMaterialList[e]);
+            myMaterialList[e].SetMaterialSlot(recipeItem.MyNeededItemList[e]);
         }
     }
     // Canvas -> Panel-Craft-System -> Panel-Craft -> Button-Craft'a atandı
@@ -2473,16 +2598,17 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         }
         if (canCraft)
         {
-            for (int h = 0; h < myRecipeItem.MyNeededMaterialList.Count; h++)
+            for (int h = 0; h < myRecipeItem.MyNeededItemList.Count; h++)
             {
-                Inventory_Manager.Instance.RemoveItem(myRecipeItem.MyNeededMaterialList[h]);
+                Inventory_Manager.Instance.RemoveItem(myRecipeItem.MyNeededItemList[h]);
             }
             SetGoldSmooth(-myRecipeItem.MyRecipePrice);
             myRecipeItem.AddMyItemToInventory();
+            SetMaterialList(myRecipeItem);
         }
         else
         {
-            Warning_Manager.Instance.ShowMessage("You Recipe need some items.", 2);
+            Warning_Manager.Instance.ShowMessage("Your Recipe need some items.", 2);
         }
     }
     // Canvas -> Panel-Menu -> Panel-Buttons -> Button-Craft'a atandı
@@ -2496,6 +2622,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         {
             myMaterialList[e].SlotRelease();
         }
+        buttonCraftIcon.sprite = craftSlotIcon;
     }
     #endregion
 
@@ -2614,32 +2741,32 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     }
     private void SetToolBuyButton()
     {
-        for (int e = 0; e < all_Item_Holder.AletList.Count; e++)
+        for (int e = 0; e < all_Item_Holder.ToolList.Count; e++)
         {
             Transform obj = Instantiate(objTool, objToolParent);
             Image image = obj.GetChild(0).GetComponent<Image>();
-            image.sprite = all_Item_Holder.AletList[e].MyIcon;
+            image.sprite = all_Item_Holder.ToolList[e].MyIcon;
 
             TextMeshProUGUI text = obj.GetChild(1).GetComponent<TextMeshProUGUI>();
-            text.text = all_Item_Holder.AletList[e].MyName;
+            text.text = "Gives 1 " + all_Item_Holder.ToolList[e].MyName + " tool.";
 
             Button buton = obj.GetChild(2).GetComponent<Button>();
             int order = e;
             buton.onClick.AddListener(() => BuyTool(order));
 
             TextMeshProUGUI butonText = buton.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
-            text.text = (all_Item_Holder.AletList[e].MyRecipeItem.MyRecipePrice * 3).ToString();
+            butonText.text = (all_Item_Holder.ToolList[e].MyRecipeItem.MyRecipePrice * 3) + " Gold";
         }
     }
     private void BuyTool(int order)
     {
-        int price = all_Item_Holder.AletList[order].MyRecipeItem.MyRecipePrice * 3;
+        int price = all_Item_Holder.ToolList[order].MyRecipeItem.MyRecipePrice * 3;
         if (Save_Load_Manager.Instance.gameData.gold < price)
         {
             Warning_Manager.Instance.NotHaveGold();
             return;
         }
-        Inventory_Manager.Instance.AddItem(new MaterialHolder(all_Item_Holder.AletList[order].MyRecipeItem.MyRecipeItem, 1, InventoryType.Alet));
+        Inventory_Manager.Instance.AddItem(new NeededItemHolder(all_Item_Holder.ToolList[order].MyRecipeItem.MyRecipeItem, 1, InventoryType.Alet));
         SetGoldSmooth(-price);
     }
     private void SetMaterialBuyButton()
@@ -2651,20 +2778,20 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
             image.sprite = all_Item_Holder.MalzemeList[e].MyIcon;
 
             TextMeshProUGUI text = obj.GetChild(1).GetComponent<TextMeshProUGUI>();
-            text.text = all_Item_Holder.MalzemeList[e].MyName;
+            text.text = "Gives 1 " + all_Item_Holder.MalzemeList[e].MyName + " material.";
 
             Button buton = obj.GetChild(2).GetComponent<Button>();
             int order = e;
             buton.onClick.AddListener(() => BuyMaterialWithGold(order));
 
             TextMeshProUGUI butonText = buton.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
-            text.text = 10.ToString();
+            butonText.text = 10 + " Gold";
 
 
             Button butonAds = obj.GetChild(3).GetComponent<Button>();
             Reklam_Manager.Instance.AddReklamButton(butonAds);
             int orderAds = e;
-            buton.onClick.AddListener(() => BuyMaterialWithAds(order));
+            butonAds.onClick.AddListener(() => BuyMaterialWithAds(order));
         }
     }
     private void BuyMaterialWithGold(int order)
@@ -2674,7 +2801,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
             Warning_Manager.Instance.NotHaveGold();
             return;
         }
-        Inventory_Manager.Instance.AddItem(new MaterialHolder(all_Item_Holder.MalzemeList[order], 1, InventoryType.Material));
+        Inventory_Manager.Instance.AddItem(new NeededItemHolder(all_Item_Holder.MalzemeList[order], 1, InventoryType.Material));
         SetGoldSmooth(-10);
 
         Save_Load_Manager.Instance.SaveGame();
@@ -2683,7 +2810,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     {
         Reklam_Manager.Instance.RewardShowAd(() =>
         {
-            Inventory_Manager.Instance.AddItem(new MaterialHolder(all_Item_Holder.MalzemeList[order], 1, InventoryType.Material));
+            Inventory_Manager.Instance.AddItem(new NeededItemHolder(all_Item_Holder.MalzemeList[order], 1, InventoryType.Material));
             Save_Load_Manager.Instance.SaveGame();
         });
     }

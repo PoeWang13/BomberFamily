@@ -118,7 +118,10 @@ public class Map_Construct_Manager : Singletion<Map_Construct_Manager>
                 Board_Object board_Object = poolObject.GetComponent<Board_Object>();
                 board_Object.SetBoardOrder(Map_Holder.Instance.GameBoard[x, y].board_Game.boardOrder);
                 board_Object.SetBoardCoor(new Vector2Int(x, y));
-                Map_Holder.Instance.GameBoard[x, y] = new GameBoard(new Board(boardType, board_Object.MyBoardOrder, boardSpecial), poolObject.gameObject);
+                if (boardType == BoardType.Wall || boardType == BoardType.Box || boardType == BoardType.Gate || boardType == BoardType.Trap)
+                {
+                    Map_Holder.Instance.GameBoard[x, y] = new GameBoard(new Board(boardType, board_Object.MyBoardOrder, boardSpecial), poolObject.gameObject);
+                }
                 yield return new WaitForSeconds(0.1f);
             }
         }

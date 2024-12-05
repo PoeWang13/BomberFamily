@@ -4,15 +4,15 @@ using UnityEngine.UI;
 public class Slot_Material : Slot
 {
     [SerializeField] private Button myButton;
-    [SerializeField] private MaterialHolder myRecipeItem;
+    [SerializeField] private NeededItemHolder myRecipeItem;
 
     private int havingAmount = 0;
 
-    public void SetMaterialSlot(MaterialHolder recipeMaterial)
+    public void SetMaterialSlot(NeededItemHolder recipeMaterial)
     {
         myRecipeItem = recipeMaterial;
-        SlotFull(myRecipeItem.recipeItem, 1);
-        havingAmount = Inventory_Manager.Instance.HasItem(myRecipeItem.recipeItem, myRecipeItem.recipeAmount);
+        SlotFull(myRecipeItem.recipeItem, recipeMaterial.recipeAmount);
+        havingAmount = Inventory_Manager.Instance.HasItem(myRecipeItem.recipeItem, recipeMaterial.recipeAmount);
         myButton.interactable = havingAmount > 0;
     }
     // Buttonun kendisine verildi

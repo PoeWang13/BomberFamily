@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 
 [System.Serializable]
-public class MaterialHolder
+public class NeededItemHolder
 {
     public Item recipeItem;
     public int recipeAmount;
     public InventoryType inventoryType;
 
-    public MaterialHolder()
+    public NeededItemHolder()
     {
         this.recipeAmount = 1;
     }
-    public MaterialHolder(Item recipeItem, int recipeAmount, InventoryType inventoryType)
+    public NeededItemHolder(Item recipeItem, int recipeAmount, InventoryType inventoryType)
     {
         this.recipeItem = recipeItem;
         this.recipeAmount = recipeAmount;
@@ -24,14 +24,14 @@ public class Item_Recipe : Item
 {
     [SerializeField] private Item myRecipeItem;
     [SerializeField] private int  myRecipePrice;
-    [SerializeField] private List<MaterialHolder> myNeededMaterialList = new List<MaterialHolder>();
+    [SerializeField] private List<NeededItemHolder> myNeededItemList = new List<NeededItemHolder>();
 
     public Item MyRecipeItem { get { return myRecipeItem; } }
     public int MyRecipePrice { get { return myRecipePrice; } }
-    public List<MaterialHolder> MyNeededMaterialList { get { return myNeededMaterialList; } }
+    public List<NeededItemHolder> MyNeededItemList { get { return myNeededItemList; } }
     
     public virtual void AddMyItemToInventory()
     {
-        Inventory_Manager.Instance.AddItem(new MaterialHolder(myRecipeItem, 1, InventoryType.Alet));
+        Inventory_Manager.Instance.AddItem(new NeededItemHolder(myRecipeItem, 1, InventoryType.Alet));
     }
 }

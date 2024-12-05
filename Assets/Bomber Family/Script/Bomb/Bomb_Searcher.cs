@@ -3,7 +3,8 @@
 public class Bomb_Searcher : Bomb_Base
 {
     private int speed;
-    private bool isPlayer;
+    private bool hasPlayer;
+    private int bombAreaLimit = 1;
     private float searchingTime = 1;
     private float searchingTimeNext;
 
@@ -18,7 +19,7 @@ public class Bomb_Searcher : Bomb_Base
     }
     private void Start()
     {
-        isPlayer = MyOwner is Player_Base;
+        hasPlayer = MyOwner is Player_Base;
         myAnimator = GetComponentInChildren<Animator>();
     }
     public override void Bombed()
@@ -32,10 +33,9 @@ public class Bomb_Searcher : Bomb_Base
             return;
         }
         SetExploded();
-        BombFirePool.HavuzdanObjeIste(new Vector3Int(MyCoor.x, 0, MyCoor.y)).GetComponent<Bomb_Fire>().SetFire(MyOwner.CharacterStat.myBombPower);
-        for (int x = -1; x < 2; x++)
+        for (int x = -bombAreaLimit; x < bombAreaLimit + 1; x++)
         {
-            for (int y = -1; y < 2; y++)
+            for (int y = -bombAreaLimit; y < bombAreaLimit + 1; y++)
             {
                 // X sınırlar içinde mi
                 if (MyCoor.x + x < 0 || MyCoor.x + x >= Map_Holder.Instance.GameBoard.GetLength(0))
@@ -60,15 +60,27 @@ public class Bomb_Searcher : Bomb_Base
                     BombFirePool.HavuzdanObjeIste(new Vector3Int(MyCoor.x + x, 0, MyCoor.y + y)).GetComponent<Bomb_Fire>().SetFire(MyOwner.CharacterStat.myBombPower);
                 }
                 // Bulunan obje kutu mu
+                else if (Map_Holder.Instance.GameBoard[MyCoor.x + x, MyCoor.y + y].board_Game.boardType == BoardType.NonUseable)
+                {
+                    // Bomb Fire bırak
+                    BombFirePool.HavuzdanObjeIste(new Vector3Int(MyCoor.x + x, 0, MyCoor.y + y)).GetComponent<Bomb_Fire>().SetFire(MyOwner.CharacterStat.myBombPower);
+                }
+                // Bulunan obje kutu mu
+                else if (Map_Holder.Instance.GameBoard[MyCoor.x + x, MyCoor.y + y].board_Game.boardType == BoardType.Empty)
+                {
+                    // Bomb Fire bırak
+                    BombFirePool.HavuzdanObjeIste(new Vector3Int(MyCoor.x + x, 0, MyCoor.y + y)).GetComponent<Bomb_Fire>().SetFire(MyOwner.CharacterStat.myBombPower);
+                }
+                // Bulunan obje kutu mu
                 else if (Map_Holder.Instance.GameBoard[MyCoor.x + x, MyCoor.y + y].board_Game.boardType == BoardType.Box)
                 {
                     // Bomb Fire bırak
                     BombFirePool.HavuzdanObjeIste(new Vector3Int(MyCoor.x + x, 0, MyCoor.y + y)).GetComponent<Bomb_Fire>().SetFire(MyOwner.CharacterStat.myBombPower);
                 }
-                else if (Map_Holder.Instance.GameBoard[MyCoor.x + x, MyCoor.y + y].board_Object.TryGetComponent(out Bomb_Base bomb_Base))
+                else if (Map_Holder.Instance.GameBoard[MyCoor.x + x, MyCoor.y + y].board_Object.CompareTag("Bomb"))
                 {
                     // Bomb patlat
-                    bomb_Base.Bombed();
+                    Map_Holder.Instance.GameBoard[MyCoor.x + x, MyCoor.y + y].board_Object.GetComponent<Bomb_Base>().Bombed();
                 }
             }
         }
@@ -84,18 +96,8 @@ public class Bomb_Searcher : Bomb_Base
         if (searchingTimeNext > searchingTime)
         {
             searchingTimeNext = 0;
-            Vector3Int myPos = new Vector3Int(Mathf.RoundToInt(transform.position.x), 0, Mathf.RoundToInt(transform.position.x));
             // En yakın düşmanı bulunca ona doğru gideceğiz ve patlayacağız
-            if (isPlayer)
-            {
-                // Bomba playera ait, en yakın düşmanı bul.
-                SetDirectionToClosestPos(true);
-            }
-            else
-            {
-                // Bomba düşmana ait
-                SetDirectionToClosestPos(false);
-            }
+            SetDirectionToClosestPos(hasPlayer);
         }
         if (path.Item1 is not null)
         {
@@ -104,6 +106,7 @@ public class Bomb_Searcher : Bomb_Base
             {
                 if (Vector3.SqrMagnitude(transform.position - myEnemy.position) < 0.05f)
                 {
+                    SetBoardCoor(new Vector2Int(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.z)));
                     Bombed();
                 }
             }
@@ -131,7 +134,7 @@ public class Bomb_Searcher : Bomb_Base
             // Direction belirle
             myEnemy = path.Item1;
             Vector3Int enemyPos = path.Item2;
-            direction = SetDirection(new Vector3Int(Mathf.RoundToInt(transform.position.x), 0, Mathf.RoundToInt(transform.position.x)), enemyPos);
+            direction = SetDirection(new Vector3Int(Mathf.RoundToInt(transform.position.x), 0, Mathf.RoundToInt(transform.position.z)), enemyPos);
         }
     }
     private Vector3Int SetDirection(Vector3Int myPos, Vector3Int enemyPos)
@@ -144,11 +147,11 @@ public class Bomb_Searcher : Bomb_Base
         {
             return Vector3Int.right;
         }
-        if (myPos.z > enemyPos.z) // Bomba yukarıda yani aşağı gitmeliyiz 
+        if (myPos.z > enemyPos.z) // Bomba ileride yani geri gitmeliyiz 
         {
             return Vector3Int.back;
         }
-        if (myPos.z < enemyPos.z) // Bomba aşağıda yani yukarı gitmeliyiz 
+        if (myPos.z < enemyPos.z) // Bomba geride yani ileri gitmeliyiz 
         {
             return Vector3Int.forward;
         }
