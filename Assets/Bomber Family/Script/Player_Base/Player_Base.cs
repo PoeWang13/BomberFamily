@@ -116,16 +116,17 @@ public class Player_Base : Character_Base
             }
             UseBomb();
             // Bomb bırak
-            Bomb_Base bomb = player_Source.MyBombPooler.HavuzdanObjeIste(LearnIntDirection(transform.position)).GetComponent<Bomb_Base>();
-            SetBomb(bomb);
+            SetBomb();
             Canvas_Manager.Instance.SetPlayerBombAmountText();
         }
     }
-    private void SetBomb(Bomb_Base bomb, bool isSearcher = false)
+    private void SetBomb()
     {
-        bomb.SetBomb(this, isSearcher);
+        Bomb_Base bomb = player_Source.MyBombPooler.HavuzdanObjeIste(LearnIntDirection(transform.position)).GetComponent<Bomb_Base>();
+        bomb.SetBomb(this, CharacterStat.myBombPower, CharacterStat.myBombFireLimit, CharacterStat.myBombFireTime, false);
         bomb.SetBoardCoor(MyCoor);
         bomb.transform.SetParent(boardBombParent);
+        Map_Holder.Instance.AllBombObjects.Add(bomb);
         Map_Holder.Instance.GameBoard[MyCoor.x, MyCoor.y] = new GameBoard(BoardType.Bomb, bomb.MyBoardOrder, bomb.gameObject);
     }
     public void UseBombClockActiviter()
@@ -181,13 +182,13 @@ public class Player_Base : Character_Base
     #endregion
 
     #region Use Special Bomb
-    public override void UseSpecialBomb(BombType bombType)
+    public override void UseSpecialBomb(int order)
     {
-        if (Save_Load_Manager.Instance.gameData.allBombAmount[(int)bombType].bombAmount > 0)
+        if (Save_Load_Manager.Instance.gameData.allSpecialBomb[order].bombAmount > 0)
         {
-            Save_Load_Manager.Instance.gameData.allBombAmount[(int)bombType].bombAmount--;
-            Canvas_Manager.Instance.SetBomb(bombType);
-            base.UseSpecialBomb(bombType);
+            Save_Load_Manager.Instance.gameData.allSpecialBomb[order].bombAmount--;
+            Canvas_Manager.Instance.SetBomb(order);
+            base.UseSpecialBomb(order);
             Save_Load_Manager.Instance.SaveGame();
         }
     }

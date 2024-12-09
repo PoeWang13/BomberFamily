@@ -11,7 +11,10 @@ public class Direction_Player_Trap : Moving_Base
 
     public override void OnStart()
     {
-        TryToFindPlayer();
+        if (Game_Manager.Instance.GameType == GameType.Game)
+        {
+            TryToFindPlayer();
+        }
     }
     [ContextMenu("Find Player")]
     private void TryToFindPlayer()

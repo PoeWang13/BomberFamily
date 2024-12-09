@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class Board_Object : PoolObje
 {
@@ -42,6 +43,9 @@ public class Board_Object : PoolObje
     }
     private void OnMouseUpAsButton()
     {
+        if (EventSystem.current.IsPointerOverGameObject())
+            return;
+
         if (Game_Manager.Instance.GameType == GameType.MapCreate)
         {
             if (isStuck && Map_Creater_Manager.Instance.CreatedOrder < 0)

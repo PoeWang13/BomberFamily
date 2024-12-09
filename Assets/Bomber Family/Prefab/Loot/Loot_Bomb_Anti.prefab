@@ -83,7 +83,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   havuzum: {fileID: 11400000, guid: 2c26063b073d42543879cfbed7ecd422, type: 2}
-  myBombType: 2
+  myBombType: 1
 --- !u!54 &-2892679452824810730
 Rigidbody:
   m_ObjectHideFlags: 0

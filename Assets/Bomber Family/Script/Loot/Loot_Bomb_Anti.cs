@@ -1,10 +1,8 @@
 ﻿using DG.Tweening;
 using UnityEngine;
 
-public class Loot_Bomb_Anti : Loot_Base
+public class Loot_Bomb_Anti : Loot_Bomb
 {
-    [SerializeField] private BombType myBombType;
-
     private ParticleSystem bombTrail;
 
     public override void OnAwake()
@@ -20,8 +18,7 @@ public class Loot_Bomb_Anti : Loot_Base
                 SetTaked(true);
                 bombTrail.Play();
                 LootEffect.SetActive(false);
-                Save_Load_Manager.Instance.gameData.allBombAmount[(int)myBombType].bombAmount++;
-                Canvas_Manager.Instance.SetBomb(myBombType);
+                AddBomb();
                 transform.DOLocalMoveY(10, 1).OnComplete(() =>
                 {
                     bombTrail.Stop();

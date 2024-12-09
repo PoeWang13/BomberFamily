@@ -16,7 +16,6 @@ public class EnemyBomb
 public class Enemy_Base : Character_Base
 {
     [SerializeField] private Item_Enemy myItem;
-    [SerializeField] private List<EnemyBomb> enemyBombList = new List<EnemyBomb>();
 
     private int lootDeneme = 3;
     private List<Vector2Int> possibleLootPos = new List<Vector2Int>();
@@ -145,29 +144,6 @@ public class Enemy_Base : Character_Base
                 {
                     possibleLootPos.Add(new Vector2Int(x, y));
                 }
-            }
-        }
-    }
-    #endregion
-
-    #region Use Special Bomb
-    public void AddBomb(int bombAmount, BombType bombType)
-    {
-        enemyBombList.Add(new EnemyBomb(bombAmount, bombType));
-    }
-    public override void UseSpecialBomb(BombType bombType)
-    {
-        for (int e = 0; e < enemyBombList.Count; e++)
-        {
-            if (enemyBombList[e].bombType != bombType)
-            {
-                continue;
-            }
-            if (enemyBombList[e].bombAmount > 0)
-            {
-                enemyBombList[e].bombAmount--;
-                base.UseSpecialBomb(bombType);
-                return;
             }
         }
     }

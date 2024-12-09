@@ -31,6 +31,7 @@ public class CharacterStat
     public int myBombAmount = 1;
     public int myBombPower = 1;
     public int myBombFireLimit = 1;
+    public float myBombFireTime = 1;
     public int myBombBoxPassing = 1;
     public float myBombPushingTime = 1;
 }
@@ -108,11 +109,57 @@ public class BombAmount
 {
     public BombType bombType;
     public int bombAmount;
+    public int bombPower;
+    public int bombLimit;
+    public float bombFireTime;
 
     public BombAmount(BombType bombType, int bombAmount)
     {
         this.bombType = bombType;
         this.bombAmount = bombAmount;
+        this.bombPower = 1;
+        this.bombLimit = 1;
+        this.bombFireTime = 1;
+    }
+    public BombAmount(BombType bombType, int bombAmount, int bombPower, int bombLimit, float bombFireTime)
+    {
+        this.bombType = bombType;
+        this.bombAmount = bombAmount;
+        this.bombPower = bombPower;
+        this.bombLimit = bombLimit;
+        this.bombFireTime = bombFireTime;
+    }
+    public void SetPower(int bombPower)
+    {
+        this.bombPower = bombPower;
+    }
+    public void SetLimit(int bombLimit)
+    {
+        this.bombLimit = bombLimit;
+    }
+    public void SetFireTime(float bombFireTime)
+    {
+        this.bombFireTime = bombFireTime;
+    }
+    public bool IsSameBomb(BombType type, int power, int limit, float fireTime)
+    {
+        if (bombType != type)
+        {
+            return false;
+        }
+        if (bombPower != power)
+        {
+            return false;
+        }
+        if (bombLimit != limit)
+        {
+            return false;
+        }
+        if (bombFireTime != fireTime)
+        {
+            return false;
+        }
+        return true;
     }
 }
 public enum InventoryType
@@ -164,7 +211,7 @@ public class GameData
     public int inventorySlotAmount;
     public string accountName;
     public List<Inventory> inventory = new List<Inventory>();
-    public List<BombAmount> allBombAmount = new List<BombAmount>();
+    public List<BombAmount> allSpecialBomb = new List<BombAmount>();
     public List<DailyReward> dailyReward = new List<DailyReward>();
     public List<PlayerData> allPlayers = new List<PlayerData>();
     public GameData()
@@ -498,7 +545,6 @@ public class Save_Load_Manager : Singletion<Save_Load_Manager>
     #region Save-Load Game Fonksiyon
     private void LoadGame()
     {
-        int bombTypeAmount = Enum.GetValues(typeof(BombType)).Length;
         gameData = save_Load_File_Data_Handler.LoadGame();
         if (gameData == null)
         {
@@ -512,12 +558,6 @@ public class Save_Load_Manager : Singletion<Save_Load_Manager>
             {
                 gameData.allPlayers.Add(new PlayerData());
             }
-
-            // Bomb Tiplerini ekle
-            for (int e = 0; e < bombTypeAmount; e++)
-            {
-                gameData.allBombAmount.Add(new BombAmount((BombType)e, 0));
-            }
             gameData.allPlayers[0].playerBuyed = true;
 
             saveType = BoardSaveType.MyLevel;
@@ -528,12 +568,6 @@ public class Save_Load_Manager : Singletion<Save_Load_Manager>
             for (int e = gameData.allPlayers.Count; e < all_Item_Holder.PlayerSourceList.Count; e++)
             {
                 gameData.allPlayers.Add(new PlayerData());
-            }
-
-            // Bomb Tiplerini ekle
-            for (int e = gameData.allBombAmount.Count; e < bombTypeAmount; e++)
-            {
-                gameData.allBombAmount.Add(new BombAmount((BombType)e, 0));
             }
         }
     }

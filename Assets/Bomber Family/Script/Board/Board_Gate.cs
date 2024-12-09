@@ -9,6 +9,8 @@ public class Board_Gate : Board_Object
     private int magicStoneAmount;
     private bool gameFinish;
 
+    public bool IsGameFinish { get { return gameFinish; } }
+
     private void Awake()
     {
         if (MyTriggeredCollider != null)
@@ -86,10 +88,10 @@ public class Board_Gate : Board_Object
     {
         if (other.CompareTag("Player"))
         {
+            Debug.LogWarning("gameFinish", other.gameObject);
             // Oyun bitti.
             if (Game_Manager.Instance.GameType == GameType.Game)
             {
-                //Debug.LogWarning("gameFinish", other.gameObject);
                 if (magicStoneAmount > 0)
                 {
                     Warning_Manager.Instance.ShowMessage("You need " + magicStoneAmount + " more Magic Stones.", 1.5f);
@@ -106,7 +108,11 @@ public class Board_Gate : Board_Object
             {
                 if (magicStoneAmount <= 0)
                 {
-                    Map_Creater_Manager.Instance.CheckingLevelMap();
+                    if (!gameFinish)
+                    {
+                        gameFinish = true;
+                        Map_Creater_Manager.Instance.CheckingLevelMap();
+                    }
                 }
                 else
                 {
@@ -132,6 +138,10 @@ public class Board_Gate : Board_Object
     {
         effect1.SetActive(false);
         effect2.SetActive(false);
+        gameFinish = false;
+    }
+    public void ResetFinishing()
+    {
         gameFinish = false;
     }
 }

@@ -49,6 +49,7 @@ MonoBehaviour:
   havuzum: {fileID: 11400000, guid: bdfd78e60a51a654892327e5fbb192c9, type: 2}
   myBoardType: 7
   bombFirePool: {fileID: 11400000, guid: fb34d8fdb3f59db48a2aafc7a871aa90, type: 2}
+  bombExplodedTime: 3
   bombFireTime: 3
 --- !u!33 &3367962
 MeshFilter:

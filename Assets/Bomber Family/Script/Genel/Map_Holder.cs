@@ -121,6 +121,7 @@ public class Map_Holder : Singletion<Map_Holder>
     private List<PoolObje> bossEnemyObjects = new List<PoolObje>();
     private List<PoolObje> magicStoneObjects = new List<PoolObje>();
     private List<PoolObje> allEnemyObjects = new List<PoolObje>();
+    private List<PoolObje> allBombObjects = new List<PoolObje>();
 
     public GameBoard[,] GameBoard { get { return gameBoard; } }
     public Vector2Int BoardSize { get { return boardSize; } }
@@ -143,6 +144,7 @@ public class Map_Holder : Singletion<Map_Holder>
     public List<PoolObje> BossEnemyObjects { get { return bossEnemyObjects; } }
     public List<PoolObje> MagicStoneObjects { get { return magicStoneObjects; } }
     public List<PoolObje> AllEnemyObjects { get { return allEnemyObjects; } }
+    public List<PoolObje> AllBombObjects { get { return allBombObjects; } }
 
     private void Start()
     {
@@ -205,6 +207,13 @@ public class Map_Holder : Singletion<Map_Holder>
             if (magicStoneObjects[e].gameObject.activeSelf)
             {
                 magicStoneObjects[e].EnterHavuz();
+            }
+        }
+        for (int e = 0; e < allBombObjects.Count; e++)
+        {
+            if (allBombObjects[e].gameObject.activeSelf)
+            {
+                allBombObjects[e].EnterHavuz();
             }
         }
         for (int e = 0; e < lootObjects.Count; e++)

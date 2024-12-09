@@ -6,8 +6,6 @@ using System.Globalization;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
-using static UnityEngine.UI.GridLayoutGroup;
-using Unity.Jobs.LowLevel.Unsafe;
 
 public enum GameType
 {
@@ -311,22 +309,25 @@ public class Game_Manager : Singletion<Game_Manager>
     #endregion
 
     #region Use Special Bomb
-    public void UseSpecialBomb(Character_Base owner, BombType bombType)
+    public void UseSpecialBomb(Character_Base owner, int order)
     {
-        SetBomb(owner, allSpecialBombPool[(int)bombType], (bombType == BombType.Clock || bombType == BombType.Searcher));
+        SetBomb(owner, order);
     }
-    private void SetBomb(Character_Base owner, Pooler pool, bool dontNeedTime = false)
+    private void SetBomb(Character_Base owner, int order)
     {
+        bool dontNeedTime = Save_Load_Manager.Instance.gameData.allSpecialBomb[order].bombType == BombType.Clock || Save_Load_Manager.Instance.gameData.allSpecialBomb[order].bombType == BombType.Searcher;
         Vector3Int ownerPos = owner.LearnIntDirection(owner.transform.position);
-        (PoolObje, bool) bombItem = pool.HavuzdanObjeIste_Kontrol(ownerPos);
+        (PoolObje, bool) bombItem = allSpecialBombPool[(int)Save_Load_Manager.Instance.gameData.allSpecialBomb[order].bombType].HavuzdanObjeIste_Kontrol(ownerPos);
         Bomb_Base bomb = bombItem.Item1.GetComponent<Bomb_Base>();
-        bomb.SetBomb(owner, dontNeedTime);
+        Map_Holder.Instance.AllBombObjects.Add(bomb);
+        bomb.SetBomb(owner, Save_Load_Manager.Instance.gameData.allSpecialBomb[order].bombPower, Save_Load_Manager.Instance.gameData.allSpecialBomb[order].bombLimit
+            , Save_Load_Manager.Instance.gameData.allSpecialBomb[order].bombFireTime, dontNeedTime);
         bomb.SetBoardCoor(new Vector2Int(ownerPos.x, ownerPos.z));
         if (bombItem.Item2)
         {
             bombParent.transform.SetParent(bombParent);
         }
-        if (pool == allSpecialBombPool[(int)BombType.Clock])
+        if (bombItem.Item1 == allSpecialBombPool[(int)BombType.Clock])
         {
             Player_Base.Instance.AddBombClock(bomb);
         }

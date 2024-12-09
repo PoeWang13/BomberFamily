@@ -7,16 +7,24 @@ using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 using Unity.Jobs.LowLevel.Unsafe;
+using UnityEditor;
 
 [Serializable]
 public class BombList
 {
     public RectTransform rectBombParent;
     public TextMeshProUGUI textBombAmount;
-    public BombList(RectTransform rectBombParent, TextMeshProUGUI textBombAmount)
+    public TextMeshProUGUI textBombPower;
+    public TextMeshProUGUI textBombLimit;
+    public TextMeshProUGUI textBombFireTime;
+    public BombList(RectTransform rectBombParent, TextMeshProUGUI textBombAmount, TextMeshProUGUI textBombPower
+        , TextMeshProUGUI textBombLimit, TextMeshProUGUI textBombFireTime)
     {
         this.rectBombParent = rectBombParent;
         this.textBombAmount = textBombAmount;
+        this.textBombPower = textBombPower;
+        this.textBombLimit = textBombLimit;
+        this.textBombFireTime = textBombFireTime;
     }
 }
 public class Canvas_Manager : Singletion<Canvas_Manager>
@@ -58,6 +66,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     // Menu
     [SerializeField] private GameObject panelMenu;
     [SerializeField] private GameObject panelLevelsMap;
+    [SerializeField] private GameObject panelMyLevels;
     [SerializeField] private Button buttonMyLevel;
     [SerializeField] private Transform myLevelButtonParent;
     [SerializeField] private List<Button> dailyButtons = new List<Button>();
@@ -91,6 +100,8 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     [SerializeField] private TextMeshProUGUI textPlacementType;
     [SerializeField] private TextMeshProUGUI textCreateObjectSetting;
     [SerializeField] private TMP_InputField inputMultiplePlacementAmount;
+    [SerializeField] private GameObject objPlacement;
+    [SerializeField] private List<GameObject> allPanelObjectTypes = new List<GameObject>();
 
     // Creator Object Setting
     [SerializeField] private GameObject panelSettingBase;
@@ -203,6 +214,22 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     [SerializeField] private Button buttonCraft;
     [SerializeField] private Image buttonCraftIcon;
     [SerializeField] private Sprite craftSlotIcon;
+    [SerializeField] private GameObject objBombStatPanel;
+    [SerializeField] private Image imageBombPowerIcon;
+    [SerializeField] private Image imageBombLimitIcon;
+    [SerializeField] private Image imageBombFireTimeIcon;
+    [SerializeField] private TextMeshProUGUI textBombPowerAmount;
+    [SerializeField] private TextMeshProUGUI textBombLimitAmount;
+    [SerializeField] private TextMeshProUGUI textBombFireTimeAmount;
+    [SerializeField] private Button butonIncBombPower;
+    [SerializeField] private Button butonIncBombPowerAds;
+    [SerializeField] private Button butonDecBombPower;
+    [SerializeField] private Button butonIncBombLimit;
+    [SerializeField] private Button butonIncBombLimitAds;
+    [SerializeField] private Button butonDecBombLimit;
+    [SerializeField] private Button butonIncBombFireTime;
+    [SerializeField] private Button butonIncBombFireTimeAds;
+    [SerializeField] private Button butonDecBombFireTime;
     [SerializeField] private List<Slot_Material> myMaterialList = new List<Slot_Material>();
     [SerializeField] private List<Slot_Recipe> myRecipeList = new List<Slot_Recipe>();
 
@@ -230,6 +257,9 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     private int playerOrder;
     private int goldChangedAmount;
     private int goldChangedStaertedAmount;
+    private int bombPower;
+    private int bombLimit;
+    private float bombFireTime;
 
     private Player_Base player_Base;
     private Image imageLevelHelpLife;
@@ -461,8 +491,8 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         }
         else if (Save_Load_Manager.Instance.gameData.dailyReward[dailyOrder].dailyType == DailyType.Bomb)
         {
-            Save_Load_Manager.Instance.gameData.allBombAmount[Save_Load_Manager.Instance.gameData.dailyReward[dailyOrder].dailyRewardOrder].bombAmount++;
-            SetBomb((BombType)Save_Load_Manager.Instance.gameData.dailyReward[dailyOrder].dailyRewardOrder);
+            Save_Load_Manager.Instance.gameData.allSpecialBomb[Save_Load_Manager.Instance.gameData.dailyReward[dailyOrder].dailyRewardOrder].bombAmount++;
+            SetBomb(Save_Load_Manager.Instance.gameData.dailyReward[dailyOrder].dailyRewardOrder);
         }
         else if (Save_Load_Manager.Instance.gameData.dailyReward[dailyOrder].dailyType == DailyType.Bilet)
         {
@@ -528,11 +558,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     // Canvas -> Panel-Menu -> Button-Continue'a atandı
     public void ContinueGame()
     {
-        Audio_Manager.Instance.PlayGameStart();
-        Warning_Manager.Instance.ShowMessage("Please wait. Level loading...", 3);
-        panelMenu.SetActive(false);
-        // Son haritanın mapini oluştur ve oyuna başlat
-        Game_Manager.Instance.SetGameType(GameType.Game);
+        OpenLevel();
         Map_Construct_Manager.Instance.ConstructMap(Save_Load_Manager.Instance.LoadBoard(BoardSaveType.GameLevel, Save_Load_Manager.Instance.gameData.lastLevel));
     }
     private void SetMyLevelButtons()
@@ -547,13 +573,17 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     }
     private void OpenMyLevel(int order)
     {
-        //Audio_Manager.Instance.PlayGameStart();
-        //Warning_Manager.Instance.ShowMessage("Please wait. Level loading...", 3);
-        //// Panel kapanacak
-        //panelMenu.SetActive(false);
-        //myLevelButtonParent.parent.parent.gameObject.SetActive(false);
-        //Game_Manager.Instance.SetGameType(GameType.Game);
-        //Map_Construct_Manager.Instance.ConstructMap(Save_Load_Manager.Instance.LoadBoard(BoardSaveType.MyLevel, order));
+        OpenLevel();
+        Map_Construct_Manager.Instance.ConstructMap(Save_Load_Manager.Instance.LoadBoard(BoardSaveType.MyLevel, order));
+    }
+    private void OpenLevel()
+    {
+        Audio_Manager.Instance.PlayGameStart();
+        Warning_Manager.Instance.ShowMessage("Please wait. Level loading...", 3);
+        // Panel kapanacak
+        panelMenu.SetActive(false);
+        panelMyLevels.SetActive(false);
+        Game_Manager.Instance.SetGameType(GameType.Game);
     }
     // Canvas -> Panel-Menu -> Button-Create-Map'a atandı
     public void OpenCreateMapPanel()
@@ -936,7 +966,6 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         SetPlayerInfo();
         SetLevel();
         SetGold();
-        SetBombText();
         SetGateCreatorSlot();
         SetWallCreatorSlot();
         SetBoxCreatorSlot();
@@ -960,6 +989,18 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         imageLevelHelpPower = buttonLevelHelpPower.transform.Find("Button-Upgrade").GetComponent<Image>();
         buttonLevelHelpAmount.onClick.AddListener(LevelStartHelpAmount);
         imageLevelHelpAmount = buttonLevelHelpAmount.transform.Find("Button-Upgrade").GetComponent<Image>();
+
+        butonIncBombPower.onClick.AddListener(IncBombPower);
+        butonIncBombPowerAds.onClick.AddListener(IncBombPowerAds);
+        butonDecBombPower.onClick.AddListener(DecBombPower);
+
+        butonIncBombLimit.onClick.AddListener(IncBombLimit);
+        butonIncBombLimitAds.onClick.AddListener(IncBombLimitAds);
+        butonDecBombLimit.onClick.AddListener(DecBombLimit);
+
+        butonIncBombFireTime.onClick.AddListener(IncBombFireTime);
+        butonIncBombFireTimeAds.onClick.AddListener(IncBombFireTimeAds);
+        butonDecBombFireTime.onClick.AddListener(DecBombFireTime);
     }
     public void SetGold()
     {
@@ -991,57 +1032,93 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     #endregion
 
     #region Bomb
-    private void UseSimpleBomb()
-    {
-        player_Base.UseSimpleBomb();
-    }
     private void SetBombText()
     {
-        int bombTypeAmount = Enum.GetValues(typeof(BombType)).Length;
-        for (int e = 0; e < bombTypeAmount; e++)
+        // Setting BombAmount
+        for (int e = allBombs.Count - 1; e >= 0; e--)
+        {
+            Destroy(allBombs[e].rectBombParent.gameObject);
+            allBombs.RemoveAt(e);
+        }
+        Button butonSimple = rectBombButtonSimple.GetChild(0).GetComponent<Button>();
+        butonSimple.onClick.RemoveAllListeners();
+        for (int e = 0; e < Save_Load_Manager.Instance.gameData.allSpecialBomb.Count; e++)
         {
             int order = e;
             RectTransform rectBomb = Instantiate(rectBombButtonSimple, objBombButtonHolder);
-            rectBomb.name = "Panel-Special-Bomb-" + (BombType)order;
+            rectBomb.name = "Panel-Special-Bomb-" + Save_Load_Manager.Instance.gameData.allSpecialBomb[e].bombType;
             rectBomb.DORotate(Vector3.forward * 180, 0.5f);
 
             Image image = rectBomb.GetChild(0).GetComponent<Image>();
-            image.sprite = all_Item_Holder.BombList[e].MyIcon;
+            image.sprite = all_Item_Holder.BombList[(int)Save_Load_Manager.Instance.gameData.allSpecialBomb[e].bombType].MyIcon;
 
             Button buton = rectBomb.GetChild(0).GetComponent<Button>();
-            buton.name = "Button-Special-Bomb-" + (BombType)order;
+            buton.name = "Button-Special-Bomb-" + Save_Load_Manager.Instance.gameData.allSpecialBomb[e].bombType;
             buton.onClick.AddListener(() =>
             {
-                UseSpecialBomb((BombType)order);
+                UseSpecialBomb(order);
             });
 
-            TextMeshProUGUI textBomb = rectBomb.GetChild(1).GetComponent<TextMeshProUGUI>();
-            textBomb.name = "Text-Special-Bomb-" + (BombType)order;
-            textBomb.text = Save_Load_Manager.Instance.gameData.allBombAmount[e].bombAmount.ToString();
+            TextMeshProUGUI textBombAmount = rectBomb.GetChild(1).GetComponent<TextMeshProUGUI>();
+            textBombAmount.name = "Text-Special-Bomb-" + Save_Load_Manager.Instance.gameData.allSpecialBomb[e].bombType;
+            textBombAmount.text = Save_Load_Manager.Instance.gameData.allSpecialBomb[e].bombAmount.ToString();
 
-            allBombs.Add(new BombList(rectBomb, textBomb));
+            TextMeshProUGUI textBombPower = rectBomb.GetChild(2).GetComponent<TextMeshProUGUI>();
+            textBombPower.name = "Text-Special-Bomb-Power-" + Save_Load_Manager.Instance.gameData.allSpecialBomb[e].bombType;
+            textBombPower.text = Save_Load_Manager.Instance.gameData.allSpecialBomb[e].bombPower.ToString();
+
+            TextMeshProUGUI textBombLimit = rectBomb.GetChild(3).GetComponent<TextMeshProUGUI>();
+            textBombLimit.name = "Text-Special-Bomb-Limit-" + Save_Load_Manager.Instance.gameData.allSpecialBomb[e].bombType;
+            textBombLimit.text = Save_Load_Manager.Instance.gameData.allSpecialBomb[e].bombLimit.ToString();
+
+            TextMeshProUGUI textBombFireTime = rectBomb.GetChild(4).GetComponent<TextMeshProUGUI>();
+            textBombFireTime.name = "Text-Special-Bomb-Fire-Time-" + Save_Load_Manager.Instance.gameData.allSpecialBomb[e].bombType;
+            textBombFireTime.text = Save_Load_Manager.Instance.gameData.allSpecialBomb[e].bombFireTime.ToString();
+
+            allBombs.Add(new BombList(rectBomb, textBombAmount, textBombPower, textBombLimit, textBombFireTime));
         }
         choosedBomb = rectBombButtonSimple;
-        Button butonSimple = rectBombButtonSimple.GetChild(0).GetComponent<Button>();
         butonSimple.onClick.AddListener(() =>
         {
             UseSimpleBomb();
         });
     }
-    private void UseSpecialBomb(BombType bombType)
+    private void UseSimpleBomb()
     {
-        player_Base.UseSpecialBomb(bombType);
+        if (Game_Manager.Instance.LevelStart)
+        {
+            player_Base.UseSimpleBomb();
+        }
+    }
+    private void UseSpecialBomb(int order)
+    {
+        if (!Game_Manager.Instance.LevelStart)
+        {
+            return;
+        }
+        if (Game_Manager.Instance.GameType == GameType.MapCreate)
+        {
+            if (!Map_Holder.Instance.BoardGate.IsGameFinish)
+            {
+                return;
+            }
+        }
+        player_Base.UseSpecialBomb(order);
     }
     // Canvas -> Panel-Game -> Button-Bomb-Clock-Activiter'a atandı
     public void UseBombClockActiviter()
     {
+        if (!Game_Manager.Instance.LevelStart)
+        {
+            return;
+        }
         Player_Base.Instance.UseBombClockActiviter();
-        if (Save_Load_Manager.Instance.gameData.allBombAmount[(int)BombType.Clock].bombAmount == 0)
+        if (Save_Load_Manager.Instance.gameData.allSpecialBomb[bombOrder].bombAmount == 0)
         {
             bombOrder = 0;
             changeTime = true;
             bombClockActiviter.SetActive(false);
-            allBombs[(int)BombType.Clock].rectBombParent.DORotate(Vector3.forward * 180, 0.5f).OnComplete(() =>
+            allBombs[bombOrder].rectBombParent.DORotate(Vector3.forward * 180, 0.5f).OnComplete(() =>
             {
                 choosedBomb = rectBombButtonSimple;
                 choosedBomb.DORotate(Vector3.zero, 0.5f).OnComplete(() =>
@@ -1058,39 +1135,37 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         {
             return;
         }
+        if (!Game_Manager.Instance.LevelStart)
+        {
+            return;
+        }
         changeTime = true;
         bombClockActiviter.SetActive(false);
         choosedBomb.DORotate(Vector3.forward * 180, 0.5f).OnComplete(() =>
         {
             bool findedBomb = false;
-            for (int e = bombOrder; e < allBombs.Count && !findedBomb; e++)
+            for (int e = bombOrder; e < Save_Load_Manager.Instance.gameData.allSpecialBomb.Count && !findedBomb; e++)
             {
-                if (e == (int)BombType.Clock)
+                if (Save_Load_Manager.Instance.gameData.allSpecialBomb[e].bombAmount > 0)
                 {
-                    if (Save_Load_Manager.Instance.gameData.allBombAmount[e].bombAmount > 0 || player_Base.ClocksAmount > 0)
+                    bombOrder = e + 1;
+                    findedBomb = true;
+                    choosedBomb = allBombs[e].rectBombParent;
+                    choosedBomb.DORotate(Vector3.zero, 0.5f).OnComplete(() =>
                     {
-                        bombOrder = e + 1;
-                        findedBomb = true;
-                        choosedBomb = allBombs[(int)BombType.Clock].rectBombParent;
-                        choosedBomb.DORotate(Vector3.zero, 0.5f).OnComplete(() =>
-                        {
-                            changeTime = false;
-                            bombClockActiviter.SetActive(true);
-                        });
-                    }
+                        changeTime = false;
+                    });
                 }
-                else
+                else if (Save_Load_Manager.Instance.gameData.allSpecialBomb[e].bombType == BombType.Clock && player_Base.ClocksAmount > 0)
                 {
-                    if (Save_Load_Manager.Instance.gameData.allBombAmount[e].bombAmount > 0)
+                    bombOrder = e + 1;
+                    findedBomb = true;
+                    choosedBomb = allBombs[e].rectBombParent;
+                    choosedBomb.DORotate(Vector3.zero, 0.5f).OnComplete(() =>
                     {
-                        bombOrder = e + 1;
-                        findedBomb = true;
-                        choosedBomb = allBombs[e].rectBombParent;
-                        choosedBomb.DORotate(Vector3.zero, 0.5f).OnComplete(() =>
-                        {
-                            changeTime = false;
-                        });
-                    }
+                        changeTime = false;
+                        bombClockActiviter.SetActive(true);
+                    });
                 }
             }
             if (!findedBomb)
@@ -1102,12 +1177,48 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
             }
         });
     }
-    public void SetBomb(BombType bombType)
+    public void AddBombPanel(BombType bombType, int bombPower, int bombLimit, float bombFireTime)
     {
-        allBombs[(int)bombType].textBombAmount.text = Save_Load_Manager.Instance.gameData.allBombAmount[(int)bombType].bombAmount.ToString();
-        if (Save_Load_Manager.Instance.gameData.allBombAmount[(int)bombType].bombAmount == 0)
+        int order = Save_Load_Manager.Instance.gameData.allSpecialBomb.Count;
+        Save_Load_Manager.Instance.gameData.allSpecialBomb.Add(new BombAmount(bombType, 1, bombPower, bombLimit, bombFireTime));
+        RectTransform rectBomb = Instantiate(rectBombButtonSimple, objBombButtonHolder);
+        rectBomb.name = "Panel-Special-Bomb-" + bombType;
+        rectBomb.DORotate(Vector3.forward * 180, 0.5f);
+
+        Image image = rectBomb.GetChild(0).GetComponent<Image>();
+        image.sprite = all_Item_Holder.BombList[(int)bombType].MyIcon;
+
+        Button buton = rectBomb.GetChild(0).GetComponent<Button>();
+        buton.name = "Button-Special-Bomb-" + bombType;
+        buton.onClick.AddListener(() =>
         {
-            if (bombType != BombType.Clock)
+            UseSpecialBomb(order);
+        });
+
+        TextMeshProUGUI textBombAmount = rectBomb.GetChild(1).GetComponent<TextMeshProUGUI>();
+        textBombAmount.name = "Text-Special-Bomb-" + bombType;
+        textBombAmount.text = 1.ToString();
+
+        TextMeshProUGUI textBombPower = rectBomb.GetChild(1).GetComponent<TextMeshProUGUI>();
+        textBombPower.name = "Text-Special-Bomb-Power-" + bombType;
+        textBombPower.text = bombPower.ToString();
+
+        TextMeshProUGUI textBombLimit = rectBomb.GetChild(1).GetComponent<TextMeshProUGUI>();
+        textBombLimit.name = "Text-Special-Bomb-Limit-" + bombType;
+        textBombLimit.text = bombLimit.ToString();
+
+        TextMeshProUGUI textBombFireTime = rectBomb.GetChild(1).GetComponent<TextMeshProUGUI>();
+        textBombFireTime.name = "Text-Special-Bomb-Fire-Time-" + bombType;
+        textBombFireTime.text = bombFireTime.ToString();
+
+        allBombs.Add(new BombList(rectBomb, textBombAmount, textBombPower, textBombLimit, textBombFireTime));
+    }
+    public void SetBomb(int order)
+    {
+        allBombs[order].textBombAmount.text = Save_Load_Manager.Instance.gameData.allSpecialBomb[order].bombAmount.ToString();
+        if (Save_Load_Manager.Instance.gameData.allSpecialBomb[order].bombAmount == 0)
+        {
+            if (Save_Load_Manager.Instance.gameData.allSpecialBomb[order].bombType != BombType.Clock)
             {
                 changeTime = true;
                 choosedBomb.DORotate(Vector3.forward * 180, 0.5f).OnComplete(() =>
@@ -1139,12 +1250,15 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         SetPlayerBoxPushingTimeText();
         panelGame.SetActive(true);
         SetActiveMapProcessHolder(false);
+        SetBombText();
 
         // Setting BombAmount
         for (int e = 1; e < allBombs.Count; e++)
         {
-            SetBomb((BombType)e);
+            SetBomb(e);
         }
+        choosedBomb = rectBombButtonSimple;
+        choosedBomb.DORotate(Vector3.zero, 0.5f);
     }
     public void SetLevel()
     {
@@ -1796,6 +1910,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         panelBoardSize.SetActive(false);
         objCheckingMapButton.SetActive(Save_Load_Manager.Instance.SaveType == BoardSaveType.MyLevel);
         buttonSaveMap.interactable = Save_Load_Manager.Instance.SaveType == BoardSaveType.GameLevel;
+        Debug.Log("CreateMapBoard");
         Map_Creater_Manager.Instance.SetBoardSize(int.Parse(inputBoardSizeX.text), int.Parse(inputBoardSizeY.text));
     }
     public void MapProcess(float process)
@@ -1833,6 +1948,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     {
         if (Map_Creater_Manager.Instance.CheckLevelMap())
         {
+            CloseAllObjectTypePanels();
             panelMenu.SetActive(false);
             panelGame.SetActive(true);
             panelCreator.SetActive(false);
@@ -1944,6 +2060,18 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     public void DestroyObject()
     {
         Map_Creater_Manager.Instance.DestroyObject();
+    }
+    public void CloseAllObjectTypePanels()
+    {
+        objPlacement.SetActive(false);
+        allPanelObjectTypes.ForEach(obj => obj.SetActive(false));
+    }
+    // Canvas -> Panel-Creator -> Panel-Creator-Type içindeki butonlara atandı
+    public void CloseAllObjectTypePanels(GameObject obj)
+    {
+        objPlacement.SetActive(true);
+        allPanelObjectTypes.ForEach(obj => obj.SetActive(false));
+        obj.SetActive(true);
     }
     #endregion
 
@@ -2341,6 +2469,15 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         textCaughtTrapAmont.text = "Caught Trap : " + Game_Manager.Instance.CaughtTrapAmont.ToString();
         textEarnGold.text = "Gold : " + Game_Manager.Instance.EarnGold.ToString();
         textEarnExp.text = "Exp : " + Game_Manager.Instance.EarnExp.ToString();
+
+        // Delete 0 Amount Special Bomb
+        for (int i = Save_Load_Manager.Instance.gameData.allSpecialBomb.Count - 1; i >= 0; i--)
+        {
+            if (Save_Load_Manager.Instance.gameData.allSpecialBomb[i].bombAmount <= 0)
+            {
+                Save_Load_Manager.Instance.gameData.allSpecialBomb.RemoveAt(i);
+            }
+        }
     }
     // Canvas -> Panel-Game-Finish -> Button-Menu'a atandı
     public void GoMenu()
@@ -2475,6 +2612,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         {
             myRecipeList[e].SetRecipeSlot(bombItem.MyRecipeList[e]);
         }
+        objBombStatPanel.SetActive(false);
     }
     public void SetMaterialList(Item_Recipe recipeItem)
     {
@@ -2488,6 +2626,164 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         {
             myMaterialList[e].SetMaterialSlot(recipeItem.MyNeededItemList[e]);
         }
+        if (myRecipeItem is Item_Bomb)
+        {
+            objBombStatPanel.SetActive(true);
+
+            bombPower = 1;
+            bombLimit = 1;
+            bombFireTime = 0.5f;
+
+            Item_Bomb itemBomb = myRecipeItem as Item_Bomb;
+            imageBombPowerIcon.sprite = itemBomb.MyItemPower.MyIcon;
+            imageBombLimitIcon.sprite = itemBomb.MyItemLimit.MyIcon;
+            imageBombFireTimeIcon.sprite = itemBomb.MyItemFireTime.MyIcon;
+
+            textBombPowerAmount.text = "0";
+            textBombLimitAmount.text = "0";
+            textBombFireTimeAmount.text = "0";
+
+            bool hasPowerStone = Inventory_Manager.Instance.HasItem(itemBomb.MyItemPower, bombPower) == 0;
+
+            butonIncBombPower.gameObject.SetActive(hasPowerStone);
+            butonIncBombPowerAds.gameObject.SetActive(!hasPowerStone);
+
+            bool hasLimitStone = Inventory_Manager.Instance.HasItem(itemBomb.MyItemLimit, bombLimit) == 0;
+            butonIncBombLimit.gameObject.SetActive(hasLimitStone);
+            butonIncBombLimitAds.gameObject.SetActive(!hasLimitStone);
+
+            bool hasFireTimeStone = Inventory_Manager.Instance.HasItem(itemBomb.MyItemFireTime, 1) == 0;
+            butonIncBombFireTime.gameObject.SetActive(hasFireTimeStone);
+            butonIncBombFireTimeAds.gameObject.SetActive(!hasFireTimeStone);
+        }
+        else
+        {
+            objBombStatPanel.SetActive(false);
+        }
+    }
+    private void SetBombPower(int amount)
+    {
+        bombPower += amount;
+        int removedAmount = bombPower - 1;
+        textBombPowerAmount.text = removedAmount.ToString();
+        Warning_Manager.Instance.ShowMessage((myRecipeItem as Item_Bomb).MyBombType + " bomb power is " + bombPower + " unit.");
+
+        bool hasPowerStone = Inventory_Manager.Instance.HasItem((myRecipeItem as Item_Bomb).MyItemPower, bombPower - 1) == 0;
+        butonIncBombPower.gameObject.SetActive(hasPowerStone);
+        butonIncBombPowerAds.gameObject.SetActive(!hasPowerStone);
+    }
+    public void IncBombPower()
+    {
+        if (bombPower >= 3)
+        {
+            Warning_Manager.Instance.ShowMessage("The power cannot be increased any further.");
+            return;
+        }
+        SetBombPower(1);
+    }
+    public void IncBombPowerAds()
+    {
+        if (bombPower >= 3)
+        {
+            Warning_Manager.Instance.ShowMessage("The power cannot be increased any further.");
+            return;
+        }
+        Reklam_Manager.Instance.RewardShowAd(() =>
+        {
+            SetBombPower(1);
+        });
+    }
+    public void DecBombPower()
+    {
+        if (bombPower <= 1)
+        {
+            Warning_Manager.Instance.ShowMessage("The power cannot be decreased any further.");
+            return;
+        }
+        SetBombPower(-1);
+    }
+    private void SetBombLimit(int amount)
+    {
+        bombLimit += amount;
+        int removedAmount = bombLimit - 1;
+        textBombLimitAmount.text = removedAmount.ToString();
+        Warning_Manager.Instance.ShowMessage((myRecipeItem as Item_Bomb).MyBombType + " bomb limit is " + bombLimit + " unit.");
+
+        bool hasLimitStone = Inventory_Manager.Instance.HasItem((myRecipeItem as Item_Bomb).MyItemLimit, bombLimit) == 0;
+        butonIncBombLimit.gameObject.SetActive(hasLimitStone);
+        butonIncBombLimitAds.gameObject.SetActive(!hasLimitStone);
+    }
+    public void IncBombLimit()
+    {
+        if (bombLimit >= 3)
+        {
+            Warning_Manager.Instance.ShowMessage("The Fire Limit cannot be increased any further.");
+            return;
+        }
+        SetBombLimit(1);
+    }
+    public void IncBombLimitAds()
+    {
+        if (bombLimit >= 3)
+        {
+            Warning_Manager.Instance.ShowMessage("The Fire Limit cannot be increased any further.");
+            return;
+        }
+        Reklam_Manager.Instance.RewardShowAd(() =>
+        {
+            SetBombLimit(1);
+        });
+    }
+    public void DecBombLimit()
+    {
+        if (bombLimit <= 1)
+        {
+            Warning_Manager.Instance.ShowMessage("The Fire Limit cannot be decreased any further.");
+            return;
+        }
+        SetBombLimit(-1);
+    }
+    private void SetBombFireTime(float amount)
+    {
+        bombFireTime += amount;
+        int removedAmount = Mathf.RoundToInt(bombFireTime * 2) - 1;
+        textBombFireTimeAmount.text = removedAmount.ToString();
+        Warning_Manager.Instance.ShowMessage((myRecipeItem as Item_Bomb).MyBombType + " bomb fire time is " + bombFireTime + " second.");
+
+        bool hasFireTimeStone = Inventory_Manager.Instance.HasItem((myRecipeItem as Item_Bomb).MyItemFireTime, 1) == 0;
+
+        butonIncBombFireTime.gameObject.SetActive(hasFireTimeStone);
+        butonIncBombFireTimeAds.gameObject.SetActive(!hasFireTimeStone);
+    }
+    public void IncBombFireTime()
+    {
+        if (bombFireTime >= 3.0f)
+        {
+            Warning_Manager.Instance.ShowMessage("The Fire Time cannot be increased any further.");
+            return;
+        }
+        SetBombFireTime(0.5f);
+    }
+    public void IncBombFireTimeAds()
+    {
+        if (bombFireTime >= 3.0f)
+        {
+            Warning_Manager.Instance.ShowMessage("The Fire Time cannot be increased any further.");
+            return;
+        }
+        Reklam_Manager.Instance.RewardShowAd(() =>
+        {
+            SetBombFireTime(0.5f);
+        });
+    }
+    public void DecBombFireTime()
+    {
+        if (bombFireTime <= 0.5f)
+        {
+            Warning_Manager.Instance.ShowMessage("The Fire Time cannot be decreased any further.");
+            return;
+        }
+        SetBombFireTime(-0.5f);
     }
     // Canvas -> Panel-Craft-System -> Panel-Craft -> Button-Craft'a atandı
     public void CraftItem()
@@ -2512,8 +2808,27 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
             {
                 Inventory_Manager.Instance.RemoveItem(myRecipeItem.MyNeededItemList[h]);
             }
+            if (myRecipeItem is Item_Bomb)
+            {
+                Item_Bomb itemBomb = myRecipeItem as Item_Bomb;
+                int removedAmount = bombPower - 1;
+                for (int e = 0; e < removedAmount; e++)
+                {
+                    Inventory_Manager.Instance.RemoveItem(new NeededItemHolder(itemBomb.MyItemPower, 1, InventoryType.Material));
+                }
+                removedAmount = bombLimit - 1;
+                for (int e = 0; e < removedAmount; e++)
+                {
+                    Inventory_Manager.Instance.RemoveItem(new NeededItemHolder(itemBomb.MyItemLimit, 1, InventoryType.Material));
+                }
+                removedAmount = Mathf.RoundToInt(bombFireTime * 2) - 1;
+                for (int e = 0; e < removedAmount; e++)
+                {
+                    Inventory_Manager.Instance.RemoveItem(new NeededItemHolder(itemBomb.MyItemFireTime, 1, InventoryType.Material));
+                }
+            }
             SetGoldSmooth(-myRecipeItem.MyRecipePrice);
-            myRecipeItem.AddMyItemToInventory();
+            myRecipeItem.AddMyItemToInventory(bombPower, bombLimit, bombFireTime);
             SetMaterialList(myRecipeItem);
         }
         else
@@ -2533,6 +2848,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
             myMaterialList[e].SlotRelease();
         }
         buttonCraftIcon.sprite = craftSlotIcon;
+        objBombStatPanel.SetActive(false);
     }
     #endregion
 

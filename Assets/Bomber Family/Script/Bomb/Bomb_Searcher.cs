@@ -4,7 +4,6 @@ public class Bomb_Searcher : Bomb_Base
 {
     private int speed;
     private bool hasPlayer;
-    private int bombAreaLimit = 1;
     private float searchingTime = 1;
     private float searchingTimeNext;
 
@@ -33,9 +32,9 @@ public class Bomb_Searcher : Bomb_Base
             return;
         }
         SetExploded();
-        for (int x = -bombAreaLimit; x < bombAreaLimit + 1; x++)
+        for (int x = -BombLimit; x < BombLimit + 1; x++)
         {
-            for (int y = -bombAreaLimit; y < bombAreaLimit + 1; y++)
+            for (int y = -BombLimit; y < BombLimit + 1; y++)
             {
                 // X sınırlar içinde mi
                 if (MyCoor.x + x < 0 || MyCoor.x + x >= Map_Holder.Instance.GameBoard.GetLength(0))
@@ -51,31 +50,31 @@ public class Bomb_Searcher : Bomb_Base
                 if (Map_Holder.Instance.GameBoard[MyCoor.x + x, MyCoor.y + y].board_Object is null)
                 {
                     // Bomb Fire bırak
-                    BombFirePool.HavuzdanObjeIste(new Vector3Int(MyCoor.x + x, 0, MyCoor.y + y)).GetComponent<Bomb_Fire>().SetFire(MyOwner.CharacterStat.myBombPower);
+                    BombFirePool.HavuzdanObjeIste(new Vector3Int(MyCoor.x + x, 0, MyCoor.y + y)).GetComponent<Bomb_Fire>().SetFire(BombPower, BombFireTime);
                 }
                 // Bulunan obje deactif mi
                 else if (!Map_Holder.Instance.GameBoard[MyCoor.x + x, MyCoor.y + y].board_Object.activeSelf)
                 {
                     // Bomb Fire bırak
-                    BombFirePool.HavuzdanObjeIste(new Vector3Int(MyCoor.x + x, 0, MyCoor.y + y)).GetComponent<Bomb_Fire>().SetFire(MyOwner.CharacterStat.myBombPower);
+                    BombFirePool.HavuzdanObjeIste(new Vector3Int(MyCoor.x + x, 0, MyCoor.y + y)).GetComponent<Bomb_Fire>().SetFire(BombPower, BombFireTime);
                 }
                 // Bulunan obje kutu mu
                 else if (Map_Holder.Instance.GameBoard[MyCoor.x + x, MyCoor.y + y].board_Game.boardType == BoardType.NonUseable)
                 {
                     // Bomb Fire bırak
-                    BombFirePool.HavuzdanObjeIste(new Vector3Int(MyCoor.x + x, 0, MyCoor.y + y)).GetComponent<Bomb_Fire>().SetFire(MyOwner.CharacterStat.myBombPower);
+                    BombFirePool.HavuzdanObjeIste(new Vector3Int(MyCoor.x + x, 0, MyCoor.y + y)).GetComponent<Bomb_Fire>().SetFire(BombPower, BombFireTime);
                 }
                 // Bulunan obje kutu mu
                 else if (Map_Holder.Instance.GameBoard[MyCoor.x + x, MyCoor.y + y].board_Game.boardType == BoardType.Empty)
                 {
                     // Bomb Fire bırak
-                    BombFirePool.HavuzdanObjeIste(new Vector3Int(MyCoor.x + x, 0, MyCoor.y + y)).GetComponent<Bomb_Fire>().SetFire(MyOwner.CharacterStat.myBombPower);
+                    BombFirePool.HavuzdanObjeIste(new Vector3Int(MyCoor.x + x, 0, MyCoor.y + y)).GetComponent<Bomb_Fire>().SetFire(BombPower, BombFireTime);
                 }
                 // Bulunan obje kutu mu
                 else if (Map_Holder.Instance.GameBoard[MyCoor.x + x, MyCoor.y + y].board_Game.boardType == BoardType.Box)
                 {
                     // Bomb Fire bırak
-                    BombFirePool.HavuzdanObjeIste(new Vector3Int(MyCoor.x + x, 0, MyCoor.y + y)).GetComponent<Bomb_Fire>().SetFire(MyOwner.CharacterStat.myBombPower);
+                    BombFirePool.HavuzdanObjeIste(new Vector3Int(MyCoor.x + x, 0, MyCoor.y + y)).GetComponent<Bomb_Fire>().SetFire(BombPower, BombFireTime);
                 }
                 else if (Map_Holder.Instance.GameBoard[MyCoor.x + x, MyCoor.y + y].board_Object.CompareTag("Bomb"))
                 {

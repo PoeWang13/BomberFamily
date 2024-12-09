@@ -28,19 +28,19 @@ public class Map_Creator_Camera_Manager : Singletion<Map_Creator_Camera_Manager>
             return;
         }
         newPos = joystickMap.Direction();
-        if (transform.position.x < xMinLimit && newPos.x == -1)
+        if (transform.position.x < xMinLimit && newPos.x < 0)
         {
             newPos.x = 0;
         }
-        if (transform.position.x > xMaxLimit && newPos.x == 1)
+        if (transform.position.x > xMaxLimit && newPos.x > 0)
         {
             newPos.x = 0;
         }
-        if (transform.position.z < zMinLimit && newPos.z == -1)
+        if (transform.position.z < zMinLimit && newPos.z < 0)
         {
             newPos.z = 0;
         }
-        if (transform.position.z > zMaxLimit && newPos.z == 1)
+        if (transform.position.z > zMaxLimit && newPos.z > 0)
         {
             newPos.z = 0;
         }

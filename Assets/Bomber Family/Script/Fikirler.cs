@@ -10,9 +10,6 @@ public class Fikirler : MonoBehaviour
     /// Özel giysiler
     /// Özel büyü
     /// Levellerden bazen vakitle açılan sandık düşer, bu sandıkları upgrade etmek isteriz.
-    /// BombClock için script yapılacak ve limit belirlenecek
-    /// BombFire lar için zaman ayarlama eklenecek
-    /// Craft sistemine özel bombalar için fireTime, fireLimit, firePower belirleyecek yeni sistem eklenecek
 
     /// Craft System
     /// Her bomba 5 çeşit alet kullanılarak yapılır. Bu aletlerde hammadde kullanılarak yapılır.
@@ -53,57 +50,6 @@ public class Fikirler : MonoBehaviour
     /// - 1 zehir küresi : Sıvı Z + Zehir cam küresi + Zehir kumaşı
     ///
 
-    /// - Çerçeve :  +  + 
-    /// - Barut :  +  + 
-    /// - Fitil :  +  + 
-    /// 1-Clock Bomb
-    /// - Uzaktan kumanda :  +  + 
-    /// - Alıcı :  +  + 
-    /// 2-Area Bomb
-    /// - Sıvı solüsyon :  + + 
-    /// - Cam beher :  +  + 
-    /// 3-Anti Bomb
-    /// - Bilye :  +  + 
-    /// - Muşamba :  +  + 
-    /// 4-Nucleer Bomb
-    /// - Atom kabı :  +  + 
-    /// - Basınçla açılan kap :  +  + 
-    /// 5-Searcher
-    /// - Radar :  +  + 
-    /// - Batarya :  +  + 
-    /// 6-Elektro -> Öldürmez ama düşmanları felç eder
-    /// - Cam küre :  +  + 
-    /// - Elektrik kablosu :  +  + 
-    /// 7-Lav Bombası -> 10 birim ilerleyene kadar tüm boş yollarda ilerler, kutu veya düşman bulursa onu ortadan kaldırır ve biter.
-    /// - 1 toprak delici :  +  + 
-    /// - 1 lav küresi :  +  + 
-    /// 8-Buz Bombası -> 10 birim ilerleyene kadar tüm boş yollarda ilerler, düşman bulursa onu dondurur ve biter.
-    ///                 -> Donma süresi 30 saniyedir, birisi deyerse yok olurlar.
-    /// - 1 Torba X :  +  + 
-    /// - 1 buz küresi :  +  + 
-    /// 9-Sis Bombası -> 20 birim çevreyi görmeyi engelleyen bir sis oluşturur.
-    /// - 1 hava küresi :  +  + 
-    /// - 1 toz küresi :  +  + 
-    /// 10-Zehir bombası -> 20 birim çevredeki tüm canlıları zehirler.
-    /// - 1 zehir tozu :  +  + 
-    /// - 1 zehir küresi :  +  + 
-
-
-
-    /// Level oluştururken çıkacak ek menu : Move, Turn ve destory harici
-    /// Cutter : Sürekli dön veya belli bir saniye dönsün ve belli bir saniye dursun
-    /// Diken : Sürekli başkasına bağlı veya belli bir saniye aktif ve belli bir saniye kapalı olsun
-    /// Fire : Sürekli aktif veya belli bir saniye aktif ve belli bir saniye kapalı olsun
-    /// Freezer : Sürekli aktif veya belli bir saniye aktif ve belli bir saniye kapalı olsun
-    /// Home : Kimleri çıkartacak, kaç saniyede bir çıkartacak
-    /// Killer : Ne kadar kapalı kalacak
-    /// Lazer : Her lazer sürekli aktif veya belli bir saniye aktif ve belli bir saniye kapalı olsun
-    /// Poison : Sürekli aktif veya belli bir saniye aktif ve belli bir saniye kapalı olsun
-    /// Saw : Sürekli aktif veya belli bir saniye aktif ve belli bir saniye kapalı olsun
-    /// Slower : Sürekli aktif veya belli bir saniye aktif ve belli bir saniye kapalı olsun
-    /// Trigger : Kimler buna bağlı olacak.
-    /// 
-
     //public List<Transform> transforms = new List<Transform>();
     //[ContextMenu("Deneme")]
     //public void Deneme()
@@ -128,9 +74,7 @@ public class Fikirler : MonoBehaviour
 
     /// -Anahtarları düşmanlarada verebiliriz
     /// -Üstünde durunca tetiklenen çıkınca bırakılan tuzaklar yapabiliriz.
-    /// -Normalde tek olan ama birine saldırılınca diğerlerininde düşmanlığını kazandığımız düşman çeşitleri olabilir.
     /// -üstünden geçemediğimiz blocklar olabilir
-    /// -Bize yapışan ve bize debuff veren clicklemeyle üstümüzden attığımız düşmanlar olabilir.
     /// -Ateşle tetiklenen bloklar olabilir.
     /// -Bütün haritayı etkileyen tuzaklar olabilir.
     /// -Üstündekileri boşluk veya üstünden geçilebilecek alan varsa gösterdiği istikamete gönderen tuzaklar
@@ -140,36 +84,24 @@ public class Fikirler : MonoBehaviour
 
 
     /* Düşanlar yön bulma türleri
-     * 1-Rastgele dolaşan
-     * 2-Playera yaklaşan
-     * 3-Playerı tuzağa düşüren
-     * 4-Rastgele ışınlanan
-     * 5-Playerı görünce korkup kaçan
-     * 6-Kutuların içinden geçip giden
-     * 7-Duvarların içinden geçip giden
-     * 8-Şekil değiştiren
+     * 1+Rastgele dolaşan
+     * 2+Playera yaklaşan
+     * 3+Playerı tuzağa düşüren
+     * 4+Rastgele ışınlanan
+     * 5+Playerı görünce korkup kaçan
+     * 6+Yolun sonuna kadar giden
+     * 7-Kutuların içinden geçip giden
+     * 8-Duvarların içinden geçip giden
+     * 9-Şekil değiştiren
+     * 10-Darbe alınca kendi türündekileri çağıran
+     * 11-Darbe alınca kendi türündekileri çağıran
+     * 12-Yapışkan düşman : Bize yapışır ve click ile üstümüzden atana kadar bizi yavaşlatır.
      */
 
     /* Düşanlar Hareket Çeşitleri
      * 1-Yürüyen
      * 2-Uçan
      * 3-Zıplayan
-     * 
-     */
-
-    /* Düşanlar Tipleri
-     * 1-Slime
-     * 2-Arı
-     * 3-İskelet
-     * 4-Mumya
-     * 5-Zombie
-     * 6-Goblin
-     * 7-Ork
-     * 8-Kowboy
-     * 9-Ninja
-     * 10-Şövalye
-     * 11-Barbar
-     * 12-Korsan
      * 
      */
 
@@ -225,72 +157,6 @@ public class Fikirler : MonoBehaviour
      * Belli bir alan içinde sürekli gelen düşmana bomba bırakarak öldürmek
      * Bombalarla dolu bir alanda ilerlemek
      * Takip eden bombadan kaçmak
-     * 
-     */
-
-    /* 
-     * 01-Binalar
-     * 02-Eşyalar
-     * 03-Mücevherler
-     * 04-Şehir
-     * 05-Elbiseler
-     * 06-Etkinlikler - bayramlar
-     * 07-İsimler
-     * 08-Karikaür
-     * 09-Yiyecek
-     * 10-Çiçekler
-     * 11-Doğa
-     * 12-Mevsim
-     * 13-Uzay
-     * 14-Anıt
-     * 15-Sanat
-     * 16-Suratlar
-     * 17-Çocuklar için herşey
-     * 18-İnsanlar
-     * 19-Dünya liderleri
-     * 20-Sporcular
-     * 21-Araçlar
-     * 22-Kazalar
-     * 23-Ulaşım araçları
-     * 24-Canavarlar
-     * 25-Hayvanlar
-     * 26-Animeler
-     * 27-Büyüler
-     * 28-Fantastik karakterler
-     * 29-Fantastik Meslekler
-     * 30-Fantastik savaş hareketleri
-     * 31-Tanrılar
-     * 32-Dövmeler
-     * 33-Meslekler
-     * 34-Dövüş sanatçıları
-     * 35-Mafyalar
-     * 36-Ölümler
-     * 37-Savaş
-     * 38-Şehrin kötü tarafları
-     * 39-Robot
-     * 40-Steampunk
-     * 41-Cyperpunk
-     * 42-
-     * 43-
-     * 44-
-     * 45-
-     * 46-
-     * 47-
-     * 48-
-     * 49-
-     * 50-
-     * 51-
-     * 52-
-     * 53-
-     * 54-
-     * 55-
-     * 56-
-     * 57-
-     * 58-
-     * 59-
-     * 
-     * 
-     * 
      * 
      */
 }

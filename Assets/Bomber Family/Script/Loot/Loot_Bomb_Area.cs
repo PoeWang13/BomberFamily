@@ -1,10 +1,8 @@
 ﻿using DG.Tweening;
 using UnityEngine;
 
-public class Loot_Bomb_Area : Loot_Base
+public class Loot_Bomb_Area : Loot_Bomb
 {
-    [SerializeField] private BombType myBombType;
-
     private void OnTriggerEnter(Collider other)
     {
         if (!IsTaked)
@@ -13,8 +11,7 @@ public class Loot_Bomb_Area : Loot_Base
             {
                 SetTaked(true);
                 LootEffect.SetActive(false);
-                Save_Load_Manager.Instance.gameData.allBombAmount[(int)myBombType].bombAmount++;
-                Canvas_Manager.Instance.SetBomb(myBombType);
+                AddBomb();
                 transform.DOLocalMoveY(1, 0.2f).OnComplete(() =>
                 {
                     transform.DOLocalMoveY(0, 0.1f).OnComplete(() =>

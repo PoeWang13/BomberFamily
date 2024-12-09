@@ -442,9 +442,9 @@ public class Character_Base : Board_Object, IDamegable
     #endregion
 
     #region Use Special Bomb
-    public virtual void UseSpecialBomb(BombType bombType)
+    public virtual void UseSpecialBomb(int order)
     {
-        Game_Manager.Instance.UseSpecialBomb(this, bombType);
+        Game_Manager.Instance.UseSpecialBomb(this, order);
     }
     #endregion
 

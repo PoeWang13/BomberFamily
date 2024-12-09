@@ -219,7 +219,7 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
     }
     public void SetBoardSize(int sizeX, int sizeY)
     {
-        Canvas_Manager.Instance.SetPanelCreatorButtonTypeList(false);
+        Debug.Log("SetBoardSize");
         Map_Holder.Instance.MyBoardList.Clear();
         Map_Holder.Instance.MyBoardListBackup.Clear();
         addMagicStone = false;
@@ -236,9 +236,12 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
     {
         // Dış çerçeveye duvarlar eklenecek
         Map_Holder.Instance.CreateOutsideWall();
+        Canvas_Manager.Instance.SetPanelCreatorButtonTypeList(!Canvas_Manager.Instance.ToggleDungeonSetting);
+        Map_Creator_Camera_Manager.Instance.SetCameraLimit(Map_Holder.Instance.BoardSize);
         if (Canvas_Manager.Instance.ToggleDungeonSetting)
         {
             // Ortaya duvarlar konacak
+            Canvas_Manager.Instance.SetActiveMapProcessHolder(true);
             StartCoroutine(MiddleWall());
         }
     }
@@ -411,16 +414,18 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
                             }
                             else if (boardType == BoardType.Enemy)
                             {
+                                board_Object.GetComponent<Rigidbody>().isKinematic = true;
                                 Map_Holder.Instance.EnemyObjects.Add(board_Object);
                             }
                             else if (boardType == BoardType.BossEnemy)
                             {
+                                board_Object.GetComponent<Rigidbody>().isKinematic = true;
                                 Map_Holder.Instance.BossEnemyObjects.Add(board_Object);
                             }
                             else if (boardType == BoardType.Gate)
                             {
                                 hasGate = true;
-                                Map_Holder.Instance.GateObjects.Add(board_Object);
+                                Map_Holder.Instance.SetBoardGate(board_Object);
                             }
                             Map_Holder.Instance.RemoveBoardFromList(x, z);
                             // Seçili parçayı null objeye eşitle
@@ -636,6 +641,10 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
             Map_Holder.Instance.SetMagicStone(boardMagicStoneAmount);
             addMagicStone = true;
         }
+        for (int e = 0; e < Map_Holder.Instance.AllEnemyObjects.Count; e++)
+        {
+            Map_Holder.Instance.AllEnemyObjects[e].GetComponent<Rigidbody>().isKinematic = false;
+        }
         return true;
     }
     public void CheckingLevelMap()
@@ -667,6 +676,7 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
         {
             Player_Base.Instance.SetEffectivePlayer(true);
             Player_Base.Instance.SetPosition(Vector3.zero);
+            Map_Holder.Instance.BoardGate.ResetFinishing();
             Warning_Manager.Instance.ShowMessage("Destroy all BOX and try to save again.", 3);
         }
         else
@@ -812,9 +822,6 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
     }
     IEnumerator MiddleWall()
     {
-        Map_Creator_Camera_Manager.Instance.SetCameraLimit(Map_Holder.Instance.BoardSize);
-        Canvas_Manager.Instance.SetActiveMapProcessHolder(true);
-
         boardTrapAmount = 0;
         boardBossEnemyAmount = 0;
         boardEnemyAmount = 0;
@@ -831,10 +838,7 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
                 yield return new WaitForSeconds(0.05f);
                 if (Map_Holder.Instance.GameBoard[newPlace.x, newPlace.z].board_Game.boardType == BoardType.Empty)
                 {
-                    boardWallAmount++;
-                    Canvas_Manager.Instance.MapProcess(1.0f * boardWallAmount / boardOrjWallAmount);
-                    Map_Holder.Instance.RemoveBoardFromList(newPlace.x, newPlace.z);
-                    int rndWall = Random.Range(0,choosedWallList.Count);
+                    int rndWall = Random.Range(0, choosedWallList.Count);
                     bool hasGold = false;
                     while (choosedWallList.Count > 0 && !hasGold)
                     {
@@ -842,11 +846,19 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
                         if (Save_Load_Manager.Instance.gameData.gold >= all_Item_Holder.WallList[choosedWallList[rndWall]].MyPrice)
                         {
                             Canvas_Manager.Instance.SetGoldSmooth(-all_Item_Holder.WallList[choosedWallList[rndWall]].MyPrice);
+                            boardWallAmount++;
+                            Canvas_Manager.Instance.MapProcess(1.0f * boardWallAmount / boardOrjWallAmount);
+                            Map_Holder.Instance.RemoveBoardFromList(newPlace.x, newPlace.z);
                             hasGold = true;
                         }
                         else
                         {
                             choosedWallList.RemoveAt(rndWall);
+                            Warning_Manager.Instance.ShowMessage("You don't have enough gold to build the wall. Wall order is " + rndWall + ".");
+                            if (choosedWallList.Count == 0)
+                            {
+                                boardWallAmount = boardOrjWallAmount;
+                            }
                         }
                     }
                     if (hasGold)
@@ -861,13 +873,9 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
                         Map_Holder.Instance.WallObjects.Add(poolObje);
                         Map_Holder.Instance.GameBoard[newPlace.x, newPlace.z] = new GameBoard(BoardType.Wall, choosedWallList[rndWall], gameObje);
                     }
-                    else
-                    {
-                        boardWallAmount = boardOrjWallAmount;
-                    }
                 }
             }
-            Debug.LogWarning("Tüm duvarlar yerleştirildi. Map kontrol ediliyor.");
+            Warning_Manager.Instance.ShowMessage("All walls are crafted. Checking the map for walking.");
             // Duvarların ortaasında boşluk olup olmadığı kontrol edilecek
             randomBoardCheckTime = 3;
             randomBoardChecking = true;
@@ -895,7 +903,7 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
         }
         else
         {
-            Debug.LogWarning("Levelde duvar istenmemiş. Kutu aşamasına geçiliyor.");
+            Warning_Manager.Instance.ShowMessage("No wall is wanted in the level. Moving on to the box stage.");
             StartCoroutine(CreateBox());
         }
     }
@@ -947,9 +955,6 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
                 yield return new WaitForSeconds(0.05f);
                 if (Map_Holder.Instance.GameBoard[newPlace.x, newPlace.z].board_Game.boardType == BoardType.Empty)
                 {
-                    boardBoxAmount++;
-                    Canvas_Manager.Instance.MapProcess(1.0f * boardBoxAmount / boardOrjBoxAmount);
-                    Map_Holder.Instance.RemoveBoardFromList(newPlace.x, newPlace.z);
                     int rndBox = Random.Range(0, choosedBoxList.Count);
                     bool hasGold = false;
                     while (choosedBoxList.Count > 0 && !hasGold)
@@ -959,10 +964,18 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
                         {
                             Canvas_Manager.Instance.SetGoldSmooth(-all_Item_Holder.BoxList[choosedBoxList[rndBox]].MyPrice);
                             hasGold = true;
+                            boardBoxAmount++;
+                            Canvas_Manager.Instance.MapProcess(1.0f * boardBoxAmount / boardOrjBoxAmount);
+                            Map_Holder.Instance.RemoveBoardFromList(newPlace.x, newPlace.z);
                         }
                         else
                         {
                             choosedBoxList.RemoveAt(rndBox);
+                            Warning_Manager.Instance.ShowMessage("You don't have enough gold to build the box. Box order is " + rndBox + ".");
+                            if (choosedBoxList.Count == 0)
+                            {
+                                boardBoxAmount = boardOrjBoxAmount;
+                            }
                         }
                     }
                     if (hasGold)
@@ -977,17 +990,13 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
                         Map_Holder.Instance.BoxObjects.Add(poolObje);
                         Map_Holder.Instance.GameBoard[newPlace.x, newPlace.z] = new GameBoard(BoardType.Box, choosedBoxList[rndBox], gameObje);
                     }
-                    else
-                    {
-                        boardBoxAmount = boardOrjBoxAmount;
-                    }
                 }
             }
-            Debug.LogWarning("Tüm kutular yerleştirildi.");
+            Warning_Manager.Instance.ShowMessage("All boxes have been placed.");
         }
         else
         {
-            Debug.LogWarning("Levelde kutu istenmemiş. Enemy aşamasına geçiliyor.");
+            Warning_Manager.Instance.ShowMessage("No Box is wanted in the level. Moving on to Enemy stage.");
         }
         StartCoroutine(CreateEnemy());
     }
@@ -1020,6 +1029,11 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
                         else
                         {
                             choosedEnemyList.RemoveAt(rndEnemy);
+                            Warning_Manager.Instance.ShowMessage("You don't have enough gold to build enemy. Enemy order is " + rndEnemy + ".");
+                            if (choosedEnemyList.Count == 0)
+                            {
+                                boardEnemyAmount = boardOrjEnemyAmount;
+                            }
                         }
                     }
                     if (hasGold)
@@ -1034,17 +1048,13 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
                         Map_Holder.Instance.EnemyObjects.Add(poolObje);
                         Map_Holder.Instance.GameBoard[newPlace.x, newPlace.z] = new GameBoard(BoardType.Enemy, choosedEnemyList[rndEnemy], gameObje);
                     }
-                    else
-                    {
-                        boardEnemyAmount = boardOrjEnemyAmount;
-                    }
                 }
             }
-            Debug.LogWarning("Tüm düşmanlar yerleştirildi.");
+            Warning_Manager.Instance.ShowMessage("All Enemyies have been placed.");
         }
         else
         {
-            Debug.LogWarning("Levelde düşman istenmemiş. Boss Enemy aşamasına geçiliyor.");
+            Warning_Manager.Instance.ShowMessage("No Enemy is wanted in the level. Moving on to Boss Enemy stage.");
         }
         StartCoroutine(CreateBossEnemy());
     }
@@ -1078,6 +1088,11 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
                         else
                         {
                             choosedBossEnemyList.RemoveAt(rndBossEnemy);
+                            Warning_Manager.Instance.ShowMessage("You don't have enough gold to build boss enemy. Boss Enemy order is " + rndBossEnemy + ".");
+                            if (choosedBossEnemyList.Count == 0)
+                            {
+                                boardBossEnemyAmount = boardOrjBossEnemyAmount;
+                            }
                         }
                     }
                     if (hasGold)
@@ -1092,17 +1107,13 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
                         Map_Holder.Instance.BossEnemyObjects.Add(poolObje);
                         Map_Holder.Instance.GameBoard[newPlace.x, newPlace.z] = new GameBoard(BoardType.BossEnemy, choosedBossEnemyList[rndBossEnemy], gameObje);
                     }
-                    else
-                    {
-                        boardBossEnemyAmount = boardOrjBossEnemyAmount;
-                    }
                 }
             }
-            Debug.LogWarning("Tüm patron düşmanlar yerleştirildi.");
+            Warning_Manager.Instance.ShowMessage("All Boss Enemyies have been placed.");
         }
         else
         {
-            Debug.LogWarning("Levelde patron düşman istenmemiş. Tuzak aşamasına geçiliyor.");
+            Warning_Manager.Instance.ShowMessage("No Boss Enemy is wanted in the level. Moving on to Trap stage.");
         }
         StartCoroutine(CreateTrap());
     }
@@ -1120,9 +1131,6 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
                 yield return new WaitForSeconds(0.05f);
                 if (Map_Holder.Instance.GameBoard[newPlace.x, newPlace.z].board_Game.boardType == BoardType.Empty)
                 {
-                    boardTrapAmount++;
-                    Canvas_Manager.Instance.MapProcess(1.0f * boardTrapAmount / boardOrjTrapAmount);
-                    Map_Holder.Instance.RemoveBoardFromList(newPlace.x, newPlace.z);
                     int rndTrap = Random.Range(0, choosedTrapList.Count);
                     bool hasGold = false;
                     while (choosedTrapList.Count > 0 && !hasGold)
@@ -1130,12 +1138,20 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
                         rndTrap = Random.Range(0, choosedTrapList.Count);
                         if (Save_Load_Manager.Instance.gameData.gold >= all_Item_Holder.TrapList[choosedTrapList[rndTrap]].MyPrice)
                         {
+                            boardTrapAmount++;
+                            Canvas_Manager.Instance.MapProcess(1.0f * boardTrapAmount / boardOrjTrapAmount);
+                            Map_Holder.Instance.RemoveBoardFromList(newPlace.x, newPlace.z);
                             Canvas_Manager.Instance.SetGoldSmooth(-all_Item_Holder.TrapList[choosedTrapList[rndTrap]].MyPrice);
                             hasGold = true;
                         }
                         else
                         {
                             choosedTrapList.RemoveAt(rndTrap);
+                            Warning_Manager.Instance.ShowMessage("You don't have enough gold to build the trap. Trap order is " + rndTrap + ".");
+                            if (choosedTrapList.Count == 0)
+                            {
+                                boardTrapAmount = boardOrjTrapAmount;
+                            }
                         }
                     }
                     if (hasGold)
@@ -1150,17 +1166,13 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
                         Map_Holder.Instance.TrapObjects.Add(poolObje);
                         Map_Holder.Instance.GameBoard[newPlace.x, newPlace.z] = new GameBoard(BoardType.Trap, choosedTrapList[rndTrap], gameObje);
                     }
-                    else
-                    {
-                        boardTrapAmount = boardOrjTrapAmount;
-                    }
                 }
             }
-            Debug.LogWarning("Tüm tuzaklar yerleştirildi. Tuzakların ayarlarını yapabilir ve sonra leveli kaydedebilirsiniz.");
+            Warning_Manager.Instance.ShowMessage("All Trap have been placed. You can setting all traps and record level.");
         }
         else
         {
-            Debug.LogWarning("Levelde tuzak istenmemiş. Leveli kaydedebilirsiniz.");
+            Warning_Manager.Instance.ShowMessage("No Trap is wanted in the level. You can record level.");
         }
         Canvas_Manager.Instance.SetActiveMapProcessHolder(false);
         Canvas_Manager.Instance.SetPanelCreatorButtonTypeList(true);

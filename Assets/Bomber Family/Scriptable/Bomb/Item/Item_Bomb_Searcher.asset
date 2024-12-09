@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Item_Bomb_Searcher
   m_EditorClassIdentifier: 
   myIcon: {fileID: 21300000, guid: 12971272e66e147498e41e3517b11566, type: 3}
-  myRecipeItem: {fileID: 11400000}
   myRecipePrice: 1000
+  myRecipeItem: {fileID: 11400000}
   myNeededItemList:
   - recipeItem: {fileID: 11400000, guid: e9c2a757b4ff20744a102168a2be2592, type: 2}
     recipeAmount: 10
@@ -31,23 +31,10 @@ MonoBehaviour:
   - recipeItem: {fileID: 11400000, guid: e71653498327f2f428b1e6c14bc3b1c9, type: 2}
     recipeAmount: 10
     inventoryType: 1
-  myNeededMaterialList:
-  - recipeItem: {fileID: 11400000, guid: 5ef4088212dc79b4aa275a2d9dd1d746, type: 2}
-    recipeAmount: 10
-    inventoryType: 0
-  - recipeItem: {fileID: 11400000, guid: c67da3084ea02004fa68cd13e4c20e3c, type: 2}
-    recipeAmount: 10
-    inventoryType: 0
-  - recipeItem: {fileID: 11400000, guid: f7c0968d84cec3c418f109fa8c0d7980, type: 2}
-    recipeAmount: 30
-    inventoryType: 0
-  - recipeItem: {fileID: 11400000, guid: 29c41d4e4aa469e48a9c5172ba49df24, type: 2}
-    recipeAmount: 10
-    inventoryType: 0
-  - recipeItem: {fileID: 11400000, guid: 38b073a0346b47f4799268b32e1b2cc0, type: 2}
-    recipeAmount: 10
-    inventoryType: 0
-  myBombType: 5
+  myBombType: 4
+  myItemPower: {fileID: 11400000, guid: 73f4541d50af0d94eab390f89d94fdbf, type: 2}
+  myItemLimit: {fileID: 11400000, guid: 592dfe6eb17469445af3470209bf2bb0, type: 2}
+  myItemFireTime: {fileID: 11400000, guid: 055516399593ca0419aa9e579cea984d, type: 2}
   myRecipeList:
   - {fileID: 11400000, guid: 915644c02ac04fe4c99c0fa08b9dadf3, type: 2}
   - {fileID: 11400000, guid: e15488960dc38ec44b34971b439b32e1, type: 2}

@@ -2,23 +2,35 @@
 using UnityEngine;
 using DG.Tweening;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 
+[System.Serializable]
 public class Messages
 {
-    public TextMeshProUGUI warningtext;
     public float warningTime;
     public float warningTimeNext;
-    public Messages(TextMeshProUGUI warning)
+    public bool warningCanShow;
+    public bool warningShowing;
+    public RectTransform warningPanel;
+    public TextMeshProUGUI warningText;
+    public Messages(RectTransform warning)
     {
-        warningtext = warning;
+        warningPanel = warning;
+        warningText = warning.GetChild(0).GetComponent<TextMeshProUGUI>();
     }
-    public bool ShowWarning()
+    public Messages(Messages warning)
     {
+        warningPanel = warning.warningPanel;
+        warningText = warning.warningPanel.GetChild(0).GetComponent<TextMeshProUGUI>();
+    }
+    public bool StopWarning()
+    {
+        if (warningShowing)
+        {
+            return false;
+        }
         warningTimeNext += Time.deltaTime;
         if (warningTimeNext > warningTime)
         {
-            //warningtext.gameObject.SetActive(false);
             warningTimeNext = 0;
             return true;
         }
@@ -27,54 +39,47 @@ public class Messages
 }
 public class Warning_Manager : Singletion<Warning_Manager>
 {
-    [SerializeField] private Transform mesajKutusu;
-    [SerializeField] private RectTransform rectMesajKutusu;
-    private List<Messages> warnings = new List<Messages>();
-    private List<Messages> allWarnings = new List<Messages>();
-    private bool warningVar;
-    private bool warning;
-    public override void OnAwake()
-    {
-        for (int e = 0; e < mesajKutusu.childCount; e++)
-        {
-            warnings.Add(new Messages(mesajKutusu.GetChild(e).GetComponentInChildren<TextMeshProUGUI>(true)));
-        }
-        rectMesajKutusu = mesajKutusu.GetComponent<RectTransform>();
-    }
+    [SerializeField] private RectTransform mesajKutusu;
+    [SerializeField] private Transform mesajKutusuParent;
+
+    [SerializeField] private bool warning;
+    [SerializeField] private bool warningVar;
+    [SerializeField] private int warningAmount;
+    [SerializeField] private List<Messages> allWarnings = new List<Messages>();
+
     public void NotHaveGold()
     {
         ShowMessage("You dont have enough Gold.", 2);
     }
     public void ShowMessage(string msg, float duration = 1)
     {
-        if (allWarnings.Count == 0)
-        {
-            rectMesajKutusu.DOAnchorPos3DY(-100, 0.5f).OnComplete(() => warningVar = true);
-        }
-        AddWarning(msg, duration);
-    }
-    private void AddWarning(string msg, float duration = 1)
-    {
         bool findWarning = false;
-        int bulunanText = mesajKutusu.childCount - 1;
-        for (int e = warnings.Count - 1; e >= 0 && !findWarning; e--)
+        for (int e = 0; e < allWarnings.Count && !findWarning; e++)
         {
-            if (!warnings[e].warningtext.gameObject.activeSelf)
+            if (allWarnings[e].warningCanShow)
             {
-                bulunanText = e;
                 findWarning = true;
-                warnings[bulunanText].warningtext.gameObject.SetActive(true);
+                SetMessage(allWarnings[e], msg, duration);
             }
         }
         if (!findWarning)
         {
-            bulunanText = warnings.Count;
-            warnings.Add(new Messages(Instantiate(warnings[0].warningtext, mesajKutusu).GetComponent<TextMeshProUGUI>()));
+            RectTransform newWarning = Instantiate(mesajKutusu, mesajKutusuParent);
+            Messages message = new Messages(newWarning);
+            allWarnings.Add(message);
+            SetMessage(message, msg, duration);
         }
-        warnings[bulunanText].warningTime = duration;
-        warnings[bulunanText].warningtext.text = msg;
-        warnings[bulunanText].warningtext.transform.SetAsFirstSibling();
-        allWarnings.Add(warnings[bulunanText]);
+    }
+    private void SetMessage(Messages message, string msg, float duration = 1)
+    {
+        message.warningTime = duration + 1;
+        message.warningText.text = msg;
+        message.warningShowing = false;
+        message.warningCanShow = false;
+        int posY = -250 - (warningAmount * 70);
+        message.warningPanel.anchoredPosition = new Vector2(-1900, posY);
+        message.warningPanel.DOAnchorPos(new Vector2(0, posY), 1.0f).OnComplete(() => warningVar = true);
+        warningAmount++;
     }
     private void Update()
     {
@@ -83,9 +88,10 @@ public class Warning_Manager : Singletion<Warning_Manager>
             warning = false;
             for (int e = allWarnings.Count - 1; e >= 0; e--)
             {
-                if (allWarnings[e].ShowWarning())
+                if (allWarnings[e].StopWarning())
                 {
-                    allWarnings.RemoveAt(e);
+                    warningAmount--;
+                    SetMEsaj(allWarnings[e]);
                 }
                 else
                 {
@@ -94,12 +100,16 @@ public class Warning_Manager : Singletion<Warning_Manager>
             }
             if (!warning)
             {
-                rectMesajKutusu.DOAnchorPos3DY(300, 0.5f).OnComplete(() =>
-                {
-                    warnings.ForEach(m => m.warningtext.gameObject.SetActive(false));
-                    warningVar = false;
-                });
+                warningVar = false;
             }
         }
+    }
+    private void SetMEsaj(Messages message)
+    {
+        message.warningShowing = true;
+        message.warningPanel.DOAnchorPos(new Vector2(0, 250), 1.5f).OnComplete(() =>
+        {
+            message.warningCanShow = true;
+        });
     }
 }

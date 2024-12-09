@@ -22,15 +22,15 @@ public class NeededItemHolder
 [CreateAssetMenu(menuName = "Item/Recipe")]
 public class Item_Recipe : Item
 {
+    [SerializeField] private int myRecipePrice;
     [SerializeField] private Item myRecipeItem;
-    [SerializeField] private int  myRecipePrice;
     [SerializeField] private List<NeededItemHolder> myNeededItemList = new List<NeededItemHolder>();
 
-    public Item MyRecipeItem { get { return myRecipeItem; } }
     public int MyRecipePrice { get { return myRecipePrice; } }
+    public Item MyRecipeItem { get { return myRecipeItem; } }
     public List<NeededItemHolder> MyNeededItemList { get { return myNeededItemList; } }
     
-    public virtual void AddMyItemToInventory()
+    public virtual void AddMyItemToInventory(int bombPower, int bombLimit, float bombFireTime)
     {
         Inventory_Manager.Instance.AddItem(new NeededItemHolder(myRecipeItem, 1, InventoryType.Alet));
     }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 
@@ -48,6 +49,7 @@ public class Canvas_Manager_Editor : Editor
     private SerializedProperty panelMenu;
     private SerializedProperty buttonMyLevel;
     private SerializedProperty panelLevelsMap;
+    private SerializedProperty panelMyLevels;
     private SerializedProperty myLevelButtonParent;
     private SerializedProperty dailyButtons;
     #endregion
@@ -82,6 +84,8 @@ public class Canvas_Manager_Editor : Editor
     private SerializedProperty textPlacementType;
     private SerializedProperty textCreateObjectSetting;
     private SerializedProperty inputMultiplePlacementAmount;
+    private SerializedProperty objPlacement;
+    private SerializedProperty allPanelObjectTypes;
     #endregion
 
     #region Creator Object Setting
@@ -208,6 +212,22 @@ public class Canvas_Manager_Editor : Editor
     private SerializedProperty buttonCraft;
     private SerializedProperty buttonCraftIcon;
     private SerializedProperty craftSlotIcon;
+    private SerializedProperty objBombStatPanel;
+    private SerializedProperty imageBombPowerIcon;
+    private SerializedProperty imageBombLimitIcon;
+    private SerializedProperty imageBombFireTimeIcon;
+    private SerializedProperty textBombPowerAmount;
+    private SerializedProperty textBombLimitAmount;
+    private SerializedProperty textBombFireTimeAmount;
+    private SerializedProperty butonIncBombPower;
+    private SerializedProperty butonIncBombPowerAds;
+    private SerializedProperty butonDecBombPower;
+    private SerializedProperty butonIncBombLimit;
+    private SerializedProperty butonIncBombLimitAds;
+    private SerializedProperty butonDecBombLimit;
+    private SerializedProperty butonIncBombFireTime;
+    private SerializedProperty butonIncBombFireTimeAds;
+    private SerializedProperty butonDecBombFireTime;
     private SerializedProperty myMaterialList;
     private SerializedProperty myRecipeList;
     #endregion
@@ -267,6 +287,7 @@ public class Canvas_Manager_Editor : Editor
         panelMenu = serializedObject.FindProperty("panelMenu");
         buttonMyLevel = serializedObject.FindProperty("buttonMyLevel");
         panelLevelsMap = serializedObject.FindProperty("panelLevelsMap");
+        panelMyLevels = serializedObject.FindProperty("panelMyLevels");
         myLevelButtonParent = serializedObject.FindProperty("myLevelButtonParent");
         dailyButtons = serializedObject.FindProperty("dailyButtons");
         #endregion
@@ -300,6 +321,8 @@ public class Canvas_Manager_Editor : Editor
         textPlacementType = serializedObject.FindProperty("textPlacementType");
         textCreateObjectSetting = serializedObject.FindProperty("textCreateObjectSetting");
         inputMultiplePlacementAmount = serializedObject.FindProperty("inputMultiplePlacementAmount");
+        objPlacement = serializedObject.FindProperty("objPlacement");
+        allPanelObjectTypes = serializedObject.FindProperty("allPanelObjectTypes");
         #endregion
 
         #region Creator Object Setting
@@ -419,6 +442,22 @@ public class Canvas_Manager_Editor : Editor
         buttonCraft = serializedObject.FindProperty("buttonCraft");
         buttonCraftIcon = serializedObject.FindProperty("buttonCraftIcon");
         craftSlotIcon = serializedObject.FindProperty("craftSlotIcon");
+        objBombStatPanel = serializedObject.FindProperty("objBombStatPanel");
+        imageBombPowerIcon = serializedObject.FindProperty("imageBombPowerIcon");
+        imageBombLimitIcon = serializedObject.FindProperty("imageBombLimitIcon");
+        imageBombFireTimeIcon = serializedObject.FindProperty("imageBombFireTimeIcon");
+        textBombPowerAmount = serializedObject.FindProperty("textBombPowerAmount");
+        textBombLimitAmount = serializedObject.FindProperty("textBombLimitAmount");
+        textBombFireTimeAmount = serializedObject.FindProperty("textBombFireTimeAmount");
+        butonIncBombPower = serializedObject.FindProperty("butonIncBombPower");
+        butonIncBombPowerAds = serializedObject.FindProperty("butonIncBombPowerAds");
+        butonDecBombPower = serializedObject.FindProperty("butonDecBombPower");
+        butonIncBombLimit = serializedObject.FindProperty("butonIncBombLimit");
+        butonIncBombLimitAds = serializedObject.FindProperty("butonIncBombLimitAds");
+        butonDecBombLimit = serializedObject.FindProperty("butonDecBombLimit");
+        butonIncBombFireTime = serializedObject.FindProperty("butonIncBombFireTime");
+        butonIncBombFireTimeAds = serializedObject.FindProperty("butonIncBombFireTimeAds");
+        butonDecBombFireTime = serializedObject.FindProperty("butonDecBombFireTime");
         myMaterialList = serializedObject.FindProperty("myMaterialList");
         myRecipeList = serializedObject.FindProperty("myRecipeList");
         #endregion
@@ -489,6 +528,7 @@ public class Canvas_Manager_Editor : Editor
             EditorGUILayout.PropertyField(panelMenu);
             EditorGUILayout.PropertyField(buttonMyLevel);
             EditorGUILayout.PropertyField(panelLevelsMap);
+            EditorGUILayout.PropertyField(panelMyLevels);
             EditorGUILayout.PropertyField(myLevelButtonParent);
             EditorGUILayout.PropertyField(dailyButtons);
             EditorGUILayout.Space(5);
@@ -526,6 +566,8 @@ public class Canvas_Manager_Editor : Editor
             EditorGUILayout.PropertyField(textPlacementType);
             EditorGUILayout.PropertyField(textCreateObjectSetting);
             EditorGUILayout.PropertyField(inputMultiplePlacementAmount);
+            EditorGUILayout.PropertyField(objPlacement);
+            EditorGUILayout.PropertyField(allPanelObjectTypes);
             EditorGUILayout.Space(5);
         }
 
@@ -671,6 +713,22 @@ public class Canvas_Manager_Editor : Editor
             EditorGUILayout.PropertyField(buttonCraft);
             EditorGUILayout.PropertyField(buttonCraftIcon);
             EditorGUILayout.PropertyField(craftSlotIcon);
+            EditorGUILayout.PropertyField(objBombStatPanel);
+            EditorGUILayout.PropertyField(imageBombPowerIcon);
+            EditorGUILayout.PropertyField(imageBombLimitIcon);
+            EditorGUILayout.PropertyField(imageBombFireTimeIcon);
+            EditorGUILayout.PropertyField(textBombPowerAmount);
+            EditorGUILayout.PropertyField(textBombLimitAmount);
+            EditorGUILayout.PropertyField(textBombFireTimeAmount);
+            EditorGUILayout.PropertyField(butonIncBombPower);
+            EditorGUILayout.PropertyField(butonIncBombPowerAds);
+            EditorGUILayout.PropertyField(butonDecBombPower);
+            EditorGUILayout.PropertyField(butonIncBombLimit);
+            EditorGUILayout.PropertyField(butonIncBombLimitAds);
+            EditorGUILayout.PropertyField(butonDecBombLimit);
+            EditorGUILayout.PropertyField(butonIncBombFireTime);
+            EditorGUILayout.PropertyField(butonIncBombFireTimeAds);
+            EditorGUILayout.PropertyField(butonDecBombFireTime);
             EditorGUILayout.PropertyField(myMaterialList);
             EditorGUILayout.PropertyField(myRecipeList);
         }

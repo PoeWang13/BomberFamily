@@ -8,8 +8,19 @@ public enum WorldType
     Korsan,
     Samuray,
     Viking,
+    Dead,
+    Orc,
+    Jungle,
+    Mısır,
+    Yunan,
+    İskandinav,
+    China,
+    Aztek,
+    Steam,
     Alien,
+    Virüs,
     Zombie,
+    Devil,
     Monster,
     TarihÖncesi,
     OrtaÇağ,
@@ -23,7 +34,6 @@ public enum WorldType
     Ankalar,
     Yamyamlar,
     BoşlukCanavarları,
-
 }
 [CreateAssetMenu(menuName = "Item/Character")]
 public class Item_Character : Item_Board

@@ -3,8 +3,7 @@ using System.Collections.Generic;
 
 public class Bomb_Fire : PoolObje
 {
-    [SerializeField] private float fireTime = 1;
-
+    private float fireTime = 1;
     private float newFireTime = 1;
     private int power;
     private Transform boardFireParent;
@@ -18,9 +17,10 @@ public class Bomb_Fire : PoolObje
         particles.AddRange(GetComponentsInChildren<ParticleSystem>());
         myCollider = GetComponent<Collider>();
     }
-    public void SetFire(int power)
+    public void SetFire(int power, float time = 1)
     {
         this.power = power;
+        fireTime = time;
         newFireTime = fireTime;
         particles.ForEach(p => { p.Play(); });
         Player_Base.Instance.IgnoreCollider(myCollider);

@@ -1,0 +1,15 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1416e8cfe8aa1b4cac9561d57c2c1f6, type: 3}
+  m_Name: Pool-E-4-15-Alien
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 605892701060162895, guid: 6e7a5e7731500e54cbba9bfbcd67b245, type: 3}
