@@ -219,7 +219,6 @@ public class Map_Creater_Manager : Singletion<Map_Creater_Manager>
     }
     public void SetBoardSize(int sizeX, int sizeY)
     {
-        Debug.Log("SetBoardSize");
         Map_Holder.Instance.MyBoardList.Clear();
         Map_Holder.Instance.MyBoardListBackup.Clear();
         addMagicStone = false;

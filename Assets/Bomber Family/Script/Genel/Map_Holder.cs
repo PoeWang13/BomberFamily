@@ -8,8 +8,6 @@ using Random = UnityEngine.Random;
 [Serializable]
 public class Board
 {
-    public int x;
-    public int y;
     public int boardOrder = -1;
     public string boardSpecial = "";
     public BoardType boardType = BoardType.Empty;

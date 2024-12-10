@@ -241,6 +241,16 @@ public class Canvas_Manager_Editor : Editor
     private SerializedProperty objMaterialParent;
     private SerializedProperty shopPanelList;
     #endregion
+
+    #region HTC
+    private bool showHTC;
+    private SerializedProperty panelDungeonSettingList;
+    private SerializedProperty panelDungeonCraftingList;
+    private SerializedProperty buttonDungeonSettingLeft;
+    private SerializedProperty buttonDungeonSettingRight;
+    private SerializedProperty buttonDungeonCraftingLeft;
+    private SerializedProperty buttonDungeonCraftingRight;
+    #endregion
     #endregion
 
     private void OnEnable()
@@ -470,8 +480,16 @@ public class Canvas_Manager_Editor : Editor
         objMaterialParent = serializedObject.FindProperty("objMaterialParent");
         shopPanelList = serializedObject.FindProperty("shopPanelList");
         #endregion
-    }
 
+        #region HTC
+        panelDungeonSettingList = serializedObject.FindProperty("panelDungeonSettingList");
+        panelDungeonCraftingList = serializedObject.FindProperty("panelDungeonCraftingList");
+        buttonDungeonSettingLeft = serializedObject.FindProperty("buttonDungeonSettingLeft");
+        buttonDungeonSettingRight = serializedObject.FindProperty("buttonDungeonSettingRight");
+        buttonDungeonCraftingLeft = serializedObject.FindProperty("buttonDungeonCraftingLeft");
+        buttonDungeonCraftingRight = serializedObject.FindProperty("buttonDungeonCraftingRight");
+        #endregion
+    }
     public override void OnInspectorGUI()
     {
         serializedObject.Update();
@@ -745,6 +763,18 @@ public class Canvas_Manager_Editor : Editor
             EditorGUILayout.PropertyField(shopPanelList);
         }
 
+
+        // HTC
+        showHTC = EditorGUILayout.Toggle("HTC", showHTC);
+        if (showHTC)
+        {
+            EditorGUILayout.PropertyField(buttonDungeonSettingLeft);
+            EditorGUILayout.PropertyField(buttonDungeonSettingRight);
+            EditorGUILayout.PropertyField(buttonDungeonCraftingLeft);
+            EditorGUILayout.PropertyField(buttonDungeonCraftingRight);
+            EditorGUILayout.PropertyField(panelDungeonSettingList);
+            EditorGUILayout.PropertyField(panelDungeonCraftingList);
+        }
         serializedObject.ApplyModifiedProperties();
     }
 }

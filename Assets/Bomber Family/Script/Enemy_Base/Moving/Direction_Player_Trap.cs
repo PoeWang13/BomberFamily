@@ -128,15 +128,24 @@ public class Direction_Player_Trap : Moving_Base
             bool findWay = false;
             while (!findWay)
             {
-                int rndNode = Random.Range(0, trapNodes.Count);
-                findPath = Map_Holder.Instance.FindPath(startNode, trapNodes[rndNode]);
-                if (findPath.Count > 0)
+                if (trapNodes.Count > 0)
                 {
-                    findWay = true;
+                    int rndNode = Random.Range(0, trapNodes.Count);
+                    findPath = Map_Holder.Instance.FindPath(startNode, trapNodes[rndNode]);
+                    if (findPath.Count > 0)
+                    {
+                        findWay = true;
+                    }
+                    else
+                    {
+                        trapNodes.RemoveAt(rndNode);
+                    }
                 }
                 else
                 {
-                    trapNodes.RemoveAt(rndNode);
+                    findWay = true;
+                    findPath = Map_Holder.Instance.FindPath(startNode,
+                        new Node(Mathf.RoundToInt(Player.position.x), Mathf.RoundToInt(Player.position.z)));
                 }
             }
         }

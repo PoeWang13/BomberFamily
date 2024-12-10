@@ -241,6 +241,14 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     [SerializeField] private Transform objMaterialParent;
     [SerializeField] private List<GameObject> shopPanelList = new List<GameObject>();
 
+    // Creating - Dungeon Setting - Help
+    [SerializeField] private Button buttonDungeonSettingLeft;
+    [SerializeField] private Button buttonDungeonSettingRight;
+    [SerializeField] private Button buttonDungeonCraftingLeft;
+    [SerializeField] private Button buttonDungeonCraftingRight;
+    [SerializeField] private List<RectTransform> panelDungeonSettingList = new List<RectTransform>();
+    [SerializeField] private List<RectTransform> panelDungeonCraftingList = new List<RectTransform>();
+
     private bool isBuyed;
     private bool correctWallAmount;
     private bool correctBoxAmount;
@@ -259,6 +267,8 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
     private int goldChangedStaertedAmount;
     private int bombPower;
     private int bombLimit;
+    private int orderSetting;
+    private int orderCrafting;
     private float bombFireTime;
 
     private Player_Base player_Base;
@@ -977,6 +987,7 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         SetDaily();
         SetToolBuyButton();
         SetMaterialBuyButton();
+        SetHelperImages();
 
         buttonOffer1.onClick.AddListener(EarnOffer1);
         buttonOffer2.onClick.AddListener(EarnOffer2);
@@ -1910,7 +1921,6 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         panelBoardSize.SetActive(false);
         objCheckingMapButton.SetActive(Save_Load_Manager.Instance.SaveType == BoardSaveType.MyLevel);
         buttonSaveMap.interactable = Save_Load_Manager.Instance.SaveType == BoardSaveType.GameLevel;
-        Debug.Log("CreateMapBoard");
         Map_Creater_Manager.Instance.SetBoardSize(int.Parse(inputBoardSizeX.text), int.Parse(inputBoardSizeY.text));
     }
     public void MapProcess(float process)
@@ -3038,6 +3048,62 @@ public class Canvas_Manager : Singletion<Canvas_Manager>
         {
             Inventory_Manager.Instance.AddItem(new NeededItemHolder(all_Item_Holder.MalzemeList[order], 1, InventoryType.Material));
             Save_Load_Manager.Instance.SaveGame();
+        });
+    }
+    #endregion
+
+    #region HTC
+    private void SetHelperImages()
+    {
+        buttonDungeonSettingLeft.onClick.AddListener(() => SetDungeonSettingHelper(-1));
+        buttonDungeonSettingRight.onClick.AddListener(() => SetDungeonSettingHelper(1));
+        buttonDungeonCraftingLeft.onClick.AddListener(() => SetDungeonCraftingHelper(-1));
+        buttonDungeonCraftingRight.onClick.AddListener(() => SetDungeonCraftingHelper(1));
+    }
+    public void SetDungeonSettingHelper(int direction)
+    {
+        buttonDungeonSettingLeft.interactable = false;
+        buttonDungeonSettingRight.interactable = false;
+        panelDungeonSettingList[orderSetting].DOAnchorPos(new Vector2(-1900, 0), 0.5f).OnComplete(() =>
+        {
+            orderSetting += direction;
+            if (orderSetting == -1)
+            {
+                orderSetting = panelDungeonSettingList.Count - 1;
+            }
+            else if (orderSetting == panelDungeonSettingList.Count)
+            {
+                orderSetting = 0;
+            }
+            panelDungeonSettingList[orderSetting].anchoredPosition = new Vector2(1900, 0);
+            panelDungeonSettingList[orderSetting].DOAnchorPos(Vector2.zero, 0.5f).OnComplete(() =>
+            {
+                buttonDungeonSettingLeft.interactable = true;
+                buttonDungeonSettingRight.interactable = true;
+            });
+        });
+    }
+    public void SetDungeonCraftingHelper(int direction)
+    {
+        buttonDungeonCraftingLeft.interactable = false;
+        buttonDungeonCraftingRight.interactable = false;
+        panelDungeonCraftingList[orderCrafting].DOAnchorPos(new Vector2(-1900, 0), 0.5f).OnComplete(() =>
+        {
+            orderCrafting += direction;
+            if (orderCrafting == -1)
+            {
+                orderCrafting = panelDungeonCraftingList.Count - 1;
+            }
+            else if (orderCrafting == panelDungeonCraftingList.Count)
+            {
+                orderCrafting = 0;
+            }
+            panelDungeonCraftingList[orderCrafting].anchoredPosition = new Vector2(1900, 0);
+            panelDungeonCraftingList[orderCrafting].DOAnchorPos(Vector2.zero, 0.5f).OnComplete(() =>
+            {
+                buttonDungeonCraftingLeft.interactable = true;
+                buttonDungeonCraftingRight.interactable = true;
+            });
         });
     }
     #endregion
